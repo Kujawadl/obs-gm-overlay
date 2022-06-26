@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from "apollo-server-core";
 import Campaign from "./campaign";
 import Player from "./player";
 
