@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import {
   ApolloClient,
   InMemoryCache,
@@ -44,6 +45,10 @@ const client = new ApolloClient({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
+      <Head>
+        <title>OBS GM Overlay</title>
+        <meta name="description" content="OBS GM Overlay" />
+      </Head>
       <Component {...pageProps} />
     </ApolloProvider>
   );

@@ -13,7 +13,6 @@ const resolvers = {
         return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
       },
       (payload, variables) => {
-        console.log({ payload, variables });
         return payload.campaign.id === parseInt(variables.id);
       }
     ),
