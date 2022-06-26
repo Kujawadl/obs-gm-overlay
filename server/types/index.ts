@@ -1,10 +1,13 @@
 import { gql } from "apollo-server";
-import Book from "./book";
+import Campaign from "./campaign";
+import Player from "./player";
 
 const Root = gql`
   type Query
+  type Mutation
+  # type Subscription
 `;
 
-const typeDefs = [Root, Book];
+const typeDefs = [Root, Campaign, Player];
 
 export default typeDefs;

@@ -1,9 +1,14 @@
-import Book from "./book";
-import Query from "./query";
+import Campaign from "./campaign";
+import Player from "./player";
+
+import Query from "./_query";
+import Mutation from "./_mutation";
 
 const resolvers = {
-  Book,
+  ...Campaign,
+  ...Player,
   Query,
+  Mutation,
 };
 
 export default resolvers;
