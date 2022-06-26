@@ -13,6 +13,10 @@ const typeDefs = gql`
     campaign(id: ID): Campaign
   }
 
+  extend type Subscription {
+    campaign(id: ID): Campaign
+  }
+
   input CampaignInput {
     name: String
     gmInspiration: Boolean

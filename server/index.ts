@@ -5,7 +5,6 @@ import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import express from "express";
 import http from "http";
-import { AddressInfo } from "net";
 
 import typeDefs from "./types";
 import resolvers from "./resolvers";
@@ -16,7 +15,7 @@ async function startApolloServer() {
   const httpServer = http.createServer(app);
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "graphql",
+    path: "/graphql",
   });
 
   const context = await setupContext();
