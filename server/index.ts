@@ -15,13 +15,13 @@ async function startApolloServer() {
   const httpServer = http.createServer(app);
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/graphql",
+    path: "/subscriptions",
   });
 
   const context = await setupContext();
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-  const serverCleanup = useServer({ schema }, wsServer);
+  const serverCleanup = useServer({ schema, context }, wsServer);
 
   const server = new ApolloServer({
     schema,
