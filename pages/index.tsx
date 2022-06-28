@@ -43,10 +43,25 @@ const LIST_CAMPAIGNS = gql`
   }
 `;
 
-const Home: NextPage = () => {
-  const { data, loading, error } = useQuery(LIST_CAMPAIGNS);
+interface CampaignsQuery {
+  campaigns: {
+    id: string;
+    name: string;
+    gmInspiration: boolean;
+    players: {
+      id: string;
+      playerName: string;
+      characterName?: string;
+      isGM: boolean;
+      inspiration: number;
+    }[];
+  }[];
+}
 
-  return loading || error ? null : (
+const Home: NextPage = () => {
+  const { data } = useQuery<CampaignsQuery>(LIST_CAMPAIGNS);
+
+  return data ? (
     <Container fixed>
       <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
         <Typography color="text.primary">Campaigns</Typography>
@@ -121,7 +136,7 @@ const Home: NextPage = () => {
         )}
       </List>
     </Container>
-  );
+  ) : null;
 };
 
 export default Home;

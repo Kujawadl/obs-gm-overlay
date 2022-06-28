@@ -8,7 +8,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import * as Yup from "yup";
 import PlayerList from "./player-list";
 
 const UPDATE_CAMPAIGN = gql`
@@ -38,6 +39,10 @@ const UPDATE_CAMPAIGN = gql`
   }
 `;
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Campaign Name is required"),
+});
+
 interface CampaignEditorProps {
   campaign: {
     id: string;
@@ -54,7 +59,7 @@ interface CampaignEditorProps {
 }
 
 export default function CampaignEditor({ campaign }: CampaignEditorProps) {
-  const [saveCampaignData] = useMutation(UPDATE_CAMPAIGN);
+  const [updateCampaign] = useMutation(UPDATE_CAMPAIGN);
 
   const initialValues = useMemo(
     () => ({
@@ -64,35 +69,44 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
     [campaign]
   );
 
+  const onUpdateCampaign = useCallback(
+    async (values: Pick<typeof campaign, "name" | "gmInspiration">) => {
+      updateCampaign({
+        variables: {
+          id: campaign.id,
+          input: {
+            name: values.name,
+            gmInspiration: values.gmInspiration,
+          },
+        },
+      });
+    },
+    [campaign.id, updateCampaign]
+  );
+
   return (
     <>
       <Typography variant="h3">Edit Campaign</Typography>
       <Formik
         initialValues={initialValues}
-        onSubmit={async (values) => {
-          saveCampaignData({
-            variables: {
-              id: campaign.id,
-              input: {
-                name: values.name,
-                gmInspiration: values.gmInspiration,
-              },
-            },
-          });
-        }}
+        enableReinitialize
+        validationSchema={validationSchema}
+        onSubmit={onUpdateCampaign}
       >
-        {({ handleReset }) => (
+        {({ handleReset, isValid, dirty }) => (
           <Form>
             <Grid container spacing={2} my={4}>
               <Grid item xs={12}></Grid>
               <Grid item xs={12} sm={6}>
                 <Field name="name">
-                  {({ field }: FieldProps<string>) => (
+                  {({ field, meta }: FieldProps<string>) => (
                     <TextField
                       required
                       id="name"
                       label="Campaign Name"
                       fullWidth
+                      error={meta.touched && !!meta.error}
+                      helperText={meta.error}
                       {...field}
                     />
                   )}
@@ -100,7 +114,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
               </Grid>
               <Grid item xs={12} sm={6} sx={{ textAlign: "right", mt: 1 }}>
                 <Field name="gmInspiration">
-                  {({ field }: FieldProps<boolean>) => (
+                  {({ field, form }: FieldProps<boolean>) => (
                     <FormControlLabel
                       id="gmInspiration"
                       label="GM Gets Inspiration"
@@ -109,6 +123,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
                         <Switch
                           color="primary"
                           checked={field.value}
+                          onFocus={() => form.setFieldTouched(field.name)}
                           {...field}
                         />
                       }
@@ -116,19 +131,26 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
                   )}
                 </Field>
               </Grid>
-              <Grid item xs={12} sx={{ textAlign: "right" }}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleReset}
-                  sx={{ mr: 2 }}
-                >
-                  Reset
-                </Button>
-                <Button variant="contained" color="primary" type="submit">
-                  Save
-                </Button>
-              </Grid>
+              {dirty && (
+                <Grid item xs={12} sx={{ textAlign: "right" }}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleReset}
+                    sx={{ mr: 2 }}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!isValid}
+                    type="submit"
+                  >
+                    Save
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           </Form>
         )}

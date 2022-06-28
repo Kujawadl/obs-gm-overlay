@@ -7,7 +7,6 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta name="description" content="OBS GM Overlay" />
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
           <link rel="icon" href="/favicon.ico" />
           <link
             rel="stylesheet"

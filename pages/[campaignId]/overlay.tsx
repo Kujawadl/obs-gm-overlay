@@ -30,14 +30,32 @@ const CAMPAIGN_SUBSCRIPTION = gql`
   }
 `;
 
+interface CampaignSubscription {
+  campaign: {
+    id: string;
+    name: string;
+    gmInspiration: boolean;
+    players: {
+      id: string;
+      playerName: string;
+      characterName?: string;
+      isGM: boolean;
+      inspiration: number;
+    }[];
+  };
+}
+
 export default function Overlay() {
   const router = useRouter();
   const { campaignId } = router.query;
-  const { data } = useSubscription(CAMPAIGN_SUBSCRIPTION, {
-    variables: {
-      id: campaignId,
-    },
-  });
+  const { data } = useSubscription<CampaignSubscription>(
+    CAMPAIGN_SUBSCRIPTION,
+    {
+      variables: {
+        id: campaignId,
+      },
+    }
+  );
 
   return (
     <Box

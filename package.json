@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "run-p start:*",
+    "dev": "run-p dev:web start:server",
+    "start": "npm run build:web && run-p start:*",
     "build:web": "next build",
     "lint:web": "next lint",
-    "start:web": "next dev",
+    "dev:web": "next dev",
+    "start:web": "next start",
     "start:server": "nodemon --watch 'server/**' --ext 'ts,json' ./server/index.ts",
     "migrate": "ts-node migrate.ts"
   },
@@ -27,6 +29,7 @@
     "next": "12.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sharp": "^0.30.7",
     "sqlite": "^4.1.1",
     "sqlite3": "^5.0.8",
     "ws": "^8.8.0",
