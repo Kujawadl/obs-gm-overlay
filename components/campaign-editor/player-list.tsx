@@ -1,4 +1,4 @@
-import { List, ListItem, Typography } from "@mui/material";
+import { Box, List, ListItem, Typography } from "@mui/material";
 import PlayerEditor from "./player-editor";
 
 interface PlayerListProps {
@@ -15,7 +15,18 @@ interface PlayerListProps {
 export default function PlayerList({ players, campaignId }: PlayerListProps) {
   return (
     <>
-      <Typography variant="h4">Players</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+        }}
+      >
+        <Typography variant="h4">Players</Typography>
+        <Typography variant="h5" color="text.secondary">
+          Inspiration Tracker
+        </Typography>
+      </Box>
       <List
         sx={{
           marginTop: 2,
