@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import CampaignEditor from "../../components/campaign-editor/campaign-editor";
+import CampaignEditor from "../../components/campaign-editor";
 
 const CAMPAIGN_QUERY = gql`
   fragment PlayerFragment on Player {

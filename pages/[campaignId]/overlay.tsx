@@ -1,6 +1,9 @@
 import { useRouter } from "next/router";
 import { gql, useSubscription } from "@apollo/client";
-import stripTypename from "../../utils/strip-typename";
+import Badge from "../../components/badge";
+import { Box } from "@mui/material";
+// import stripTypename from "../../utils/strip-typename";
+// import { Typography } from "@mui/material";
 
 const CAMPAIGN_SUBSCRIPTION = gql`
   fragment PlayerFragment on Player {
@@ -37,8 +40,22 @@ export default function Overlay() {
   });
 
   return (
-    <pre style={{ fontSize: 12 }}>
-      <code>{JSON.stringify(stripTypename(data?.campaign), undefined, 2)}</code>
-    </pre>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+      }}
+    >
+      {data?.campaign.players.map((player) =>
+        data.campaign.gmInspiration || !player.isGM ? (
+          <Badge
+            key={player.id}
+            name={player.isGM ? player.playerName : player.characterName}
+            value={player.inspiration}
+          />
+        ) : null
+      )}
+    </Box>
   );
 }
