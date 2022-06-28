@@ -1,44 +1,19 @@
 import { gql, useMutation } from "@apollo/client";
 import {
-  Button,
   CircularProgress,
   FormControlLabel,
   Grid,
-  IconButton,
   Switch,
   TextField,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import {
-  Add as AddIcon,
   DoNotDisturbAlt as CancelIcon,
-  Edit as EditIcon,
-  Remove as RemoveIcon,
   Save as SaveIcon,
 } from "@mui/icons-material";
-import { Box } from "@mui/system";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as Yup from "yup";
-
-const SET_PLAYER_INSPIRATION = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  mutation SET_PLAYER_INSPIRATION($id: ID!, $inspiration: Int!) {
-    player(id: $id) {
-      save(input: { inspiration: $inspiration }) {
-        ...PlayerFragment
-      }
-    }
-  }
-`;
+import ResponsiveButton from "../../responsive-button";
 
 const UPDATE_PLAYER = gql`
   fragment PlayerFragment on Player {
@@ -62,7 +37,7 @@ const validationSchema = Yup.object().shape({
   playerName: Yup.string().required("Player Name is required"),
 });
 
-interface PlayerEditorProps {
+interface PlayerEditViewProps {
   player: {
     id?: string;
     playerName: string;
@@ -71,24 +46,16 @@ interface PlayerEditorProps {
     inspiration: number;
   };
   campaignId: string | number;
-  gmInspiration: boolean;
+  setEditing: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function PlayerEditor({
+export default function PlayerEditView({
   player,
   campaignId,
-  gmInspiration,
-}: PlayerEditorProps) {
-  const [editing, setEditing] = useState(false);
-  const [setInspiration] = useMutation(SET_PLAYER_INSPIRATION);
+  setEditing,
+}: PlayerEditViewProps) {
   const [updatePlayer, { loading: updatePlayerLoading }] =
     useMutation(UPDATE_PLAYER);
-  const theme = useTheme();
-  const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));
-  const ResponsiveButton = useMemo(
-    () => (isMobileView ? (IconButton as typeof Button) : Button),
-    [isMobileView]
-  );
 
   const initialValues = useMemo(
     () => ({
@@ -113,42 +80,10 @@ export default function PlayerEditor({
         setEditing(false);
       });
     },
-    [player.id, campaignId, updatePlayer]
+    [player.id, campaignId, updatePlayer, setEditing]
   );
 
-  const onSetInspiration = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setInspiration({
-        variables: {
-          id: player.id,
-          inspiration: event.target.value
-            ? parseInt(event.target.value, 10)
-            : 0,
-        },
-      });
-    },
-    [player.id, setInspiration]
-  );
-
-  const onIncrement = useCallback(() => {
-    setInspiration({
-      variables: {
-        id: player.id,
-        inspiration: player.inspiration + 1,
-      },
-    });
-  }, [player.id, player.inspiration, setInspiration]);
-
-  const onDecrement = useCallback(() => {
-    setInspiration({
-      variables: {
-        id: player.id,
-        inspiration: player.inspiration - 1,
-      },
-    });
-  }, [player.id, player.inspiration, setInspiration]);
-
-  return editing ? (
+  return (
     <Formik
       initialValues={initialValues}
       onSubmit={onUpdatePlayer}
@@ -220,9 +155,9 @@ export default function PlayerEditor({
                 color="secondary"
                 sx={{ mr: 1 }}
                 onClick={() => setEditing(false)}
-              >
-                {isMobileView ? <CancelIcon /> : "Cancel"}
-              </ResponsiveButton>
+                icon={<CancelIcon />}
+                text="Cancel"
+              />
               {updatePlayerLoading ? (
                 <CircularProgress />
               ) : (
@@ -231,57 +166,14 @@ export default function PlayerEditor({
                   variant="contained"
                   color="primary"
                   disabled={!isValid || updatePlayerLoading}
-                >
-                  {isMobileView ? <SaveIcon /> : "Save"}
-                </ResponsiveButton>
+                  icon={<SaveIcon />}
+                  text="Save"
+                />
               )}
             </Grid>
           </Grid>
         </Form>
       )}
     </Formik>
-  ) : (
-    <Grid container alignItems="center">
-      <Grid item xs={8}>
-        <Box component="span" sx={{ fontWeight: "bold", paddingRight: 1 }}>
-          {player.playerName}
-        </Box>
-        {!isMobileView && (player.characterName || player.isGM) && (
-          <Box component="span" sx={{ color: "text.secondary" }}>
-            ({player.isGM ? "GM" : player.characterName})
-          </Box>
-        )}
-      </Grid>
-      <Grid
-        item
-        xs={4}
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
-        }}
-      >
-        <IconButton onClick={onDecrement}>
-          <RemoveIcon />
-        </IconButton>
-        <TextField
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-            style: { textAlign: "center" },
-          }}
-          size="small"
-          sx={{ minWidth: 50, maxWidth: 50 }}
-          value={player.inspiration}
-          onChange={onSetInspiration}
-        />
-        <IconButton onClick={onIncrement}>
-          <AddIcon />
-        </IconButton>
-        <IconButton onClick={() => setEditing(true)}>
-          <EditIcon />
-        </IconButton>
-      </Grid>
-    </Grid>
   );
 }
