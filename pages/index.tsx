@@ -1,7 +1,10 @@
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import {
+  Box,
+  Breadcrumbs,
   Container,
+  Link as MUILink,
   List,
   ListItemButton,
   ListItemIcon,
@@ -10,6 +13,7 @@ import {
 } from "@mui/material";
 import {
   Edit as EditIcon,
+  OpenInNew as OpenInNewIcon,
   Visibility as PreviewIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
@@ -44,15 +48,39 @@ const Home: NextPage = () => {
 
   return loading || error ? null : (
     <Container fixed>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
+        <Typography color="text.primary">Campaigns</Typography>
+      </Breadcrumbs>
       <Typography variant="h3">Campaigns</Typography>
-      <List>
+      <List
+        sx={{
+          marginTop: 2,
+          paddingTop: 0,
+          border: 0,
+          borderTop: 2,
+          borderStyle: "solid",
+          borderColor: "primary.light",
+        }}
+      >
         {data.campaigns?.length > 0 ? (
           data.campaigns.map((campaign) => (
             <>
               <ListItemButton>
-                <ListItemText primary={campaign.name} />
+                <ListItemText>
+                  <Typography variant="h5">{campaign.name}</Typography>
+                </ListItemText>
               </ListItemButton>
-              <List component="div" disablePadding>
+              <List
+                component="div"
+                disablePadding
+                sx={{
+                  border: 0,
+                  borderBottom: 1,
+                  borderStyle: "solid",
+                  borderColor: "grey.400",
+                  marginBottom: 1,
+                }}
+              >
                 <Link href={`/${campaign.id}/edit`}>
                   <ListItemButton component="a" sx={{ pl: 4 }}>
                     <ListItemIcon>
@@ -61,14 +89,30 @@ const Home: NextPage = () => {
                     <ListItemText primary="Edit" />
                   </ListItemButton>
                 </Link>
-                <Link href={`/${campaign.id}/overlay`}>
+                <MUILink
+                  component="a"
+                  underline="none"
+                  color="inherit"
+                  href={`/${campaign.id}/overlay`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <ListItemButton component="a" sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <PreviewIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Preview Overlay" />
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "baseline" }}>
+                          Preview Overlay
+                          <Box sx={{ fontSize: "0.8rem", marginLeft: 0.5 }}>
+                            <OpenInNewIcon fontSize="inherit" />
+                          </Box>
+                        </Box>
+                      }
+                    />
                   </ListItemButton>
-                </Link>
+                </MUILink>
               </List>
             </>
           ))
