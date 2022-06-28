@@ -71,11 +71,13 @@ interface PlayerEditorProps {
     inspiration: number;
   };
   campaignId: string | number;
+  gmInspiration: boolean;
 }
 
 export default function PlayerEditor({
   player,
   campaignId,
+  gmInspiration,
 }: PlayerEditorProps) {
   const [editing, setEditing] = useState(false);
   const [setInspiration] = useMutation(SET_PLAYER_INSPIRATION);
@@ -250,7 +252,15 @@ export default function PlayerEditor({
           </Box>
         )}
       </Grid>
-      <Grid item xs={4} sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Grid
+        item
+        xs={4}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+        }}
+      >
         <IconButton onClick={onDecrement}>
           <RemoveIcon />
         </IconButton>

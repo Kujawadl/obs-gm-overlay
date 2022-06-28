@@ -10,9 +10,14 @@ interface PlayerListProps {
     inspiration: number;
   }[];
   campaignId: string | number;
+  gmInspiration: boolean;
 }
 
-export default function PlayerList({ players, campaignId }: PlayerListProps) {
+export default function PlayerList({
+  players,
+  campaignId,
+  gmInspiration,
+}: PlayerListProps) {
   return (
     <>
       <Box
@@ -49,7 +54,11 @@ export default function PlayerList({ players, campaignId }: PlayerListProps) {
               marginBottom: 1,
             }}
           >
-            <PlayerEditor player={player} campaignId={campaignId} />
+            <PlayerEditor
+              player={player}
+              campaignId={campaignId}
+              gmInspiration={gmInspiration}
+            />
           </ListItem>
         ))}
       </List>

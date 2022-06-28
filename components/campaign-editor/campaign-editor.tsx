@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, FieldProps } from "formik";
 import {
   Button,
   FormControlLabel,
@@ -42,7 +42,7 @@ interface CampaignEditorProps {
   campaign: {
     id: string;
     name: string;
-    gmInspiration: string;
+    gmInspiration: boolean;
     players: {
       id: string;
       playerName: string;
@@ -87,7 +87,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
               <Grid item xs={12}></Grid>
               <Grid item xs={12} sm={6}>
                 <Field name="name">
-                  {({ field }) => (
+                  {({ field }: FieldProps<string>) => (
                     <TextField
                       required
                       id="name"
@@ -100,10 +100,10 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
               </Grid>
               <Grid item xs={12} sm={6} sx={{ textAlign: "right", mt: 1 }}>
                 <Field name="gmInspiration">
-                  {({ field }) => (
+                  {({ field }: FieldProps<boolean>) => (
                     <FormControlLabel
                       id="gmInspiration"
-                      label="Display GM Inspiration in Overlay?"
+                      label="GM Gets Inspiration"
                       labelPlacement="start"
                       control={
                         <Switch
@@ -133,7 +133,11 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
           </Form>
         )}
       </Formik>
-      <PlayerList players={campaign.players || []} campaignId={campaign.id} />
+      <PlayerList
+        players={campaign.players || []}
+        campaignId={campaign.id}
+        gmInspiration={campaign.gmInspiration}
+      />
     </>
   );
 }
