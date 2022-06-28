@@ -9,9 +9,10 @@ interface PlayerListProps {
     isGM: boolean;
     inspiration: number;
   }[];
+  campaignId: string | number;
 }
 
-export default function PlayerList({ players }: PlayerListProps) {
+export default function PlayerList({ players, campaignId }: PlayerListProps) {
   return (
     <>
       <Typography variant="h4">Players</Typography>
@@ -37,7 +38,7 @@ export default function PlayerList({ players }: PlayerListProps) {
               marginBottom: 1,
             }}
           >
-            <PlayerEditor player={player} />
+            <PlayerEditor player={player} campaignId={campaignId} />
           </ListItem>
         ))}
       </List>

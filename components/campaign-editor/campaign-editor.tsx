@@ -83,7 +83,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
       >
         {({ handleReset }) => (
           <Form>
-            <Grid container my={4}>
+            <Grid container spacing={2} my={4}>
               <Grid item xs={12}></Grid>
               <Grid item xs={12} sm={6}>
                 <Field name="name">
@@ -133,7 +133,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
           </Form>
         )}
       </Formik>
-      <PlayerList players={campaign.players || []} />
+      <PlayerList players={campaign.players || []} campaignId={campaign.id} />
     </>
   );
 }
