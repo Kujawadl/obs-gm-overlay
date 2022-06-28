@@ -244,7 +244,7 @@ export default function PlayerEditor({
         <Box component="span" sx={{ fontWeight: "bold", paddingRight: 1 }}>
           {player.playerName}
         </Box>
-        {!isMobileView && (
+        {!isMobileView && (player.characterName || player.isGM) && (
           <Box component="span" sx={{ color: "text.secondary" }}>
             ({player.isGM ? "GM" : player.characterName})
           </Box>

@@ -51,7 +51,11 @@ export default function Overlay() {
         data.campaign.gmInspiration || !player.isGM ? (
           <Badge
             key={player.id}
-            name={player.isGM ? player.playerName : player.characterName}
+            name={
+              player.isGM || !player.characterName
+                ? player.playerName
+                : player.characterName
+            }
             value={player.inspiration}
           />
         ) : null
