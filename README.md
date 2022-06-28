@@ -1,34 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# OBS GM Overlay
 
-## Getting Started
+A simple web application, designed to be run locally by a GM in-session, which
+generates some simple OBS overlays to impose over your Discord camera.
 
-First, run the development server:
+Designed to help GMs present information to the players to avoid the inevitable
+questions of "when is my turn" or "how much inspiration do I have?"
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+NOT designed in ANY way to be used in a production system. I have zero interest
+in adding support for user accounts/authentication/production databases/CI-CD
+pipelines, etc. I already do this 40 hours a week at work, and it's my least
+favorite part of software development. This is just meant to be a
+quick-and-dirty solution to a minor annoyance I've had for a while.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## To Do
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### MVP
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- [x] Initial web app config
+- [x] Initial server app config
+- [x] Initial database config
+- [x] Configure Campaign types/queries/mutations
+- [x] Configure Player types/queries/mutations
+- [x] Enable subscription support/add campaign subscription
+- [x] Campaigns Page
+  - [x] List campaigns
+- [-] Campaign Editor
+  - [x] Query and show campaign data
+  - [x] Allow editing campaign data
+  - [ ] Allow deleting campaign
+  - [x] List player data
+  - [x] Allow updating player inspiration count
+  - [x] Allow editing player data
+  - [ ] Allow deleting player
+- [x] Campaign Overlay
+  - [x] Query/display player data
+  - [x] Update player data on update using subscription
+  - [x] Style player data suitable for OBS overlay
+- [ ] Hardening
+  - [ ] Stricter eslint rules/pre-commit hook
+  - [ ] Automatic GQL type generation
+  - [ ] General refactor pass to get components standardized/DRY/split to enforce separation of concerns
+  - [ ] Explore possibility of integrating server app into next.js API routing
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Possible Additional Features
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [ ] Initiative Tracker
+  - [ ] Allow GM to add creatures with public/private names
+  - [ ] Allow GM to enter player/creature initiative values
+  - [ ] Allow GM to reset initiative, clearing initiative values and deleting all creatures
+  - [ ] Allow GM to advance initiative by one turn
+  - [ ] Create initiative overlay that tracks whose turn it is/how many rounds have passed
+- [ ] Inspiration Cooldown:
+  - [ ] Track last inspiration consumption time
+  - [ ] Limit consumption of inspiration by a configurable cooldown window
+    - [ ] Allow GM to specify a cooldown time in minutes (or rounds, if initiative tracker is live)
+    - [ ] Allow GM to specify whether cooldown is per player or for the entire group
