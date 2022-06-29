@@ -105,6 +105,7 @@ export default function PlayerEditView({
                     id="playerName"
                     label="Player Name"
                     fullWidth
+                    autoFocus
                     error={meta.touched && !!meta.error}
                     helperText={meta.touched ? meta.error : undefined}
                     {...field}

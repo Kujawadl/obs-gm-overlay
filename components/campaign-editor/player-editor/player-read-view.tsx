@@ -84,7 +84,7 @@ export default function PlayerReadView({
         variables: {
           id: player.id,
           inspiration: event.target.value
-            ? parseInt(event.target.value, 10)
+            ? Math.max(parseInt(event.target.value, 10), 0)
             : 0,
         },
       });
@@ -105,7 +105,7 @@ export default function PlayerReadView({
     setInspiration({
       variables: {
         id: player.id,
-        inspiration: player.inspiration - 1,
+        inspiration: Math.max(player.inspiration - 1, 0),
       },
     });
   }, [player.id, player.inspiration, setInspiration]);

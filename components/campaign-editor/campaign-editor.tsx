@@ -95,8 +95,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
       >
         {({ handleReset, isValid, dirty }) => (
           <Form>
-            <Grid container spacing={2} my={4}>
-              <Grid item xs={12}></Grid>
+            <Grid container spacing={2} my={2}>
               <Grid item xs={12} sm={6}>
                 <Field name="name">
                   {({ field, meta }: FieldProps<string>) => (
