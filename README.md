@@ -42,6 +42,7 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [ ] Stricter eslint rules/pre-commit hook
   - [ ] Automatic GQL type generation
   - [ ] General refactor pass to get components standardized/DRY/split to enforce separation of concerns
+  - [ ] Generate and run production server builds
   - [ ] Explore possibility of integrating server app into next.js API routing
 
 ### Possible Additional Features
