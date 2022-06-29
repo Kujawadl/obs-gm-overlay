@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useSubscription } from "@apollo/client";
 import {
   Breadcrumbs,
   Container,
@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import CampaignEditor from "../../components/campaign-editor";
 
-const CAMPAIGN_QUERY = gql`
+const CAMPAIGN_SUBSCRIPTION = gql`
   fragment PlayerFragment on Player {
     id
     playerName
@@ -27,7 +27,7 @@ const CAMPAIGN_QUERY = gql`
     }
   }
 
-  query CAMPAIGN_QUERY($id: ID!) {
+  subscription CAMPAIGN_SUBSCRIPTION($id: ID!) {
     campaign(id: $id) {
       ...CampaignFragment
     }
@@ -37,7 +37,7 @@ const CAMPAIGN_QUERY = gql`
 export default function Overlay() {
   const router = useRouter();
   const { campaignId } = router.query;
-  const { data } = useQuery(CAMPAIGN_QUERY, {
+  const { data } = useSubscription(CAMPAIGN_SUBSCRIPTION, {
     variables: {
       id: campaignId,
     },

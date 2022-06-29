@@ -39,7 +39,27 @@ const splitLink = process.browser
 
 const client = new ApolloClient({
   link: splitLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Campaign: {
+        fields: {
+          players: {
+            merge(_existing, incoming) {
+              /**
+               * In this case, the incoming value is the source of truth. We
+               * aren't paginating or lazy loading or anything like that, so
+               * the incoming array is always the full array.
+               *
+               * This function duplicates the default behavior, but suppresses
+               * the warning about it possibly being an error.
+               */
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 function MyApp({ Component, pageProps }: AppProps) {

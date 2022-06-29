@@ -27,11 +27,13 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
 - [-] Campaign Editor
   - [x] Query and show campaign data
   - [x] Allow editing campaign data
+  - [ ] Allow adding campaign
   - [ ] Allow deleting campaign
   - [x] List player data
   - [x] Allow updating player inspiration count
   - [x] Allow editing player data
-  - [ ] Allow deleting player
+  - [x] Allow adding player
+  - [x] Allow deleting player
 - [x] Campaign Overlay
   - [x] Query/display player data
   - [x] Update player data on update using subscription

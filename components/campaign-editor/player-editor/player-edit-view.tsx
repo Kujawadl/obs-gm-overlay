@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
 });
 
 interface PlayerEditViewProps {
-  player: {
+  player?: {
     id?: string;
     playerName: string;
     characterName?: string;
@@ -47,40 +47,45 @@ interface PlayerEditViewProps {
   };
   campaignId: string | number;
   setEditing: Dispatch<SetStateAction<boolean>>;
+  onCancelAdd: () => void;
 }
 
 export default function PlayerEditView({
   player,
   campaignId,
   setEditing,
+  onCancelAdd,
 }: PlayerEditViewProps) {
   const [updatePlayer, { loading: updatePlayerLoading }] =
     useMutation(UPDATE_PLAYER);
 
   const initialValues = useMemo(
     () => ({
-      playerName: player.playerName,
-      characterName: player.characterName,
-      isGM: player.isGM,
+      playerName: player?.playerName || "",
+      characterName: player?.characterName || "",
+      isGM: player?.isGM || false,
     }),
-    [player.playerName, player.characterName, player.isGM]
+    [player?.playerName, player?.characterName, player?.isGM]
   );
 
   const onUpdatePlayer = useCallback(
     async (values: typeof initialValues) => {
       updatePlayer({
         variables: {
-          id: player.id,
+          id: player?.id,
           input: {
             campaignId,
             ...values,
           },
         },
       }).then(() => {
+        if (!player) {
+          onCancelAdd();
+        }
         setEditing(false);
       });
     },
-    [player.id, campaignId, updatePlayer, setEditing]
+    [player, campaignId, updatePlayer, onCancelAdd, setEditing]
   );
 
   return (
@@ -154,7 +159,12 @@ export default function PlayerEditView({
                 variant="contained"
                 color="secondary"
                 sx={{ mr: 1 }}
-                onClick={() => setEditing(false)}
+                onClick={() => {
+                  if (!player) {
+                    onCancelAdd();
+                  }
+                  setEditing(false);
+                }}
                 icon={<CancelIcon />}
                 text="Cancel"
               />

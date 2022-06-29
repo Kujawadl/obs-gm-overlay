@@ -1,4 +1,6 @@
-import { Box, List, ListItem, Typography } from "@mui/material";
+import { Box, Button, List, ListItem, Typography } from "@mui/material";
+import { Add as AddIcon } from "@mui/icons-material";
+import { useMemo, useState } from "react";
 import PlayerEditor from "./player-editor";
 
 interface PlayerListProps {
@@ -18,6 +20,15 @@ export default function PlayerList({
   campaignId,
   gmInspiration,
 }: PlayerListProps) {
+  const [addingPlayer, setAddingPlayer] = useState(false);
+  const allPlayers = useMemo(
+    () =>
+      addingPlayer
+        ? (players as (typeof players[0] | undefined)[]).concat(undefined)
+        : players,
+    [addingPlayer, players]
+  );
+
   return (
     <>
       <Box
@@ -42,9 +53,9 @@ export default function PlayerList({
           borderColor: "primary.light",
         }}
       >
-        {players.map((player) => (
+        {allPlayers.map((player) => (
           <ListItem
-            key={player.id}
+            key={player?.id || "new-player"}
             sx={{
               border: 0,
               borderBottom: 1,
@@ -58,10 +69,22 @@ export default function PlayerList({
               player={player}
               campaignId={campaignId}
               gmInspiration={gmInspiration}
+              onCancelAdd={() => setAddingPlayer(false)}
             />
           </ListItem>
         ))}
       </List>
+      {!addingPlayer && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => setAddingPlayer(true)}
+          >
+            <AddIcon /> New Player
+          </Button>
+        </Box>
+      )}
     </>
   );
 }
