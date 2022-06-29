@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import CampaignList from "../components/campaign-list";
@@ -89,6 +90,9 @@ export default function Home() {
 
   return data ? (
     <>
+      <Head>
+        <title>List Campaigns | OBS GM Overlay</title>
+      </Head>
       <Container fixed>
         <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
           <Typography color="text.primary">Campaigns</Typography>

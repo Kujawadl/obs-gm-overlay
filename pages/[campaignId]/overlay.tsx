@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { gql, useSubscription } from "@apollo/client";
 import Badge from "../../components/badge";
 import { Box } from "@mui/material";
+import Head from "next/head";
 // import stripTypename from "../../utils/strip-typename";
 // import { Typography } from "@mui/material";
 
@@ -58,26 +59,31 @@ export default function Overlay() {
   );
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-around",
-      }}
-    >
-      {data?.campaign.players.map((player) =>
-        data.campaign.gmInspiration || !player.isGM ? (
-          <Badge
-            key={player.id}
-            name={
-              player.isGM || !player.characterName
-                ? player.playerName
-                : player.characterName
-            }
-            value={player.inspiration}
-          />
-        ) : null
-      )}
-    </Box>
+    <>
+      <Head>
+        <title>{data?.campaign.name} Overlay | OBS GM Overlay</title>
+      </Head>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}
+      >
+        {data?.campaign.players.map((player) =>
+          data.campaign.gmInspiration || !player.isGM ? (
+            <Badge
+              key={player.id}
+              name={
+                player.isGM || !player.characterName
+                  ? player.playerName
+                  : player.characterName
+              }
+              value={player.inspiration}
+            />
+          ) : null
+        )}
+      </Box>
+    </>
   );
 }
