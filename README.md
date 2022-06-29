@@ -53,8 +53,11 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [ ] Allow GM to reset initiative, clearing initiative values and deleting all creatures
   - [ ] Allow GM to advance initiative by one turn
   - [ ] Create initiative overlay that tracks whose turn it is/how many rounds have passed
-- [ ] Inspiration Cooldown:
-  - [ ] Track last inspiration consumption time
-  - [ ] Limit consumption of inspiration by a configurable cooldown window
+- [ ] Additional Inspiration Options
+  - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
+  - [ ] Allow user to configure max. inspiration value
+  - [ ] Inspiration Cooldown
+    - [ ] Track last inspiration consumption time
+    - [ ] Limit consumption of inspiration by a configurable cooldown window
     - [ ] Allow GM to specify a cooldown time in minutes (or rounds, if initiative tracker is live)
     - [ ] Allow GM to specify whether cooldown is per player or for the entire group
