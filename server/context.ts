@@ -20,7 +20,7 @@ export async function setupContext(): Promise<Context> {
   return {
     db,
     pubsub,
-    Campaign: new CampaignModel(db),
+    Campaign: new CampaignModel(db, pubsub),
     Player: new PlayerModel(db),
   };
 }

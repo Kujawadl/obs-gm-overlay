@@ -5,11 +5,7 @@ const resolvers = {
   campaign: {
     subscribe: withFilter(
       (_parent: null, args: { id: number }, ctx: Context) => {
-        setImmediate(() =>
-          ctx.Campaign.get(args.id).then((campaign) => {
-            ctx.pubsub.publish("CAMPAIGN_UPDATED", { campaign });
-          })
-        );
+        setImmediate(() => ctx.Campaign.publishSubscription(args.id));
         return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
       },
       (payload, variables) => {

@@ -28,19 +28,19 @@ const resolvers: CampaignResolvers = {
     },
   },
   CampaignMutation: {
-    async save(parent, { input }, { Campaign, pubsub }): Promise<Campaign> {
+    async save(parent, { input }, { Campaign }): Promise<Campaign> {
       const result = parent.id
         ? await Campaign.update(parent, input)
         : await Campaign.create(input);
       if (result) {
-        pubsub.publish("CAMPAIGN_UPDATED", { campaign: result });
+        Campaign.publishSubscription(result.id);
       }
       return result;
     },
-    async delete(parent, _, { Campaign, pubsub }): Promise<boolean> {
+    async delete(parent, _, { Campaign }): Promise<boolean> {
       const result = parent.id ? await Campaign.delete(parent.id) : false;
       if (result) {
-        pubsub.publish("CAMPAIGN_UPDATED", { campaign: { id: parent.id } });
+        Campaign.publishSubscription(parent.id);
       }
       return result;
     },
