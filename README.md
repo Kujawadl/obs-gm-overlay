@@ -24,11 +24,11 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
 - [x] Enable subscription support/add campaign subscription
 - [x] Campaigns Page
   - [x] List campaigns
-- [-] Campaign Editor
+- [x] Campaign Editor
   - [x] Query and show campaign data
   - [x] Allow editing campaign data
-  - [ ] Allow adding campaign
-  - [ ] Allow deleting campaign
+  - [x] Allow adding campaign
+  - [x] Allow deleting campaign
   - [x] List player data
   - [x] Allow updating player inspiration count
   - [x] Allow editing player data

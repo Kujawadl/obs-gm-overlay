@@ -1,22 +1,9 @@
-import type { NextPage } from "next";
-import { useQuery, gql } from "@apollo/client";
-import {
-  Box,
-  Breadcrumbs,
-  Container,
-  Link as MUILink,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
-import {
-  Edit as EditIcon,
-  OpenInNew as OpenInNewIcon,
-  Visibility as PreviewIcon,
-} from "@mui/icons-material";
-import Link from "next/link";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Add as AddIcon } from "@mui/icons-material";
+import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
+import CampaignList from "../components/campaign-list";
 
 const LIST_CAMPAIGNS = gql`
   fragment PlayerFragment on Player {
@@ -43,8 +30,18 @@ const LIST_CAMPAIGNS = gql`
   }
 `;
 
-interface CampaignsQuery {
-  campaigns: {
+const ADD_CAMPAIGN = gql`
+  mutation UPDATE_CAMPAIGN($input: CampaignInput!) {
+    campaign {
+      save(input: $input) {
+        id
+      }
+    }
+  }
+`;
+
+interface CampaignQuery {
+  campaign: {
     id: string;
     name: string;
     gmInspiration: boolean;
@@ -55,88 +52,55 @@ interface CampaignsQuery {
       isGM: boolean;
       inspiration: number;
     }[];
-  }[];
+  };
 }
 
-const Home: NextPage = () => {
-  const { data } = useQuery<CampaignsQuery>(LIST_CAMPAIGNS);
+interface SaveCampaignMutation {
+  campaign: {
+    save: CampaignQuery["campaign"];
+  };
+}
+
+interface CampaignsQuery {
+  campaigns: CampaignQuery["campaign"][];
+}
+
+export default function Home() {
+  const { data, refetch } = useQuery<CampaignsQuery>(LIST_CAMPAIGNS);
+  const [addCampaign] = useMutation<SaveCampaignMutation>(ADD_CAMPAIGN);
+  const router = useRouter();
+
+  const onAddCampaign = useCallback(() => {
+    addCampaign({
+      variables: {
+        input: {
+          name: "New Campaign",
+        },
+      },
+    }).then(({ data }) => {
+      if (data) {
+        router.push(`/${data.campaign.save.id}/edit`);
+      } else {
+        // TODO: Display an error here
+      }
+      refetch();
+    });
+  }, [addCampaign, router, refetch]);
 
   return data ? (
-    <Container fixed>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
-        <Typography color="text.primary">Campaigns</Typography>
-      </Breadcrumbs>
-      <Typography variant="h3">Campaigns</Typography>
-      <List
-        sx={{
-          marginTop: 2,
-          paddingTop: 0,
-          border: 0,
-          borderTop: 2,
-          borderStyle: "solid",
-          borderColor: "primary.light",
-        }}
-      >
-        {data.campaigns?.length > 0 ? (
-          data.campaigns.map((campaign) => (
-            <>
-              <ListItemButton>
-                <ListItemText>
-                  <Typography variant="h5">{campaign.name}</Typography>
-                </ListItemText>
-              </ListItemButton>
-              <List
-                component="div"
-                disablePadding
-                sx={{
-                  border: 0,
-                  borderBottom: 1,
-                  borderStyle: "solid",
-                  borderColor: "grey.400",
-                  marginBottom: 1,
-                }}
-              >
-                <Link href={`/${campaign.id}/edit`}>
-                  <ListItemButton component="a" sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <EditIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Edit" />
-                  </ListItemButton>
-                </Link>
-                <MUILink
-                  component="a"
-                  underline="none"
-                  color="inherit"
-                  href={`/${campaign.id}/overlay`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <ListItemButton component="a" sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <PreviewIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: "flex", alignItems: "baseline" }}>
-                          Preview Overlay
-                          <Box sx={{ fontSize: "0.8rem", marginLeft: 0.5 }}>
-                            <OpenInNewIcon fontSize="inherit" />
-                          </Box>
-                        </Box>
-                      }
-                    />
-                  </ListItemButton>
-                </MUILink>
-              </List>
-            </>
-          ))
-        ) : (
-          <ListItemText>No Campaigns Found...</ListItemText>
-        )}
-      </List>
-    </Container>
+    <>
+      <Container fixed>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
+          <Typography color="text.primary">Campaigns</Typography>
+        </Breadcrumbs>
+        <Typography variant="h3">Campaigns</Typography>
+        <CampaignList campaigns={data.campaigns} refetch={refetch} />
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button variant="contained" color="success" onClick={onAddCampaign}>
+            <AddIcon /> New Campaign
+          </Button>
+        </Box>
+      </Container>
+    </>
   ) : null;
-};
-
-export default Home;
+}
