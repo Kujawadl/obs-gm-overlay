@@ -54,6 +54,7 @@ export default class CampaignModel {
   }
 
   async delete(id: number): Promise<boolean> {
+    await this.db.run("DELETE FROM Player WHERE campaignId = ?", id);
     await this.db.run("DELETE FROM Campaign WHERE id = ?", id);
     return true;
   }
