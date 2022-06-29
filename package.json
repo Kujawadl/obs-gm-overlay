@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "run-p dev:web start:server",
-    "start": "npm run build:web && run-p start:*",
+    "start": "run-p start:*",
     "build:web": "next build",
     "lint:web": "next lint",
     "dev:web": "next dev",
