@@ -1,0 +1,9 @@
+# import "../fragments/CampaignFragment.gql"
+
+mutation SAVE_CAMPAIGN($id: ID, $input: CampaignInput!) {
+  campaign(id: $id) {
+    save(input: $input) {
+      ...Campaign
+    }
+  }
+}

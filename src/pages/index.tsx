@@ -1,74 +1,14 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import CampaignList from "../components/campaign-list";
-
-const LIST_CAMPAIGNS = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  fragment CampaignFragment on Campaign {
-    id
-    name
-    gmInspiration
-    players {
-      ...PlayerFragment
-    }
-  }
-
-  query LIST_CAMPAIGNS {
-    campaigns {
-      ...CampaignFragment
-    }
-  }
-`;
-
-const ADD_CAMPAIGN = gql`
-  mutation UPDATE_CAMPAIGN($input: CampaignInput!) {
-    campaign {
-      save(input: $input) {
-        id
-      }
-    }
-  }
-`;
-
-interface CampaignQuery {
-  campaign: {
-    id: string;
-    name: string;
-    gmInspiration: boolean;
-    players: {
-      id: string;
-      playerName: string;
-      characterName?: string;
-      isGM: boolean;
-      inspiration: number;
-    }[];
-  };
-}
-
-interface SaveCampaignMutation {
-  campaign: {
-    save: CampaignQuery["campaign"];
-  };
-}
-
-interface CampaignsQuery {
-  campaigns: CampaignQuery["campaign"][];
-}
+import { useListCampaignsQuery, useSaveCampaignMutation } from "../graphql";
 
 export default function Home() {
-  const { data, refetch } = useQuery<CampaignsQuery>(LIST_CAMPAIGNS);
-  const [addCampaign] = useMutation<SaveCampaignMutation>(ADD_CAMPAIGN);
+  const { data, refetch } = useListCampaignsQuery();
+  const [addCampaign] = useSaveCampaignMutation();
   const router = useRouter();
 
   const onAddCampaign = useCallback(() => {
@@ -79,7 +19,7 @@ export default function Home() {
         },
       },
     }).then(({ data }) => {
-      if (data) {
+      if (data?.campaign) {
         router.push(`/${data.campaign.save.id}/edit`);
       } else {
         // TODO: Display an error here

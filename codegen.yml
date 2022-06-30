@@ -1,0 +1,25 @@
+overwrite: true
+schema: 
+  - "./server/types/index.ts":
+      loader: "./schema-loader.js"
+generates:
+  ./src/graphql/index.tsx:
+    documents:
+      - "./src/graphql/**/*.gql":
+          loader: "./document-loader.js"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  # TODO:
+  # ./server/graphql.ts:
+  #   plugins:
+  #     - "typescript"
+  #     - "typescript-resolvers"
+  ./src/graphql/introspection.json:
+    plugins:
+      - "introspection"
+config:
+  namingConvention: 
+    typeNames: "change-case-all#pascalCase"
+    transformUnderscore: true

@@ -1,4 +1,3 @@
-import { gql, useSubscription } from "@apollo/client";
 import {
   Breadcrumbs,
   Container,
@@ -9,43 +8,19 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import CampaignEditor from "../../components/campaign-editor";
-
-const CAMPAIGN_SUBSCRIPTION = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  fragment CampaignFragment on Campaign {
-    id
-    name
-    gmInspiration
-    players {
-      ...PlayerFragment
-    }
-  }
-
-  subscription CAMPAIGN_SUBSCRIPTION($id: ID!) {
-    campaign(id: $id) {
-      ...CampaignFragment
-    }
-  }
-`;
+import { useCampaignSubscription } from "../../graphql";
 
 export default function Overlay() {
   const router = useRouter();
   const { campaignId } = router.query;
-  const { data } = useSubscription(CAMPAIGN_SUBSCRIPTION, {
+  const { data } = useCampaignSubscription({
     variables: {
-      id: campaignId,
+      id: campaignId as string,
     },
   });
 
   return (
-    data && (
+    data?.campaign && (
       <>
         <Head>
           <title>{data?.campaign.name} Details | OBS GM Overlay</title>

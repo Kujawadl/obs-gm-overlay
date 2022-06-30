@@ -1,4 +1,3 @@
-import { gql, useMutation } from "@apollo/client";
 import {
   CircularProgress,
   FormControlLabel,
@@ -14,38 +13,15 @@ import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as Yup from "yup";
 import ResponsiveButton from "../../responsive-button";
-
-const UPDATE_PLAYER = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  mutation UPDATE_PLAYER($id: ID, $input: PlayerInput!) {
-    player(id: $id) {
-      save(input: $input) {
-        ...PlayerFragment
-      }
-    }
-  }
-`;
+import { PlayerFragment, useSavePlayerMutation } from "../../../graphql";
 
 const validationSchema = Yup.object().shape({
   playerName: Yup.string().required("Player Name is required"),
 });
 
 interface PlayerEditViewProps {
-  player?: {
-    id?: string;
-    playerName: string;
-    characterName?: string;
-    isGM: boolean;
-    inspiration: number;
-  };
-  campaignId: string | number;
+  player?: PlayerFragment;
+  campaignId: string;
   setEditing: Dispatch<SetStateAction<boolean>>;
   onCancelAdd: () => void;
 }
@@ -57,7 +33,7 @@ export default function PlayerEditView({
   onCancelAdd,
 }: PlayerEditViewProps) {
   const [updatePlayer, { loading: updatePlayerLoading }] =
-    useMutation(UPDATE_PLAYER);
+    useSavePlayerMutation();
 
   const initialValues = useMemo(
     () => ({

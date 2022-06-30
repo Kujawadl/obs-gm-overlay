@@ -1,0 +1,7 @@
+# import "../fragments/CampaignFragment.gql"
+
+query LIST_CAMPAIGNS {
+  campaigns {
+    ...Campaign
+  }
+}

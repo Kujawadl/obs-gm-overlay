@@ -1,0 +1,7 @@
+fragment Player on Player {
+  id
+  playerName
+  characterName
+  isGM
+  inspiration
+}

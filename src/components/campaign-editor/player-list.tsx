@@ -2,16 +2,11 @@ import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMemo, useState } from "react";
 import PlayerEditor from "./player-editor";
+import { PlayerFragment } from "../../graphql";
 
 interface PlayerListProps {
-  players: {
-    id?: string;
-    playerName: string;
-    characterName?: string;
-    isGM: boolean;
-    inspiration: number;
-  }[];
-  campaignId: string | number;
+  players: PlayerFragment[];
+  campaignId: string;
   gmInspiration: boolean;
 }
 

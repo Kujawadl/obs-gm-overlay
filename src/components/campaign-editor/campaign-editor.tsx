@@ -1,4 +1,3 @@
-import { gql, useMutation } from "@apollo/client";
 import { Formik, Field, Form, FieldProps } from "formik";
 import {
   Button,
@@ -11,55 +10,18 @@ import {
 import { useCallback, useMemo } from "react";
 import * as Yup from "yup";
 import PlayerList from "./player-list";
-
-const UPDATE_CAMPAIGN = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  fragment CampaignFragment on Campaign {
-    id
-    name
-    gmInspiration
-    players {
-      ...PlayerFragment
-    }
-  }
-
-  mutation UPDATE_CAMPAIGN($id: ID, $input: CampaignInput!) {
-    campaign(id: $id) {
-      save(input: $input) {
-        ...CampaignFragment
-      }
-    }
-  }
-`;
+import { CampaignFragment, useSaveCampaignMutation } from "../../graphql";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Campaign Name is required"),
 });
 
 interface CampaignEditorProps {
-  campaign: {
-    id: string;
-    name: string;
-    gmInspiration: boolean;
-    players: {
-      id: string;
-      playerName: string;
-      characterName?: string;
-      isGM: boolean;
-      inspiration: number;
-    }[];
-  };
+  campaign: CampaignFragment;
 }
 
 export default function CampaignEditor({ campaign }: CampaignEditorProps) {
-  const [updateCampaign] = useMutation(UPDATE_CAMPAIGN);
+  const [updateCampaign] = useSaveCampaignMutation();
 
   const initialValues = useMemo(
     () => ({

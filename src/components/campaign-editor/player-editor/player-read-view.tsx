@@ -1,4 +1,3 @@
-import { gql, useMutation } from "@apollo/client";
 import {
   Box,
   Button,
@@ -26,41 +25,14 @@ import {
   useCallback,
   useState,
 } from "react";
-
-const SET_PLAYER_INSPIRATION = gql`
-  fragment PlayerFragment on Player {
-    id
-    playerName
-    characterName
-    isGM
-    inspiration
-  }
-
-  mutation SET_PLAYER_INSPIRATION($id: ID!, $inspiration: Int!) {
-    player(id: $id) {
-      save(input: { inspiration: $inspiration }) {
-        ...PlayerFragment
-      }
-    }
-  }
-`;
-
-const DELETE_PLAYER = gql`
-  mutation SET_PLAYER_INSPIRATION($id: ID!) {
-    player(id: $id) {
-      delete
-    }
-  }
-`;
+import {
+  PlayerFragment,
+  useDeletePlayerMutation,
+  useSetPlayerInspirationMutation,
+} from "../../../graphql";
 
 interface PlayerReadViewProps {
-  player: {
-    id?: string;
-    playerName: string;
-    characterName?: string;
-    isGM: boolean;
-    inspiration: number;
-  };
+  player: PlayerFragment;
   gmInspiration: boolean;
   setEditing: Dispatch<SetStateAction<boolean>>;
 }
@@ -71,8 +43,8 @@ export default function PlayerReadView({
   setEditing,
 }: PlayerReadViewProps) {
   const [open, setOpen] = useState(false);
-  const [setInspiration] = useMutation(SET_PLAYER_INSPIRATION);
-  const [deletePlayer] = useMutation(DELETE_PLAYER, {
+  const [setInspiration] = useSetPlayerInspirationMutation();
+  const [deletePlayer] = useDeletePlayerMutation({
     variables: { id: player.id },
   });
   const theme = useTheme();

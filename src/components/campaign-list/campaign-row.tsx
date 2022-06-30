@@ -1,4 +1,3 @@
-import { gql, useMutation } from "@apollo/client";
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
@@ -22,42 +21,16 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-
-const DELETE_CAMPAIGN = gql`
-  mutation DELETE_CAMPAIGN($id: ID!) {
-    campaign(id: $id) {
-      delete
-    }
-  }
-`;
-
-interface DeleteCampaignMutation {
-  campaign: {
-    delete: boolean;
-  };
-}
-
+import { CampaignFragment, useDeleteCampaignMutation } from "../../graphql";
 export interface CampaignRowProps {
-  campaign: {
-    id: string;
-    name: string;
-    gmInspiration: boolean;
-    players: {
-      id: string;
-      playerName: string;
-      characterName?: string;
-      isGM: boolean;
-      inspiration: number;
-    }[];
-  };
+  campaign: CampaignFragment;
   refetch: () => void;
 }
 
 export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
-  const [deleteCampaign] = useMutation<DeleteCampaignMutation>(
-    DELETE_CAMPAIGN,
-    { variables: { id: campaign.id } }
-  );
+  const [deleteCampaign] = useDeleteCampaignMutation({
+    variables: { id: campaign.id },
+  });
   const [deleting, setDeleting] = useState(false);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));

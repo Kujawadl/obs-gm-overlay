@@ -1,16 +1,11 @@
 import { useState } from "react";
+import { PlayerFragment } from "../../../graphql";
 import PlayerEditView from "./player-edit-view";
 import PlayerReadView from "./player-read-view";
 
 interface PlayerEditorProps {
-  player?: {
-    id?: string;
-    playerName: string;
-    characterName?: string;
-    isGM: boolean;
-    inspiration: number;
-  };
-  campaignId: string | number;
+  player?: PlayerFragment;
+  campaignId: string;
   gmInspiration: boolean;
   onCancelAdd: () => void;
 }

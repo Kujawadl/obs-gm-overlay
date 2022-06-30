@@ -1,0 +1,5 @@
+mutation DELETE_CAMPAIGN($id: ID!) {
+  campaign(id: $id) {
+    delete
+  }
+}
