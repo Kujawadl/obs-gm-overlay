@@ -9,6 +9,6 @@ require("ts-node/register");
 const { buildSchema, print } = require("graphql");
 
 module.exports = (schemaString) => {
-  const typeDefs = require(schemaString).default;
-  return buildSchema(typeDefs.map(print).join("\n"));
+	const typeDefs = require(schemaString).default;
+	return buildSchema(typeDefs.map(print).join("\n"));
 };

@@ -5,22 +5,22 @@ import { PubSub } from "graphql-subscriptions";
 import { CampaignModel, PlayerModel } from "./models";
 
 export interface Context {
-  db: Database;
-  pubsub: PubSub;
-  Campaign: CampaignModel;
-  Player: PlayerModel;
+	db: Database;
+	pubsub: PubSub;
+	Campaign: CampaignModel;
+	Player: PlayerModel;
 }
 
 export async function setupContext(): Promise<Context> {
-  const db = await open({
-    filename: join(process.cwd(), "obs-gm-overlay.db"),
-    driver: sqlite3.Database,
-  });
-  const pubsub = new PubSub();
-  return {
-    db,
-    pubsub,
-    Campaign: new CampaignModel(db, pubsub),
-    Player: new PlayerModel(db),
-  };
+	const db = await open({
+		filename: join(process.cwd(), "obs-gm-overlay.db"),
+		driver: sqlite3.Database,
+	});
+	const pubsub = new PubSub();
+	return {
+		db,
+		pubsub,
+		Campaign: new CampaignModel(db, pubsub),
+		Player: new PlayerModel(db),
+	};
 }

@@ -1,10 +1,10 @@
 #import "./PlayerFragment.gql"
 
 fragment Campaign on Campaign {
-  id
-  name
-  gmInspiration
-  players {
-    ...Player
-  }
+	id
+	name
+	gmInspiration
+	players {
+		...Player
+	}
 }

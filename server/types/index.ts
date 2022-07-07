@@ -3,9 +3,9 @@ import Campaign from "./campaign";
 import Player from "./player";
 
 const Root = gql`
-  type Query
-  type Mutation
-  type Subscription
+	type Query
+	type Mutation
+	type Subscription
 `;
 
 const typeDefs = [Root, Campaign, Player];

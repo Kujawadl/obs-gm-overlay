@@ -1,9 +1,9 @@
 #import "../fragments/PlayerFragment.gql"
 
 mutation SET_PLAYER_INSPIRATION($id: ID!, $inspiration: Int!) {
-  player(id: $id) {
-    save(input: { inspiration: $inspiration }) {
-      ...Player
-    }
-  }
+	player(id: $id) {
+		save(input: { inspiration: $inspiration }) {
+			...Player
+		}
+	}
 }

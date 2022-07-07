@@ -1,5 +1,5 @@
 mutation DELETE_PLAYER($id: ID!) {
-  player(id: $id) {
-    delete
-  }
+	player(id: $id) {
+		delete
+	}
 }

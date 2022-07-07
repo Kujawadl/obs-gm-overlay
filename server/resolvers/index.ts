@@ -6,11 +6,11 @@ import Mutation from "./_mutation";
 import Subscription from "./_subscription";
 
 const resolvers = {
-  ...Campaign,
-  ...Player,
-  Query,
-  Mutation,
-  Subscription,
+	...Campaign,
+	...Player,
+	Query,
+	Mutation,
+	Subscription,
 };
 
 export default resolvers;

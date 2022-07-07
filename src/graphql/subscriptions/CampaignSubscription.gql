@@ -1,7 +1,7 @@
 # import "../fragments/CampaignFragment.gql"
 
 subscription CAMPAIGN($id: ID!) {
-  campaign(id: $id) {
-    ...Campaign
-  }
+	campaign(id: $id) {
+		...Campaign
+	}
 }

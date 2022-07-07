@@ -1,12 +1,12 @@
 {
-  "extends": "./tsconfig.json",
-  "lib": ["esnext"],
-  "compilerOptions": {
-    "noEmit": false,
-    "outDir": ".server",
-    "module": "CommonJS",
-    "tsBuildInfoFile": ".server/cache/.tsbuildinfo"
-  },
-  "include": ["server/**.ts"],
-  "exclude": ["node_modules"]
+	"extends": "./tsconfig.json",
+	"lib": ["esnext"],
+	"compilerOptions": {
+		"noEmit": false,
+		"outDir": ".server",
+		"module": "CommonJS",
+		"tsBuildInfoFile": ".server/cache/.tsbuildinfo"
+	},
+	"include": ["server/**.ts"],
+	"exclude": ["node_modules"]
 }

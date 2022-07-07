@@ -1,9 +1,9 @@
 #import "../fragments/PlayerFragment.gql"
 
 mutation SAVE_PLAYER($id: ID, $input: PlayerInput!) {
-  player(id: $id) {
-    save(input: $input) {
-      ...Player
-    }
-  }
+	player(id: $id) {
+		save(input: $input) {
+			...Player
+		}
+	}
 }

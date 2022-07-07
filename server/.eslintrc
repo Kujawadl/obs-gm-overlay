@@ -1,6 +1,6 @@
 {
-  "extends": "../.eslintrc",
-  "rules": {
-    "react-hooks/rules-of-hooks": "off"
-  }
+	"extends": "../.eslintrc",
+	"rules": {
+		"react-hooks/rules-of-hooks": "off"
+	}
 }
