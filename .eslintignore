@@ -1,0 +1,6 @@
+node_modules
+.next
+.server
+server/graphql.ts
+src/graphql/index.tsx
+src/graphql/introspection.json

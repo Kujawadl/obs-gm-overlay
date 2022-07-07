@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import Badge from "../../components/badge";
 import { Box } from "@mui/material";
 import Head from "next/head";
+import Badge from "../../components/badge";
 import { useCampaignSubscription } from "../../graphql";
 
 export default function Overlay() {

@@ -1,7 +1,7 @@
+import { join } from "path";
 import sqlite3 from "sqlite3";
 import { Database, open } from "sqlite";
 import { PubSub } from "graphql-subscriptions";
-import { join } from "path";
 import { CampaignModel, PlayerModel } from "./models";
 
 export interface Context {

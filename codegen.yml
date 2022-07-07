@@ -1,5 +1,5 @@
 overwrite: true
-schema: 
+schema:
   - "./server/types/index.ts":
       loader: "./schema-loader.js"
 generates:
@@ -8,26 +8,30 @@ generates:
       - "./src/graphql/**/*.gql":
           loader: "./document-loader.js"
     plugins:
+      - "add":
+          content: "/**\n * GENERATED FILE: DO NOT MODIFY DIRECTLY\n * `npm run generate-types` to update\n */"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
   ./server/graphql.ts:
     plugins:
+      - "add":
+          content: "/**\n * GENERATED FILE: DO NOT MODIFY DIRECTLY\n * `npm run generate-types` to update\n */"
       - "typescript"
       - "typescript-resolvers"
     config:
-        contextType: "./context#Context"
-        mappers:
-            Player: "./resolvers/player#PlayerModel"
-            PlayerMutation: "./resolvers/player#PlayerModel"
-            Campaign: "./resolvers/campaign#CampaignModel"
-            CampaignMutation: "./resolvers/campaign#CampaignModel"
-        resolverTypeWrapperSignature: Promise<T> | T | Promise<undefined> | undefined
-        maybeValue: T | undefined
+      contextType: "./context#Context"
+      mappers:
+        Player: "./resolvers/player#PlayerModel"
+        PlayerMutation: "./resolvers/player#PlayerModel"
+        Campaign: "./resolvers/campaign#CampaignModel"
+        CampaignMutation: "./resolvers/campaign#CampaignModel"
+      resolverTypeWrapperSignature: Promise<T> | T | Promise<undefined> | undefined
+      maybeValue: T | undefined
   ./src/graphql/introspection.json:
     plugins:
       - "introspection"
 config:
-  namingConvention: 
+  namingConvention:
     typeNames: "change-case-all#pascalCase"
     transformUnderscore: true

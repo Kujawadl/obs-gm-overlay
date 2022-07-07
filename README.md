@@ -42,9 +42,10 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
     - [x] Use generated types in server (requires custom mappers)
-  - [ ] Stricter eslint rules/pre-commit hook
+  - [x] Better eslint/prettier/typecheck/build config
+  - [ ] Lint/format/typecheck pre-commit hook
   - [ ] General refactor pass to get components standardized/DRY/split to enforce separation of concerns
-  - [ ] Generate and run production server builds
+  - [x] Generate and run production server builds
   - [ ] Explore possibility of integrating server app into next.js API routing
 
 ### Possible Additional Features

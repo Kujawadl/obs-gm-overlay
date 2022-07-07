@@ -22,6 +22,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { CampaignFragment, useDeleteCampaignMutation } from "../../graphql";
+
 export interface CampaignRowProps {
   campaign: CampaignFragment;
   refetch: () => void;

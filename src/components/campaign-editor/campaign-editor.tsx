@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import * as Yup from "yup";
-import PlayerList from "./player-list";
 import { CampaignFragment, useSaveCampaignMutation } from "../../graphql";
+import PlayerList from "./player-list";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Campaign Name is required"),

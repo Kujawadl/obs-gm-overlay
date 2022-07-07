@@ -1,3 +1,7 @@
+/**
+ * GENERATED FILE: DO NOT MODIFY DIRECTLY
+ * `npm run generate-types` to update
+ */
 import { GraphQLResolveInfo } from 'graphql';
 import { PlayerModel } from './resolvers/player';
 import { CampaignModel } from './resolvers/campaign';

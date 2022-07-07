@@ -1,6 +1,6 @@
+const { readFileSync } = require("fs");
 const glob = require("fast-glob");
 const { parse } = require("graphql");
-const { readFileSync } = require("fs");
 
 module.exports = function load(docString) {
   const files = glob.sync(docString);

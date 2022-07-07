@@ -1,4 +1,3 @@
-import type { AppProps } from "next/app";
 import Head from "next/head";
 import {
   ApolloClient,
@@ -10,6 +9,7 @@ import {
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import type { AppProps } from "next/app";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/",

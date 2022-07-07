@@ -16,6 +16,7 @@ export default function Home() {
       variables: {
         input: {
           name: "New Campaign",
+          gmInspiration: false,
         },
       },
     }).then(({ data }) => {
