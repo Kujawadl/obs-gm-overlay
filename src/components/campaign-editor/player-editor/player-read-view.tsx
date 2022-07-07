@@ -101,10 +101,14 @@ export default function PlayerReadView({
           sx={{
             display: "flex",
             justifyContent: "flex-end",
-            visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
           }}
         >
-          <IconButton onClick={onDecrement}>
+          <IconButton
+            onClick={onDecrement}
+            sx={{
+              visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+            }}
+          >
             <RemoveIcon />
           </IconButton>
           <TextField
@@ -114,11 +118,20 @@ export default function PlayerReadView({
               style: { textAlign: "center" },
             }}
             size="small"
-            sx={{ minWidth: 50, maxWidth: 50 }}
+            sx={{
+              minWidth: 50,
+              maxWidth: 50,
+              visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+            }}
             value={player.inspiration}
             onChange={onSetInspiration}
           />
-          <IconButton onClick={onIncrement}>
+          <IconButton
+            onClick={onIncrement}
+            sx={{
+              visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+            }}
+          >
             <AddIcon />
           </IconButton>
           <IconButton onClick={() => setEditing(true)}>
