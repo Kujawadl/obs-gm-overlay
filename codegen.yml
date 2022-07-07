@@ -11,11 +11,19 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  # TODO:
-  # ./server/graphql.ts:
-  #   plugins:
-  #     - "typescript"
-  #     - "typescript-resolvers"
+  ./server/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+    config:
+        contextType: "./context#Context"
+        mappers:
+            Player: "./resolvers/player#PlayerModel"
+            PlayerMutation: "./resolvers/player#PlayerModel"
+            Campaign: "./resolvers/campaign#CampaignModel"
+            CampaignMutation: "./resolvers/campaign#CampaignModel"
+        resolverTypeWrapperSignature: Promise<T> | T | Promise<undefined> | undefined
+        maybeValue: T | undefined
   ./src/graphql/introspection.json:
     plugins:
       - "introspection"

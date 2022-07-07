@@ -39,9 +39,9 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Update player data on update using subscription
   - [x] Style player data suitable for OBS overlay
 - [ ] Hardening
-  - [ ] Automatic GQL type generation
+  - [x] Automatic GQL type generation
     - [x] Use generated types in web
-    - [ ] Use generated types in server (requires custom mappers)
+    - [x] Use generated types in server (requires custom mappers)
   - [ ] Stricter eslint rules/pre-commit hook
   - [ ] General refactor pass to get components standardized/DRY/split to enforce separation of concerns
   - [ ] Generate and run production server builds

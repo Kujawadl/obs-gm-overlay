@@ -1,23 +1,15 @@
-import { Context } from "../context";
-import { Campaign } from "./campaign";
-import { Player } from "./player";
+import { MutationResolvers } from "../graphql";
+import { CampaignModel } from "./campaign";
+import { PlayerModel } from "./player";
 
-const resolvers = {
-  async campaign(
-    _parent: null,
-    args: { id?: number },
-    ctx: Context
-  ): Promise<Campaign | {}> {
-    const campaign = args.id && (await ctx.Campaign.get(args.id));
-    return campaign ?? {};
+const resolvers: MutationResolvers = {
+  async campaign(_parent, args, ctx) {
+    const campaign = args.id ? await ctx.Campaign.get(args.id) : undefined;
+    return (campaign ?? {}) as CampaignModel;
   },
-  async player(
-    _parent: null,
-    args: { id?: number },
-    ctx: Context
-  ): Promise<Player | {}> {
-    const player = args.id && (await ctx.Player.get(args.id));
-    return player ?? {};
+  async player(_parent, args, ctx) {
+    const player = args.id ? await ctx.Player.get(args.id) : undefined;
+    return (player ?? {}) as PlayerModel;
   },
 };
 

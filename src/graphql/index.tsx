@@ -24,8 +24,8 @@ export type Campaign = {
 };
 
 export type CampaignInput = {
-  gmInspiration?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
+  gmInspiration: Scalars['Boolean'];
+  name: Scalars['String'];
 };
 
 export type CampaignMutation = {

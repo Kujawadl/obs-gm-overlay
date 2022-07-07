@@ -18,8 +18,8 @@ const typeDefs = gql`
   }
 
   input CampaignInput {
-    name: String
-    gmInspiration: Boolean
+    name: String!
+    gmInspiration: Boolean!
   }
 
   type CampaignMutation {

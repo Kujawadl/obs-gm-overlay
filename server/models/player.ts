@@ -1,5 +1,6 @@
 import sqlite from "sqlite";
-import { Player, PlayerInput } from "../resolvers/player";
+import { PlayerInput } from "../graphql";
+import { PlayerModel as Player } from "../resolvers/player";
 
 export default class PlayerModel {
   private db: sqlite.Database;
@@ -8,11 +9,11 @@ export default class PlayerModel {
     this.db = db;
   }
 
-  async get(id: number): Promise<Player | undefined> {
+  async get(id: string): Promise<Player | undefined> {
     return this.db.get("SELECT * FROM Player WHERE id = ?", id);
   }
 
-  async list(campaignId: number): Promise<Player[]> {
+  async list(campaignId: string): Promise<Player[]> {
     const players = await this.db.all(
       "SELECT * FROM Player WHERE campaignId = ?",
       campaignId
@@ -40,7 +41,7 @@ export default class PlayerModel {
     if (!result.lastID) {
       throw new Error("Error inserting new player record");
     }
-    return this.get(result.lastID) as unknown as Player;
+    return this.get(result.lastID.toString()) as Promise<Player>;
   }
 
   async update(player: Player, input: PlayerInput): Promise<Player> {
@@ -62,10 +63,10 @@ export default class PlayerModel {
       input.inspiration ?? player.inspiration ?? 0,
       player.id
     );
-    return this.get(player.id) as unknown as Player;
+    return this.get(player.id) as Promise<Player>;
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     await this.db.run("DELETE FROM Player WHERE id = ?", id);
     return true;
   }

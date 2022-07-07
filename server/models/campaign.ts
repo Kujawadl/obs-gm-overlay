@@ -1,6 +1,7 @@
 import { PubSub } from "graphql-subscriptions";
 import sqlite from "sqlite";
-import { Campaign, CampaignInput } from "../resolvers/campaign";
+import { CampaignInput } from "../graphql";
+import { CampaignModel as Campaign } from "../resolvers/campaign";
 
 export default class CampaignModel {
   private db: sqlite.Database;
@@ -11,8 +12,10 @@ export default class CampaignModel {
     this.pubsub = pubsub;
   }
 
-  get(id: number): Promise<Campaign | undefined> {
-    return this.db.get("SELECT * FROM Campaign WHERE id = ?", id);
+  get(id?: string): Promise<Campaign | undefined> {
+    return id
+      ? this.db.get("SELECT * FROM Campaign WHERE id = ?", id)
+      : Promise.resolve(undefined);
   }
 
   async list(): Promise<Campaign[]> {
@@ -34,7 +37,7 @@ export default class CampaignModel {
     if (!result.lastID) {
       throw new Error("Error inserting new player record");
     }
-    return this.get(result.lastID) as unknown as Campaign;
+    return this.get(result.lastID.toString()) as Promise<Campaign>;
   }
 
   async update(campaign: Campaign, input: CampaignInput): Promise<Campaign> {
@@ -50,16 +53,16 @@ export default class CampaignModel {
       input.gmInspiration ?? campaign.gmInspiration ?? false,
       campaign.id
     );
-    return this.get(campaign.id) as unknown as Campaign;
+    return this.get(campaign.id) as Promise<Campaign>;
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     await this.db.run("DELETE FROM Player WHERE campaignId = ?", id);
     await this.db.run("DELETE FROM Campaign WHERE id = ?", id);
     return true;
   }
 
-  async publishSubscription(id: number) {
+  async publishSubscription(id: string) {
     const campaign = await this.get(id);
     this.pubsub.publish("CAMPAIGN_UPDATED", { campaign });
   }

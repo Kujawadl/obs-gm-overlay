@@ -1,23 +1,13 @@
-import { Context } from "../context";
-import { Campaign } from "./campaign";
-import { Player } from "./player";
+import { QueryResolvers } from "../graphql";
 
-const resolvers = {
-  campaigns(_parent: null, _args: null, ctx: Context): Promise<Campaign[]> {
+const resolvers: QueryResolvers = {
+  campaigns(_parent, _args, ctx) {
     return ctx.Campaign.list();
   },
-  campaign(
-    _parent: null,
-    args: { id: number },
-    ctx: Context
-  ): Promise<Campaign | undefined> {
+  campaign(_parent, args, ctx) {
     return ctx.Campaign.get(args.id);
   },
-  player(
-    _parent: null,
-    args: { id: number },
-    ctx: Context
-  ): Promise<Player | undefined> {
+  player(_parent, args, ctx) {
     return ctx.Player.get(args.id);
   },
 };
