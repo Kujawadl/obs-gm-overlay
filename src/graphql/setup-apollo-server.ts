@@ -10,12 +10,10 @@ import { setupContext } from "./context";
 
 import type { Server } from "http";
 
-async function setupApolloServer(httpServer: Server) {
-	const wsServer = new WebSocketServer({
-		server: httpServer,
-		path: "/api/subscriptions",
-	});
-
+async function setupApolloServer(
+	httpServer: Server,
+	wsServer: WebSocketServer
+) {
 	const context = await setupContext();
 	const schema = makeExecutableSchema({ typeDefs, resolvers });
 

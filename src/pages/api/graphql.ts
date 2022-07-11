@@ -11,15 +11,8 @@ const handler: NextApiHandler = async (
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) => {
-	if (!(req as any).socket.server.apollo) {
-		const { default: init } = await import("./initialize");
-		await init(req, {
-			status: () => ({ json: () => undefined }),
-		} as unknown as NextApiResponse);
-	}
-	const { http, ...result } = await (
-		req as any
-	).socket.server.apollo.executeOperation(req.body);
+	const { http, ...result } =
+		(await (req as any).socket.server.apollo?.executeOperation(req.body)) ?? {};
 	res.status(http?.status || 200).json(result);
 };
 
