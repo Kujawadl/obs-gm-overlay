@@ -23,7 +23,9 @@ export default function Overlay() {
 		data?.campaign && (
 			<>
 				<Head>
-					<title>{data?.campaign.name} Details | OBS GM Overlay</title>
+					<title>{`${
+						data?.campaign.name ?? "Campaign"
+					} Details | OBS GM Overlay`}</title>
 				</Head>
 				<Container fixed>
 					<Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>

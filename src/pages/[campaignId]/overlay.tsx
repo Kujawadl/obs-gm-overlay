@@ -16,7 +16,9 @@ export default function Overlay() {
 	return (
 		<>
 			<Head>
-				<title>{data?.campaign?.name} Overlay | OBS GM Overlay</title>
+				<title>{`${
+					data?.campaign?.name ?? "Campaign"
+				} Overlay | OBS GM Overlay`}</title>
 			</Head>
 			<Box
 				sx={{
