@@ -1,9 +1,9 @@
 overwrite: true
 schema:
-  - "./server/types/index.ts":
+  - "./src/graphql/types/index.ts":
       loader: "./schema-loader.js"
 generates:
-  ./src/graphql/index.tsx:
+  ./src/graphql/client-types.tsx:
     documents:
       - "./src/graphql/**/*.gql":
           loader: "./document-loader.js"
@@ -13,7 +13,7 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  ./server/graphql.ts:
+  ./src/graphql/server-types.ts:
     plugins:
       - "add":
           content: "/**\n * GENERATED FILE: DO NOT MODIFY DIRECTLY\n * `npm run generate-types` to update\n */"

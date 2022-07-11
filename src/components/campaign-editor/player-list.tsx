@@ -1,7 +1,7 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import { PlayerFragment } from "../../graphql";
+import { PlayerFragment } from "../../graphql/client-types";
 import PlayerEditor from "./player-editor";
 
 interface PlayerListProps {

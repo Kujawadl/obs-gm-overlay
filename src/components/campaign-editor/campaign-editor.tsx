@@ -9,7 +9,10 @@ import {
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import * as Yup from "yup";
-import { CampaignFragment, useSaveCampaignMutation } from "../../graphql";
+import {
+	CampaignFragment,
+	useSaveCampaignMutation,
+} from "../../graphql/client-types";
 import PlayerList from "./player-list";
 
 const validationSchema = Yup.object().shape({

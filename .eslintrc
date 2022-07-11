@@ -28,6 +28,14 @@
 		"import/first": "error",
 		"import/newline-after-import": "error"
 	},
+	"overrides": [
+		{
+			"files": "**/*.ts",
+			"rules": {
+				"react-hooks/rules-of-hooks": "off"
+			}
+		}
+	],
 	"settings": {
 		"import/extensions": [".js", ".jsx", ".ts", ".tsx"]
 	}

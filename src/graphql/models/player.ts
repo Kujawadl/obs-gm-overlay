@@ -1,5 +1,5 @@
 import sqlite from "sqlite";
-import { PlayerInput } from "../graphql";
+import { PlayerInput } from "../server-types";
 import { PlayerModel as Player } from "../resolvers/player";
 
 export default class PlayerModel {

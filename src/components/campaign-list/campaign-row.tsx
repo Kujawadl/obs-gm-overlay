@@ -21,7 +21,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import { CampaignFragment, useDeleteCampaignMutation } from "../../graphql";
+import {
+	CampaignFragment,
+	useDeleteCampaignMutation,
+} from "../../graphql/client-types";
 
 export interface CampaignRowProps {
 	campaign: CampaignFragment;

@@ -1,4 +1,4 @@
-import { QueryResolvers } from "../graphql";
+import { QueryResolvers } from "../server-types";
 
 const resolvers: QueryResolvers = {
 	campaigns(_parent, _args, ctx) {

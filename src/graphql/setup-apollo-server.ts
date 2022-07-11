@@ -1,21 +1,19 @@
-import http from "http";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-micro";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
-import express from "express";
 
 import typeDefs from "./types";
 import resolvers from "./resolvers";
 import { setupContext } from "./context";
 
-async function startApolloServer() {
-	const app = express();
-	const httpServer = http.createServer(app);
+import type { Server } from "http";
+
+async function setupApolloServer(httpServer: Server) {
 	const wsServer = new WebSocketServer({
 		server: httpServer,
-		path: "/subscriptions",
+		path: "/api/subscriptions",
 	});
 
 	const context = await setupContext();
@@ -43,14 +41,10 @@ async function startApolloServer() {
 		],
 	});
 
+	console.log("Setting up Apollo server...");
 	await server.start();
-	server.applyMiddleware({
-		app,
-		path: "/",
-	});
-
-	await httpServer.listen({ port: 4000 });
-	console.log(`🚀  Server ready at port ${4000}`);
+	console.log("Apollo server initialized!");
+	return server;
 }
 
-startApolloServer();
+export default setupApolloServer;

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import Head from "next/head";
 import Badge from "../../components/badge";
-import { useCampaignSubscription } from "../../graphql";
+import { useCampaignSubscription } from "../../graphql/client-types";
 
 export default function Overlay() {
 	const router = useRouter();

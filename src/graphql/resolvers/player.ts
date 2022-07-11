@@ -1,4 +1,4 @@
-import { PlayerMutationResolvers, PlayerResolvers } from "../graphql";
+import { PlayerMutationResolvers, PlayerResolvers } from "../server-types";
 
 export interface PlayerModel {
 	id: string;

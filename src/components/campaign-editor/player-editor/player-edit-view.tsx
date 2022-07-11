@@ -13,7 +13,10 @@ import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as Yup from "yup";
 import ResponsiveButton from "../../responsive-button";
-import { PlayerFragment, useSavePlayerMutation } from "../../../graphql";
+import {
+	PlayerFragment,
+	useSavePlayerMutation,
+} from "../../../graphql/client-types";
 
 const validationSchema = Yup.object().shape({
 	playerName: Yup.string().required("Player Name is required"),

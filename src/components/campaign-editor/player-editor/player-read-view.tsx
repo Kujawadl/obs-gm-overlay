@@ -29,7 +29,7 @@ import {
 	PlayerFragment,
 	useDeletePlayerMutation,
 	useSetPlayerInspirationMutation,
-} from "../../../graphql";
+} from "../../../graphql/client-types";
 
 interface PlayerReadViewProps {
 	player: PlayerFragment;

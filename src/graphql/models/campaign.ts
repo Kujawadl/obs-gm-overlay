@@ -1,6 +1,6 @@
 import { PubSub } from "graphql-subscriptions";
 import sqlite from "sqlite";
-import { CampaignInput } from "../graphql";
+import { CampaignInput } from "../server-types";
 import { CampaignModel as Campaign } from "../resolvers/campaign";
 
 export default class CampaignModel {

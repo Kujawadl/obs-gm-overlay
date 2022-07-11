@@ -1,4 +1,4 @@
-import { MutationResolvers } from "../graphql";
+import { MutationResolvers } from "../server-types";
 import { CampaignModel } from "./campaign";
 import { PlayerModel } from "./player";
 

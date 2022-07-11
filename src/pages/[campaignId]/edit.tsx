@@ -8,7 +8,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import CampaignEditor from "../../components/campaign-editor";
-import { useCampaignSubscription } from "../../graphql";
+import { useCampaignSubscription } from "../../graphql/client-types";
 
 export default function Overlay() {
 	const router = useRouter();

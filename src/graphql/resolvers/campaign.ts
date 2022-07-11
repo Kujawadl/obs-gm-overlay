@@ -1,4 +1,4 @@
-import { CampaignMutationResolvers, CampaignResolvers } from "../graphql";
+import { CampaignMutationResolvers, CampaignResolvers } from "../server-types";
 
 export interface CampaignModel {
 	id: string;

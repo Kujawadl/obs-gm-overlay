@@ -4,7 +4,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import CampaignList from "../components/campaign-list";
-import { useListCampaignsQuery, useSaveCampaignMutation } from "../graphql";
+import {
+	useListCampaignsQuery,
+	useSaveCampaignMutation,
+} from "../graphql/client-types";
 
 export default function Home() {
 	const { data, refetch } = useListCampaignsQuery();

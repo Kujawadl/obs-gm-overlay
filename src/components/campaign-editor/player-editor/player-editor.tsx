@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PlayerFragment } from "../../../graphql";
+import { PlayerFragment } from "../../../graphql/client-types";
 import PlayerEditView from "./player-edit-view";
 import PlayerReadView from "./player-read-view";
 
