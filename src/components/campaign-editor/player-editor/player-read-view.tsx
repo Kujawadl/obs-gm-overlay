@@ -1,6 +1,14 @@
 import {
+	Add as AddIcon,
+	Delete as DeleteIcon,
+	Edit as EditIcon,
+	Remove as RemoveIcon,
+	Restore as RestoreIcon,
+} from "@mui/icons-material";
+import {
 	Box,
 	Button,
+	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -9,15 +17,10 @@ import {
 	Grid,
 	IconButton,
 	TextField,
+	Tooltip,
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
-import {
-	Add as AddIcon,
-	Delete as DeleteIcon,
-	Edit as EditIcon,
-	Remove as RemoveIcon,
-} from "@mui/icons-material";
 import {
 	ChangeEvent,
 	Dispatch,
@@ -26,20 +29,23 @@ import {
 	useState,
 } from "react";
 import {
+	CampaignFragment,
 	PlayerFragment,
 	useDeletePlayerMutation,
+	useResetPlayerCooldownMutation,
 	useSetPlayerInspirationMutation,
 } from "../../../graphql/client-types";
+import { useCooldown } from "../../../utils";
 
 interface PlayerReadViewProps {
 	player: PlayerFragment;
-	gmInspiration: boolean;
+	campaign: CampaignFragment;
 	setEditing: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function PlayerReadView({
 	player,
-	gmInspiration,
+	campaign,
 	setEditing,
 }: PlayerReadViewProps) {
 	const [open, setOpen] = useState(false);
@@ -47,8 +53,14 @@ export default function PlayerReadView({
 	const [deletePlayer] = useDeletePlayerMutation({
 		variables: { id: player.id },
 	});
+	const [resetCooldown] = useResetPlayerCooldownMutation({
+		variables: { id: player.id },
+	});
 	const theme = useTheme();
 	const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));
+
+	const { cooldownTimeRemaining, percentComplete, formattedDuration } =
+		useCooldown({ player, campaign });
 
 	const onSetInspiration = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
@@ -103,14 +115,35 @@ export default function PlayerReadView({
 						justifyContent: "flex-end",
 					}}
 				>
-					<IconButton
-						onClick={onDecrement}
-						sx={{
-							visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
-						}}
-					>
-						<RemoveIcon />
-					</IconButton>
+					{cooldownTimeRemaining > 0 ? (
+						<>
+							<IconButton onClick={() => resetCooldown()}>
+								<RestoreIcon />
+							</IconButton>
+							<Tooltip title={`${formattedDuration} remaining on cooldown`}>
+								<CircularProgress
+									variant="determinate"
+									size="1.5rem"
+									sx={{
+										alignSelf: "center",
+										textAlign: "center",
+										margin: "calc(calc(40px - 1.5rem) / 2)",
+									}}
+									value={percentComplete}
+								/>
+							</Tooltip>
+						</>
+					) : (
+						<IconButton
+							onClick={onDecrement}
+							sx={{
+								visibility:
+									campaign.gmInspiration || !player.isGM ? "visible" : "hidden",
+							}}
+						>
+							<RemoveIcon />
+						</IconButton>
+					)}
 					<TextField
 						inputProps={{
 							inputMode: "numeric",
@@ -121,7 +154,8 @@ export default function PlayerReadView({
 						sx={{
 							minWidth: 50,
 							maxWidth: 50,
-							visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+							visibility:
+								campaign.gmInspiration || !player.isGM ? "visible" : "hidden",
 						}}
 						value={player.inspiration}
 						onChange={onSetInspiration}
@@ -129,7 +163,8 @@ export default function PlayerReadView({
 					<IconButton
 						onClick={onIncrement}
 						sx={{
-							visibility: gmInspiration || !player.isGM ? "visible" : "hidden",
+							visibility:
+								campaign.gmInspiration || !player.isGM ? "visible" : "hidden",
 						}}
 					>
 						<AddIcon />

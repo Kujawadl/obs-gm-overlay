@@ -1,0 +1,5 @@
+mutation RESET_PLAYER_COOLDOWN($id: ID!) {
+	player(id: $id) {
+		resetCooldown
+	}
+}

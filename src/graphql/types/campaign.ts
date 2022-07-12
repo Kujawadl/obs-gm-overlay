@@ -1,13 +1,6 @@
 import { gql } from "apollo-server-core";
 
 const typeDefs = gql`
-	type Campaign {
-		id: ID!
-		name: String!
-		gmInspiration: Boolean!
-		players: [Player!]!
-	}
-
 	extend type Query {
 		campaigns: [Campaign!]!
 		campaign(id: ID): Campaign
@@ -17,9 +10,27 @@ const typeDefs = gql`
 		campaign(id: ID): Campaign
 	}
 
-	input CampaignInput {
+	type Campaign {
+		id: ID!
 		name: String!
 		gmInspiration: Boolean!
+		players: [Player!]!
+		cooldownType: CooldownType!
+		cooldownTime: Int!
+		lastInspirationUsed: Date
+	}
+
+	enum CooldownType {
+		none
+		player
+		table
+	}
+
+	input CampaignInput {
+		name: String!
+		gmInspiration: Boolean
+		cooldownType: CooldownType
+		cooldownTime: Int
 	}
 
 	type CampaignMutation {

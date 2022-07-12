@@ -1,11 +1,17 @@
 import { Formik, Field, Form, FieldProps } from "formik";
 import {
 	Button,
+	FormControl,
 	FormControlLabel,
 	Grid,
+	InputLabel,
+	MenuItem,
+	Select,
 	Switch,
 	TextField,
 	Typography,
+	useMediaQuery,
+	useTheme,
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import * as Yup from "yup";
@@ -25,23 +31,29 @@ interface CampaignEditorProps {
 
 export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 	const [updateCampaign] = useSaveCampaignMutation();
+	const theme = useTheme();
+	const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));
 
 	const initialValues = useMemo(
 		() => ({
 			name: campaign.name,
 			gmInspiration: campaign.gmInspiration,
+			cooldownType: campaign.cooldownType,
+			cooldownTime: campaign.cooldownTime?.toString(),
 		}),
 		[campaign]
 	);
 
 	const onUpdateCampaign = useCallback(
-		async (values: Pick<typeof campaign, "name" | "gmInspiration">) => {
+		async (values: typeof initialValues) => {
 			updateCampaign({
 				variables: {
 					id: campaign.id,
 					input: {
 						name: values.name,
 						gmInspiration: values.gmInspiration,
+						cooldownType: values.cooldownType,
+						cooldownTime: parseInt(values.cooldownTime, 10),
 					},
 				},
 			});
@@ -61,7 +73,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 				{({ handleReset, isValid, dirty }) => (
 					<Form>
 						<Grid container spacing={2} my={2}>
-							<Grid item xs={12} sm={6}>
+							<Grid item xs={12} sm={8}>
 								<Field name="name">
 									{({ field, meta }: FieldProps<string>) => (
 										<TextField
@@ -76,13 +88,22 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 									)}
 								</Field>
 							</Grid>
-							<Grid item xs={12} sm={6} sx={{ textAlign: "right", mt: 1 }}>
+							<Grid
+								item
+								xs={12}
+								sm={4}
+								sx={{
+									textAlign: "right",
+									mt: 1,
+									order: isMobileView ? "1" : undefined,
+								}}
+							>
 								<Field name="gmInspiration">
 									{({ field, form }: FieldProps<boolean>) => (
 										<FormControlLabel
 											id="gmInspiration"
 											label="GM Gets Inspiration"
-											labelPlacement="start"
+											labelPlacement={"start"}
 											control={
 												<Switch
 													color="primary"
@@ -95,8 +116,51 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 									)}
 								</Field>
 							</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field name="cooldownType">
+									{({ field }: FieldProps<boolean>) => (
+										<FormControl fullWidth>
+											<InputLabel id="cooldownTypeLabel">
+												Cooldown Type
+											</InputLabel>
+											<Select
+												labelId="cooldownTypeLabel"
+												id="cooldownType"
+												label="Cooldown Type"
+												{...field}
+											>
+												<MenuItem value="none">None</MenuItem>
+												<MenuItem value="player">Per-Player</MenuItem>
+												<MenuItem value="table">Entire Table</MenuItem>
+											</Select>
+										</FormControl>
+									)}
+								</Field>
+							</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field name="cooldownTime">
+									{({ field }: FieldProps<boolean>) => (
+										<TextField
+											id="cooldownTime"
+											label="Cooldown Time (Minutes)"
+											fullWidth
+											inputProps={{
+												inputMode: "numeric",
+												pattern: "[0-9]*",
+											}}
+											{...field}
+											onChange={(e) => {
+												e.target.value = (
+													parseInt(e.target.value, 10) || 0
+												).toString();
+												field.onChange(e);
+											}}
+										/>
+									)}
+								</Field>
+							</Grid>
 							{dirty && (
-								<Grid item xs={12} sx={{ textAlign: "right" }}>
+								<Grid item xs={12} sx={{ textAlign: "right", order: "2" }}>
 									<Button
 										variant="contained"
 										color="secondary"
@@ -119,11 +183,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 					</Form>
 				)}
 			</Formik>
-			<PlayerList
-				players={campaign.players || []}
-				campaignId={campaign.id}
-				gmInspiration={campaign.gmInspiration}
-			/>
+			<PlayerList campaign={campaign} />
 		</>
 	);
 }

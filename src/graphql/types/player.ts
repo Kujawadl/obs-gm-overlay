@@ -1,6 +1,14 @@
 import { gql } from "apollo-server-core";
 
 const typeDefs = gql`
+	extend type Query {
+		player(id: ID!): Player
+	}
+
+	extend type Mutation {
+		player(id: ID): PlayerMutation
+	}
+
 	type Player {
 		id: ID!
 		campaign: Campaign!
@@ -8,10 +16,7 @@ const typeDefs = gql`
 		characterName: String
 		isGM: Boolean!
 		inspiration: Int!
-	}
-
-	extend type Query {
-		player(id: ID!): Player
+		lastInspirationUsed: Date
 	}
 
 	input PlayerInput {
@@ -25,10 +30,7 @@ const typeDefs = gql`
 	type PlayerMutation {
 		save(input: PlayerInput!): Player!
 		delete: Boolean!
-	}
-
-	extend type Mutation {
-		player(id: ID): PlayerMutation
+		resetCooldown: Boolean!
 	}
 `;
 

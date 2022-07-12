@@ -1,19 +1,20 @@
 import { useState } from "react";
-import { PlayerFragment } from "../../../graphql/client-types";
+import {
+	CampaignFragment,
+	PlayerFragment,
+} from "../../../graphql/client-types";
 import PlayerEditView from "./player-edit-view";
 import PlayerReadView from "./player-read-view";
 
 interface PlayerEditorProps {
 	player?: PlayerFragment;
-	campaignId: string;
-	gmInspiration: boolean;
+	campaign: CampaignFragment;
 	onCancelAdd: () => void;
 }
 
 export default function PlayerEditor({
 	player,
-	campaignId,
-	gmInspiration,
+	campaign,
 	onCancelAdd,
 }: PlayerEditorProps) {
 	const [editing, setEditing] = useState(false);
@@ -21,14 +22,14 @@ export default function PlayerEditor({
 	return editing || !player ? (
 		<PlayerEditView
 			player={player}
-			campaignId={campaignId}
+			campaignId={campaign.id}
 			setEditing={setEditing}
 			onCancelAdd={onCancelAdd}
 		/>
 	) : (
 		<PlayerReadView
 			player={player}
-			gmInspiration={gmInspiration}
+			campaign={campaign}
 			setEditing={setEditing}
 		/>
 	);

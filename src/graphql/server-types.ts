@@ -2,7 +2,11 @@
  * GENERATED FILE: DO NOT MODIFY DIRECTLY
  * `npm run generate-types` to update
  */
-import { GraphQLResolveInfo } from "graphql";
+import {
+	GraphQLResolveInfo,
+	GraphQLScalarType,
+	GraphQLScalarTypeConfig,
+} from "graphql";
 import { PlayerModel } from "./resolvers/player";
 import { CampaignModel } from "./resolvers/campaign";
 import { Context } from "./context";
@@ -28,18 +32,24 @@ export type Scalars = {
 	Boolean: boolean;
 	Int: number;
 	Float: number;
+	Date: any;
 };
 
 export type Campaign = {
 	__typename?: "Campaign";
+	cooldownTime: Scalars["Int"];
+	cooldownType: CooldownType;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	name: Scalars["String"];
 	players: Array<Player>;
 };
 
 export type CampaignInput = {
-	gmInspiration: Scalars["Boolean"];
+	cooldownTime?: InputMaybe<Scalars["Int"]>;
+	cooldownType?: InputMaybe<CooldownType>;
+	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
 	name: Scalars["String"];
 };
 
@@ -52,6 +62,12 @@ export type CampaignMutation = {
 export type CampaignMutationSaveArgs = {
 	input: CampaignInput;
 };
+
+export enum CooldownType {
+	None = "none",
+	Player = "player",
+	Table = "table",
+}
 
 export type Mutation = {
 	__typename?: "Mutation";
@@ -74,6 +90,7 @@ export type Player = {
 	id: Scalars["ID"];
 	inspiration: Scalars["Int"];
 	isGM: Scalars["Boolean"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	playerName: Scalars["String"];
 };
 
@@ -88,6 +105,7 @@ export type PlayerInput = {
 export type PlayerMutation = {
 	__typename?: "PlayerMutation";
 	delete: Scalars["Boolean"];
+	resetCooldown: Scalars["Boolean"];
 	save: Player;
 };
 
@@ -234,6 +252,8 @@ export type ResolversTypes = {
 	Campaign: ResolverTypeWrapper<CampaignModel>;
 	CampaignInput: CampaignInput;
 	CampaignMutation: ResolverTypeWrapper<CampaignModel>;
+	CooldownType: CooldownType;
+	Date: ResolverTypeWrapper<Scalars["Date"]>;
 	ID: ResolverTypeWrapper<Scalars["ID"]>;
 	Int: ResolverTypeWrapper<Scalars["Int"]>;
 	Mutation: ResolverTypeWrapper<{}>;
@@ -251,6 +271,7 @@ export type ResolversParentTypes = {
 	Campaign: CampaignModel;
 	CampaignInput: CampaignInput;
 	CampaignMutation: CampaignModel;
+	Date: Scalars["Date"];
 	ID: Scalars["ID"];
 	Int: Scalars["Int"];
 	Mutation: {};
@@ -266,8 +287,19 @@ export type CampaignResolvers<
 	ContextType = Context,
 	ParentType extends ResolversParentTypes["Campaign"] = ResolversParentTypes["Campaign"]
 > = {
+	cooldownTime?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+	cooldownType?: Resolver<
+		ResolversTypes["CooldownType"],
+		ParentType,
+		ContextType
+	>;
 	gmInspiration?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+	lastInspirationUsed?: Resolver<
+		Maybe<ResolversTypes["Date"]>,
+		ParentType,
+		ContextType
+	>;
 	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	players?: Resolver<Array<ResolversTypes["Player"]>, ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -286,6 +318,11 @@ export type CampaignMutationResolvers<
 	>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface DateScalarConfig
+	extends GraphQLScalarTypeConfig<ResolversTypes["Date"], any> {
+	name: "Date";
+}
 
 export type MutationResolvers<
 	ContextType = Context,
@@ -318,6 +355,11 @@ export type PlayerResolvers<
 	id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
 	inspiration?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 	isGM?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+	lastInspirationUsed?: Resolver<
+		Maybe<ResolversTypes["Date"]>,
+		ParentType,
+		ContextType
+	>;
 	playerName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -327,6 +369,7 @@ export type PlayerMutationResolvers<
 	ParentType extends ResolversParentTypes["PlayerMutation"] = ResolversParentTypes["PlayerMutation"]
 > = {
 	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+	resetCooldown?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	save?: Resolver<
 		ResolversTypes["Player"],
 		ParentType,
@@ -375,6 +418,7 @@ export type SubscriptionResolvers<
 export type Resolvers<ContextType = Context> = {
 	Campaign?: CampaignResolvers<ContextType>;
 	CampaignMutation?: CampaignMutationResolvers<ContextType>;
+	Date?: GraphQLScalarType;
 	Mutation?: MutationResolvers<ContextType>;
 	Player?: PlayerResolvers<ContextType>;
 	PlayerMutation?: PlayerMutationResolvers<ContextType>;

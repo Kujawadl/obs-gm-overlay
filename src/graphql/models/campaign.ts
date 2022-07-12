@@ -28,11 +28,15 @@ export default class CampaignModel {
 			`
         INSERT INTO Campaign (
           name,
-          gmInspiration
-        ) VALUES (?, ?)
+          gmInspiration,
+					cooldownType,
+					cooldownTime
+        ) VALUES (?, ?, ?, ?)
       `,
 			input.name,
-			input.gmInspiration ?? false
+			input.gmInspiration ?? false,
+			input.cooldownType ?? "none",
+			input.cooldownTime ?? 0
 		);
 		if (!result.lastID) {
 			throw new Error("Error inserting new player record");
@@ -46,11 +50,15 @@ export default class CampaignModel {
         UPDATE Campaign
         SET
           name = ?,
-          gmInspiration = ?
+          gmInspiration = ?,
+					cooldownType = ?,
+					cooldownTime = ?
         WHERE id = ?
       `,
 			input.name ?? campaign.name,
 			input.gmInspiration ?? campaign.gmInspiration ?? false,
+			input.cooldownType ?? campaign.cooldownType ?? "none",
+			input.cooldownTime ?? campaign.cooldownTime ?? 0,
 			campaign.id
 		);
 		return this.get(campaign.id) as Promise<Campaign>;

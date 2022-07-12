@@ -1,13 +1,25 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Image from "next/image";
+import { CampaignFragment, PlayerFragment } from "../../graphql/client-types";
+import { useCooldown } from "../../utils";
 
 interface BadgeProps {
-	name: string;
-	value: string | number;
+	player: PlayerFragment;
+	campaign: CampaignFragment;
 	scale?: number;
 }
 
-export default function Badge({ name, value, scale = 0.8 }: BadgeProps) {
+export default function Badge({ player, campaign, scale = 0.8 }: BadgeProps) {
+	const { cooldownTimeRemaining, percentComplete } = useCooldown({
+		player,
+		campaign,
+	});
+
+	const name =
+		player.isGM || !player.characterName
+			? player.playerName
+			: player.characterName;
+	const value = player.inspiration;
 	return (
 		<Box
 			component="div"
@@ -28,6 +40,7 @@ export default function Badge({ name, value, scale = 0.8 }: BadgeProps) {
 					right: 0,
 					overflow: "hidden",
 					position: "absolute",
+					filter: cooldownTimeRemaining > 0 ? "grayscale(100%)" : undefined,
 				}}
 			>
 				<Image src="/badge.png" alt="background" layout="fill" />
@@ -41,7 +54,11 @@ export default function Badge({ name, value, scale = 0.8 }: BadgeProps) {
 					fontWeight: 700,
 				}}
 			>
-				{value}
+				{cooldownTimeRemaining > 0 ? (
+					<CircularProgress variant="determinate" value={percentComplete} />
+				) : (
+					value
+				)}
 			</Box>
 			<Box
 				component="div"
@@ -52,6 +69,7 @@ export default function Badge({ name, value, scale = 0.8 }: BadgeProps) {
 					left: 0,
 					right: 0,
 					bottom: 18,
+					color: cooldownTimeRemaining > 0 ? "text.secondary" : "text.primary",
 				}}
 			>
 				{name}

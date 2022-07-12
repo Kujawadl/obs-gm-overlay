@@ -4,4 +4,5 @@ fragment Player on Player {
 	characterName
 	isGM
 	inspiration
+	lastInspirationUsed
 }

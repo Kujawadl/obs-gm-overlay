@@ -7,6 +7,7 @@ export interface PlayerModel {
 	characterName?: string;
 	isGM: boolean;
 	inspiration: number;
+	lastInspirationUsed?: string;
 }
 
 interface Resolvers {
@@ -30,9 +31,17 @@ const resolvers: Resolvers = {
 			}
 			return result;
 		},
-		async delete(parent, _, { Player, Campaign }): Promise<boolean> {
+		async delete(parent, _, { Player, Campaign }) {
 			const player = parent.id ? await Player.get(parent.id) : undefined;
 			const result = parent.id ? await Player.delete(parent.id) : false;
+			if (player && result) {
+				Campaign.publishSubscription(player.campaignId);
+			}
+			return result;
+		},
+		async resetCooldown(parent, _args, { Player, Campaign }) {
+			const player = parent.id ? await Player.get(parent.id) : undefined;
+			const result = await Player.resetCooldown(parent.id);
 			if (player && result) {
 				Campaign.publishSubscription(player.campaignId);
 			}

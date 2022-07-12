@@ -2,7 +2,10 @@ import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import Head from "next/head";
 import Badge from "../../components/badge";
-import { useCampaignSubscription } from "../../graphql/client-types";
+import {
+	CampaignFragment,
+	useCampaignSubscription,
+} from "../../graphql/client-types";
 
 export default function Overlay() {
 	const router = useRouter();
@@ -31,12 +34,8 @@ export default function Overlay() {
 					data?.campaign?.gmInspiration || !player.isGM ? (
 						<Badge
 							key={player.id}
-							name={
-								player.isGM || !player.characterName
-									? player.playerName
-									: player.characterName
-							}
-							value={player.inspiration}
+							player={player}
+							campaign={data.campaign as CampaignFragment}
 						/>
 					) : null
 				)}

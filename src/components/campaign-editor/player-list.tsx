@@ -1,27 +1,21 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import { PlayerFragment } from "../../graphql/client-types";
+import { CampaignFragment, PlayerFragment } from "../../graphql/client-types";
 import PlayerEditor from "./player-editor";
 
 interface PlayerListProps {
-	players: PlayerFragment[];
-	campaignId: string;
-	gmInspiration: boolean;
+	campaign: CampaignFragment;
 }
 
-export default function PlayerList({
-	players,
-	campaignId,
-	gmInspiration,
-}: PlayerListProps) {
+export default function PlayerList({ campaign }: PlayerListProps) {
 	const [addingPlayer, setAddingPlayer] = useState(false);
 	const allPlayers = useMemo(
 		() =>
 			addingPlayer
-				? (players as (typeof players[0] | undefined)[]).concat(undefined)
-				: players,
-		[addingPlayer, players]
+				? (campaign.players as (PlayerFragment | undefined)[]).concat(undefined)
+				: campaign.players,
+		[addingPlayer, campaign.players]
 	);
 
 	return (
@@ -62,8 +56,7 @@ export default function PlayerList({
 					>
 						<PlayerEditor
 							player={player}
-							campaignId={campaignId}
-							gmInspiration={gmInspiration}
+							campaign={campaign}
 							onCancelAdd={() => setAddingPlayer(false)}
 						/>
 					</ListItem>

@@ -4,6 +4,9 @@ fragment Campaign on Campaign {
 	id
 	name
 	gmInspiration
+	cooldownType
+	cooldownTime
+	lastInspirationUsed
 	players {
 		...Player
 	}

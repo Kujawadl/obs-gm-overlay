@@ -24,18 +24,24 @@ export type Scalars = {
 	Boolean: boolean;
 	Int: number;
 	Float: number;
+	Date: any;
 };
 
 export type Campaign = {
 	__typename?: "Campaign";
+	cooldownTime: Scalars["Int"];
+	cooldownType: CooldownType;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	name: Scalars["String"];
 	players: Array<Player>;
 };
 
 export type CampaignInput = {
-	gmInspiration: Scalars["Boolean"];
+	cooldownTime?: InputMaybe<Scalars["Int"]>;
+	cooldownType?: InputMaybe<CooldownType>;
+	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
 	name: Scalars["String"];
 };
 
@@ -48,6 +54,12 @@ export type CampaignMutation = {
 export type CampaignMutationSaveArgs = {
 	input: CampaignInput;
 };
+
+export enum CooldownType {
+	None = "none",
+	Player = "player",
+	Table = "table",
+}
 
 export type Mutation = {
 	__typename?: "Mutation";
@@ -70,6 +82,7 @@ export type Player = {
 	id: Scalars["ID"];
 	inspiration: Scalars["Int"];
 	isGM: Scalars["Boolean"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	playerName: Scalars["String"];
 };
 
@@ -84,6 +97,7 @@ export type PlayerInput = {
 export type PlayerMutation = {
 	__typename?: "PlayerMutation";
 	delete: Scalars["Boolean"];
+	resetCooldown: Scalars["Boolean"];
 	save: Player;
 };
 
@@ -120,6 +134,9 @@ export type CampaignFragment = {
 	id: string;
 	name: string;
 	gmInspiration: boolean;
+	cooldownType: CooldownType;
+	cooldownTime: number;
+	lastInspirationUsed?: any | null;
 	players: Array<{
 		__typename?: "Player";
 		id: string;
@@ -127,6 +144,7 @@ export type CampaignFragment = {
 		characterName?: string | null;
 		isGM: boolean;
 		inspiration: number;
+		lastInspirationUsed?: any | null;
 	}>;
 };
 
@@ -137,6 +155,7 @@ export type PlayerFragment = {
 	characterName?: string | null;
 	isGM: boolean;
 	inspiration: number;
+	lastInspirationUsed?: any | null;
 };
 
 export type DeleteCampaignMutationVariables = Exact<{
@@ -157,6 +176,15 @@ export type DeletePlayerMutation = {
 	player?: { __typename?: "PlayerMutation"; delete: boolean } | null;
 };
 
+export type ResetPlayerCooldownMutationVariables = Exact<{
+	id: Scalars["ID"];
+}>;
+
+export type ResetPlayerCooldownMutation = {
+	__typename?: "Mutation";
+	player?: { __typename?: "PlayerMutation"; resetCooldown: boolean } | null;
+};
+
 export type SaveCampaignMutationVariables = Exact<{
 	id?: InputMaybe<Scalars["ID"]>;
 	input: CampaignInput;
@@ -171,6 +199,9 @@ export type SaveCampaignMutation = {
 			id: string;
 			name: string;
 			gmInspiration: boolean;
+			cooldownType: CooldownType;
+			cooldownTime: number;
+			lastInspirationUsed?: any | null;
 			players: Array<{
 				__typename?: "Player";
 				id: string;
@@ -178,6 +209,7 @@ export type SaveCampaignMutation = {
 				characterName?: string | null;
 				isGM: boolean;
 				inspiration: number;
+				lastInspirationUsed?: any | null;
 			}>;
 		};
 	} | null;
@@ -199,6 +231,7 @@ export type SavePlayerMutation = {
 			characterName?: string | null;
 			isGM: boolean;
 			inspiration: number;
+			lastInspirationUsed?: any | null;
 		};
 	} | null;
 };
@@ -219,6 +252,7 @@ export type SetPlayerInspirationMutation = {
 			characterName?: string | null;
 			isGM: boolean;
 			inspiration: number;
+			lastInspirationUsed?: any | null;
 		};
 	} | null;
 };
@@ -232,6 +266,9 @@ export type ListCampaignsQuery = {
 		id: string;
 		name: string;
 		gmInspiration: boolean;
+		cooldownType: CooldownType;
+		cooldownTime: number;
+		lastInspirationUsed?: any | null;
 		players: Array<{
 			__typename?: "Player";
 			id: string;
@@ -239,6 +276,7 @@ export type ListCampaignsQuery = {
 			characterName?: string | null;
 			isGM: boolean;
 			inspiration: number;
+			lastInspirationUsed?: any | null;
 		}>;
 	}>;
 };
@@ -254,6 +292,9 @@ export type CampaignSubscription = {
 		id: string;
 		name: string;
 		gmInspiration: boolean;
+		cooldownType: CooldownType;
+		cooldownTime: number;
+		lastInspirationUsed?: any | null;
 		players: Array<{
 			__typename?: "Player";
 			id: string;
@@ -261,6 +302,7 @@ export type CampaignSubscription = {
 			characterName?: string | null;
 			isGM: boolean;
 			inspiration: number;
+			lastInspirationUsed?: any | null;
 		}>;
 	} | null;
 };
@@ -272,6 +314,7 @@ export const PlayerFragmentDoc = gql`
 		characterName
 		isGM
 		inspiration
+		lastInspirationUsed
 	}
 `;
 export const CampaignFragmentDoc = gql`
@@ -279,6 +322,9 @@ export const CampaignFragmentDoc = gql`
 		id
 		name
 		gmInspiration
+		cooldownType
+		cooldownTime
+		lastInspirationUsed
 		players {
 			...Player
 		}
@@ -384,6 +430,56 @@ export type DeletePlayerMutationResult =
 export type DeletePlayerMutationOptions = Apollo.BaseMutationOptions<
 	DeletePlayerMutation,
 	DeletePlayerMutationVariables
+>;
+export const ResetPlayerCooldownDocument = gql`
+	mutation RESET_PLAYER_COOLDOWN($id: ID!) {
+		player(id: $id) {
+			resetCooldown
+		}
+	}
+`;
+export type ResetPlayerCooldownMutationFn = Apollo.MutationFunction<
+	ResetPlayerCooldownMutation,
+	ResetPlayerCooldownMutationVariables
+>;
+
+/**
+ * __useResetPlayerCooldownMutation__
+ *
+ * To run a mutation, you first call `useResetPlayerCooldownMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetPlayerCooldownMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetPlayerCooldownMutation, { data, loading, error }] = useResetPlayerCooldownMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useResetPlayerCooldownMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		ResetPlayerCooldownMutation,
+		ResetPlayerCooldownMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		ResetPlayerCooldownMutation,
+		ResetPlayerCooldownMutationVariables
+	>(ResetPlayerCooldownDocument, options);
+}
+export type ResetPlayerCooldownMutationHookResult = ReturnType<
+	typeof useResetPlayerCooldownMutation
+>;
+export type ResetPlayerCooldownMutationResult =
+	Apollo.MutationResult<ResetPlayerCooldownMutation>;
+export type ResetPlayerCooldownMutationOptions = Apollo.BaseMutationOptions<
+	ResetPlayerCooldownMutation,
+	ResetPlayerCooldownMutationVariables
 >;
 export const SaveCampaignDocument = gql`
 	mutation SAVE_CAMPAIGN($id: ID, $input: CampaignInput!) {

@@ -1,6 +1,7 @@
 import sqlite from "sqlite";
 import { PlayerInput } from "../server-types";
 import { PlayerModel as Player } from "../resolvers/player";
+import { formatDate } from "../../utils";
 
 export default class PlayerModel {
 	private db: sqlite.Database;
@@ -53,7 +54,8 @@ export default class PlayerModel {
           playerName = ?,
           characterName = ?,
           isGM = ?,
-          inspiration = ?
+          inspiration = ?,
+					lastInspirationUsed = ?
         WHERE id = ?
       `,
 			input.campaignId ?? player.campaignId,
@@ -61,6 +63,10 @@ export default class PlayerModel {
 			input.characterName ?? player.characterName,
 			input.isGM ?? player.isGM ?? false,
 			input.inspiration ?? player.inspiration ?? 0,
+			typeof input.inspiration === "number" &&
+				input.inspiration < player.inspiration
+				? formatDate(new Date())
+				: player.lastInspirationUsed,
 			player.id
 		);
 		return this.get(player.id) as Promise<Player>;
@@ -68,6 +74,14 @@ export default class PlayerModel {
 
 	async delete(id: string): Promise<boolean> {
 		await this.db.run("DELETE FROM Player WHERE id = ?", id);
+		return true;
+	}
+
+	async resetCooldown(id: string): Promise<boolean> {
+		await this.db.run(
+			"UPDATE Player SET lastInspirationUsed = NULL WHERE id = ?",
+			id
+		);
 		return true;
 	}
 }
