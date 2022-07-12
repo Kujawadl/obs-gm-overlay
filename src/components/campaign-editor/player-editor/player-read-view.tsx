@@ -128,6 +128,7 @@ export default function PlayerReadView({
 										alignSelf: "center",
 										textAlign: "center",
 										margin: "calc(calc(40px - 1.5rem) / 2)",
+										flex: "0 0 auto",
 									}}
 									value={percentComplete}
 								/>
