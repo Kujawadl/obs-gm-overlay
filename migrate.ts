@@ -1,14 +1,14 @@
 import { join } from "path";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+import sqlite from "better-sqlite3-helper";
 
-async function migrate() {
-	const db = await open({
-		filename: join(process.cwd(), "obs-gm-overlay.db"),
-		driver: sqlite3.Database,
-	});
-
-	await db.migrate({ migrationsPath: join(process.cwd(), "migrations") });
-}
-
-migrate();
+// The first call creates the global instance with your settings
+sqlite({
+	path: join(process.cwd(), "obs-gm-overlay.db"),
+	readonly: false,
+	fileMustExist: false,
+	migrate: {
+		force: false,
+		table: "migrations",
+		migrationsPath: "./migrations",
+	},
+});

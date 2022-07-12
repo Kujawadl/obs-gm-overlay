@@ -1,6 +1,5 @@
 import { join } from "path";
-import sqlite3 from "sqlite3";
-import { Database, open } from "sqlite";
+import sqlite, { Database } from "better-sqlite3";
 import { PubSub } from "graphql-subscriptions";
 import { CampaignModel, PlayerModel } from "./models";
 
@@ -12,10 +11,7 @@ export interface Context {
 }
 
 export async function setupContext(): Promise<Context> {
-	const db = await open({
-		filename: join(process.cwd(), "obs-gm-overlay.db"),
-		driver: sqlite3.Database,
-	});
+	const db = await sqlite(join(process.cwd(), "obs-gm-overlay.db"));
 	const pubsub = new PubSub();
 	return {
 		db,

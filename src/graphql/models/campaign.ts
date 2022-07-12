@@ -1,52 +1,56 @@
 import { PubSub } from "graphql-subscriptions";
-import sqlite from "sqlite";
 import { CampaignInput } from "../server-types";
 import { CampaignModel as Campaign } from "../resolvers/campaign";
+import type { Database } from "better-sqlite3";
 
 export default class CampaignModel {
-	private db: sqlite.Database;
+	private db: Database;
 	private pubsub: PubSub;
 
-	constructor(db: sqlite.Database, pubsub: PubSub) {
+	constructor(db: Database, pubsub: PubSub) {
 		this.db = db;
 		this.pubsub = pubsub;
 	}
 
 	get(id?: string): Promise<Campaign | undefined> {
 		return id
-			? this.db.get("SELECT * FROM Campaign WHERE id = ?", id)
+			? this.db.prepare("SELECT * FROM Campaign WHERE id = ?").get(id)
 			: Promise.resolve(undefined);
 	}
 
 	async list(): Promise<Campaign[]> {
-		const campaigns = await this.db.all("SELECT * FROM Campaign");
+		const campaigns = await this.db.prepare("SELECT * FROM Campaign").all();
 		return campaigns.length ? campaigns : [];
 	}
 
 	async create(input: CampaignInput): Promise<Campaign> {
-		const result = await this.db.run(
-			`
+		const result = await this.db
+			.prepare(
+				`
         INSERT INTO Campaign (
           name,
           gmInspiration,
 					cooldownType,
 					cooldownTime
         ) VALUES (?, ?, ?, ?)
-      `,
-			input.name,
-			input.gmInspiration ?? false,
-			input.cooldownType ?? "none",
-			input.cooldownTime ?? 0
-		);
-		if (!result.lastID) {
+      `
+			)
+			.run(
+				input.name,
+				input.gmInspiration ?? false ? 1 : 0,
+				input.cooldownType ?? "none",
+				input.cooldownTime ?? 0
+			);
+		if (!result.lastInsertRowid) {
 			throw new Error("Error inserting new player record");
 		}
-		return this.get(result.lastID.toString()) as Promise<Campaign>;
+		return this.get(result.lastInsertRowid.toString()) as Promise<Campaign>;
 	}
 
 	async update(campaign: Campaign, input: CampaignInput): Promise<Campaign> {
-		await this.db.run(
-			`
+		await this.db
+			.prepare(
+				`
         UPDATE Campaign
         SET
           name = ?,
@@ -54,19 +58,21 @@ export default class CampaignModel {
 					cooldownType = ?,
 					cooldownTime = ?
         WHERE id = ?
-      `,
-			input.name ?? campaign.name,
-			input.gmInspiration ?? campaign.gmInspiration ?? false,
-			input.cooldownType ?? campaign.cooldownType ?? "none",
-			input.cooldownTime ?? campaign.cooldownTime ?? 0,
-			campaign.id
-		);
+      `
+			)
+			.run(
+				input.name ?? campaign.name,
+				input.gmInspiration ?? campaign.gmInspiration ?? false ? 1 : 0,
+				input.cooldownType ?? campaign.cooldownType ?? "none",
+				input.cooldownTime ?? campaign.cooldownTime ?? 0,
+				campaign.id
+			);
 		return this.get(campaign.id) as Promise<Campaign>;
 	}
 
 	async delete(id: string): Promise<boolean> {
-		await this.db.run("DELETE FROM Player WHERE campaignId = ?", id);
-		await this.db.run("DELETE FROM Campaign WHERE id = ?", id);
+		await this.db.prepare("DELETE FROM Player WHERE campaignId = ?").run(id);
+		await this.db.prepare("DELETE FROM Campaign WHERE id = ?").run(id);
 		return true;
 	}
 
