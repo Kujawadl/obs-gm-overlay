@@ -16,7 +16,12 @@ interface UseCooldownResult {
 }
 
 function calculateCooldown({ player, campaign }: UseCooldownProps): number {
-	if (!player || !campaign || (!campaign.gmInspiration && player.isGM)) {
+	if (
+		!player ||
+		!campaign ||
+		(!campaign.gmInspiration && player.isGM) ||
+		campaign.cooldownType === "none"
+	) {
 		return 0;
 	}
 	const lastInspirationUsed = parseDate(
