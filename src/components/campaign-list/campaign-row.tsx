@@ -85,7 +85,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							component="a"
 							underline="none"
 							color="inherit"
-							href={`/${campaign.id}/overlay`}
+							href={`/${campaign.id}/overlay/inspiration`}
 							target="_blank"
 							rel="noreferrer"
 						>

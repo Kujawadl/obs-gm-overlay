@@ -32,9 +32,12 @@ export type Campaign = {
 	cooldownTime: Scalars["Int"];
 	cooldownType: CooldownType;
 	gmInspiration: Scalars["Boolean"];
+	hideNpcNames: NpcNameType;
 	id: Scalars["ID"];
+	initiative: Initiative;
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	name: Scalars["String"];
+	npcs: Array<Npc>;
 	players: Array<Player>;
 };
 
@@ -42,17 +45,32 @@ export type CampaignInput = {
 	cooldownTime?: InputMaybe<Scalars["Int"]>;
 	cooldownType?: InputMaybe<CooldownType>;
 	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
+	hideNpcNames?: InputMaybe<NpcNameType>;
+	initiativeCount?: InputMaybe<Scalars["Float"]>;
 	name: Scalars["String"];
+	round?: InputMaybe<Scalars["Int"]>;
 };
 
 export type CampaignMutation = {
 	__typename?: "CampaignMutation";
 	delete: Scalars["Boolean"];
+	resetInitiative: Scalars["Boolean"];
 	save: Campaign;
+};
+
+export type CampaignMutationResetInitiativeArgs = {
+	deleteNpcs?: InputMaybe<Scalars["Boolean"]>;
+	resetCombatantInitiatives?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type CampaignMutationSaveArgs = {
 	input: CampaignInput;
+};
+
+export type Combatant = {
+	__typename?: "Combatant";
+	initiative: Scalars["Float"];
+	name: Scalars["String"];
 };
 
 export enum CooldownType {
@@ -61,9 +79,17 @@ export enum CooldownType {
 	Table = "table",
 }
 
+export type Initiative = {
+	__typename?: "Initiative";
+	combatants: Array<Combatant>;
+	initiativeCount: Scalars["Float"];
+	round: Scalars["Int"];
+};
+
 export type Mutation = {
 	__typename?: "Mutation";
 	campaign?: Maybe<CampaignMutation>;
+	npc?: Maybe<NpcMutation>;
 	player?: Maybe<PlayerMutation>;
 };
 
@@ -71,15 +97,52 @@ export type MutationCampaignArgs = {
 	id?: InputMaybe<Scalars["ID"]>;
 };
 
+export type MutationNpcArgs = {
+	id?: InputMaybe<Scalars["ID"]>;
+};
+
 export type MutationPlayerArgs = {
 	id?: InputMaybe<Scalars["ID"]>;
 };
+
+export type Npc = {
+	__typename?: "NPC";
+	campaign: Campaign;
+	id: Scalars["ID"];
+	initiative: Scalars["Float"];
+	name: Scalars["String"];
+	public: Scalars["Boolean"];
+};
+
+export type NpcInput = {
+	campaignId?: InputMaybe<Scalars["ID"]>;
+	initiative?: InputMaybe<Scalars["Float"]>;
+	name?: InputMaybe<Scalars["String"]>;
+	public?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type NpcMutation = {
+	__typename?: "NpcMutation";
+	delete: Scalars["Boolean"];
+	save: Npc;
+};
+
+export type NpcMutationSaveArgs = {
+	input: NpcInput;
+};
+
+export enum NpcNameType {
+	Always = "always",
+	Never = "never",
+	UntilTurn = "untilTurn",
+}
 
 export type Player = {
 	__typename?: "Player";
 	campaign: Campaign;
 	characterName?: Maybe<Scalars["String"]>;
 	id: Scalars["ID"];
+	initiative: Scalars["Float"];
 	inspiration: Scalars["Int"];
 	isGM: Scalars["Boolean"];
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
@@ -89,6 +152,7 @@ export type Player = {
 export type PlayerInput = {
 	campaignId?: InputMaybe<Scalars["ID"]>;
 	characterName?: InputMaybe<Scalars["String"]>;
+	initiative?: InputMaybe<Scalars["Float"]>;
 	inspiration?: InputMaybe<Scalars["Int"]>;
 	isGM?: InputMaybe<Scalars["Boolean"]>;
 	playerName?: InputMaybe<Scalars["String"]>;
@@ -109,11 +173,16 @@ export type Query = {
 	__typename?: "Query";
 	campaign?: Maybe<Campaign>;
 	campaigns: Array<Campaign>;
+	npc?: Maybe<Npc>;
 	player?: Maybe<Player>;
 };
 
 export type QueryCampaignArgs = {
 	id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type QueryNpcArgs = {
+	id: Scalars["ID"];
 };
 
 export type QueryPlayerArgs = {
@@ -137,6 +206,7 @@ export type CampaignFragment = {
 	cooldownType: CooldownType;
 	cooldownTime: number;
 	lastInspirationUsed?: any | null;
+	hideNpcNames: NpcNameType;
 	players: Array<{
 		__typename?: "Player";
 		id: string;
@@ -145,7 +215,49 @@ export type CampaignFragment = {
 		isGM: boolean;
 		inspiration: number;
 		lastInspirationUsed?: any | null;
+		initiative: number;
 	}>;
+	npcs: Array<{
+		__typename?: "NPC";
+		id: string;
+		name: string;
+		public: boolean;
+		initiative: number;
+	}>;
+	initiative: {
+		__typename?: "Initiative";
+		round: number;
+		initiativeCount: number;
+		combatants: Array<{
+			__typename?: "Combatant";
+			name: string;
+			initiative: number;
+		}>;
+	};
+};
+
+export type InitiativeFragment = {
+	__typename?: "Campaign";
+	id: string;
+	name: string;
+	initiative: {
+		__typename?: "Initiative";
+		round: number;
+		initiativeCount: number;
+		combatants: Array<{
+			__typename?: "Combatant";
+			name: string;
+			initiative: number;
+		}>;
+	};
+};
+
+export type NpcFragment = {
+	__typename?: "NPC";
+	id: string;
+	name: string;
+	public: boolean;
+	initiative: number;
 };
 
 export type PlayerFragment = {
@@ -156,6 +268,7 @@ export type PlayerFragment = {
 	isGM: boolean;
 	inspiration: number;
 	lastInspirationUsed?: any | null;
+	initiative: number;
 };
 
 export type DeleteCampaignMutationVariables = Exact<{
@@ -174,6 +287,20 @@ export type DeletePlayerMutationVariables = Exact<{
 export type DeletePlayerMutation = {
 	__typename?: "Mutation";
 	player?: { __typename?: "PlayerMutation"; delete: boolean } | null;
+};
+
+export type ResetInitiativeMutationVariables = Exact<{
+	id: Scalars["ID"];
+	deleteNpcs?: InputMaybe<Scalars["Boolean"]>;
+	resetCombatantInitiatives?: InputMaybe<Scalars["Boolean"]>;
+}>;
+
+export type ResetInitiativeMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		resetInitiative: boolean;
+	} | null;
 };
 
 export type ResetPlayerCooldownMutationVariables = Exact<{
@@ -202,6 +329,7 @@ export type SaveCampaignMutation = {
 			cooldownType: CooldownType;
 			cooldownTime: number;
 			lastInspirationUsed?: any | null;
+			hideNpcNames: NpcNameType;
 			players: Array<{
 				__typename?: "Player";
 				id: string;
@@ -210,7 +338,44 @@ export type SaveCampaignMutation = {
 				isGM: boolean;
 				inspiration: number;
 				lastInspirationUsed?: any | null;
+				initiative: number;
 			}>;
+			npcs: Array<{
+				__typename?: "NPC";
+				id: string;
+				name: string;
+				public: boolean;
+				initiative: number;
+			}>;
+			initiative: {
+				__typename?: "Initiative";
+				round: number;
+				initiativeCount: number;
+				combatants: Array<{
+					__typename?: "Combatant";
+					name: string;
+					initiative: number;
+				}>;
+			};
+		};
+	} | null;
+};
+
+export type SaveNpcMutationVariables = Exact<{
+	id?: InputMaybe<Scalars["ID"]>;
+	input: NpcInput;
+}>;
+
+export type SaveNpcMutation = {
+	__typename?: "Mutation";
+	npc?: {
+		__typename?: "NpcMutation";
+		save: {
+			__typename?: "NPC";
+			id: string;
+			name: string;
+			public: boolean;
+			initiative: number;
 		};
 	} | null;
 };
@@ -232,6 +397,7 @@ export type SavePlayerMutation = {
 			isGM: boolean;
 			inspiration: number;
 			lastInspirationUsed?: any | null;
+			initiative: number;
 		};
 	} | null;
 };
@@ -253,6 +419,7 @@ export type SetPlayerInspirationMutation = {
 			isGM: boolean;
 			inspiration: number;
 			lastInspirationUsed?: any | null;
+			initiative: number;
 		};
 	} | null;
 };
@@ -269,6 +436,7 @@ export type ListCampaignsQuery = {
 		cooldownType: CooldownType;
 		cooldownTime: number;
 		lastInspirationUsed?: any | null;
+		hideNpcNames: NpcNameType;
 		players: Array<{
 			__typename?: "Player";
 			id: string;
@@ -277,7 +445,25 @@ export type ListCampaignsQuery = {
 			isGM: boolean;
 			inspiration: number;
 			lastInspirationUsed?: any | null;
+			initiative: number;
 		}>;
+		npcs: Array<{
+			__typename?: "NPC";
+			id: string;
+			name: string;
+			public: boolean;
+			initiative: number;
+		}>;
+		initiative: {
+			__typename?: "Initiative";
+			round: number;
+			initiativeCount: number;
+			combatants: Array<{
+				__typename?: "Combatant";
+				name: string;
+				initiative: number;
+			}>;
+		};
 	}>;
 };
 
@@ -295,6 +481,7 @@ export type CampaignSubscription = {
 		cooldownType: CooldownType;
 		cooldownTime: number;
 		lastInspirationUsed?: any | null;
+		hideNpcNames: NpcNameType;
 		players: Array<{
 			__typename?: "Player";
 			id: string;
@@ -303,7 +490,48 @@ export type CampaignSubscription = {
 			isGM: boolean;
 			inspiration: number;
 			lastInspirationUsed?: any | null;
+			initiative: number;
 		}>;
+		npcs: Array<{
+			__typename?: "NPC";
+			id: string;
+			name: string;
+			public: boolean;
+			initiative: number;
+		}>;
+		initiative: {
+			__typename?: "Initiative";
+			round: number;
+			initiativeCount: number;
+			combatants: Array<{
+				__typename?: "Combatant";
+				name: string;
+				initiative: number;
+			}>;
+		};
+	} | null;
+};
+
+export type InitiativeSubscriptionVariables = Exact<{
+	id: Scalars["ID"];
+}>;
+
+export type InitiativeSubscription = {
+	__typename?: "Subscription";
+	campaign?: {
+		__typename?: "Campaign";
+		id: string;
+		name: string;
+		initiative: {
+			__typename?: "Initiative";
+			round: number;
+			initiativeCount: number;
+			combatants: Array<{
+				__typename?: "Combatant";
+				name: string;
+				initiative: number;
+			}>;
+		};
 	} | null;
 };
 
@@ -315,6 +543,29 @@ export const PlayerFragmentDoc = gql`
 		isGM
 		inspiration
 		lastInspirationUsed
+		initiative
+	}
+`;
+export const NpcFragmentDoc = gql`
+	fragment NPC on NPC {
+		id
+		name
+		public
+		initiative
+	}
+`;
+export const InitiativeFragmentDoc = gql`
+	fragment Initiative on Campaign {
+		id
+		name
+		initiative {
+			round
+			initiativeCount
+			combatants {
+				name
+				initiative
+			}
+		}
 	}
 `;
 export const CampaignFragmentDoc = gql`
@@ -325,11 +576,18 @@ export const CampaignFragmentDoc = gql`
 		cooldownType
 		cooldownTime
 		lastInspirationUsed
+		hideNpcNames
 		players {
 			...Player
 		}
+		npcs {
+			...NPC
+		}
+		...Initiative
 	}
 	${PlayerFragmentDoc}
+	${NpcFragmentDoc}
+	${InitiativeFragmentDoc}
 `;
 export const DeleteCampaignDocument = gql`
 	mutation DELETE_CAMPAIGN($id: ID!) {
@@ -430,6 +688,65 @@ export type DeletePlayerMutationResult =
 export type DeletePlayerMutationOptions = Apollo.BaseMutationOptions<
 	DeletePlayerMutation,
 	DeletePlayerMutationVariables
+>;
+export const ResetInitiativeDocument = gql`
+	mutation RESET_INITIATIVE(
+		$id: ID!
+		$deleteNpcs: Boolean
+		$resetCombatantInitiatives: Boolean
+	) {
+		campaign(id: $id) {
+			resetInitiative(
+				deleteNpcs: $deleteNpcs
+				resetCombatantInitiatives: $resetCombatantInitiatives
+			)
+		}
+	}
+`;
+export type ResetInitiativeMutationFn = Apollo.MutationFunction<
+	ResetInitiativeMutation,
+	ResetInitiativeMutationVariables
+>;
+
+/**
+ * __useResetInitiativeMutation__
+ *
+ * To run a mutation, you first call `useResetInitiativeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetInitiativeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetInitiativeMutation, { data, loading, error }] = useResetInitiativeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      deleteNpcs: // value for 'deleteNpcs'
+ *      resetCombatantInitiatives: // value for 'resetCombatantInitiatives'
+ *   },
+ * });
+ */
+export function useResetInitiativeMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		ResetInitiativeMutation,
+		ResetInitiativeMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		ResetInitiativeMutation,
+		ResetInitiativeMutationVariables
+	>(ResetInitiativeDocument, options);
+}
+export type ResetInitiativeMutationHookResult = ReturnType<
+	typeof useResetInitiativeMutation
+>;
+export type ResetInitiativeMutationResult =
+	Apollo.MutationResult<ResetInitiativeMutation>;
+export type ResetInitiativeMutationOptions = Apollo.BaseMutationOptions<
+	ResetInitiativeMutation,
+	ResetInitiativeMutationVariables
 >;
 export const ResetPlayerCooldownDocument = gql`
 	mutation RESET_PLAYER_COOLDOWN($id: ID!) {
@@ -534,6 +851,57 @@ export type SaveCampaignMutationResult =
 export type SaveCampaignMutationOptions = Apollo.BaseMutationOptions<
 	SaveCampaignMutation,
 	SaveCampaignMutationVariables
+>;
+export const SaveNpcDocument = gql`
+	mutation SAVE_NPC($id: ID, $input: NpcInput!) {
+		npc(id: $id) {
+			save(input: $input) {
+				...NPC
+			}
+		}
+	}
+	${NpcFragmentDoc}
+`;
+export type SaveNpcMutationFn = Apollo.MutationFunction<
+	SaveNpcMutation,
+	SaveNpcMutationVariables
+>;
+
+/**
+ * __useSaveNpcMutation__
+ *
+ * To run a mutation, you first call `useSaveNpcMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveNpcMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveNpcMutation, { data, loading, error }] = useSaveNpcMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSaveNpcMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		SaveNpcMutation,
+		SaveNpcMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<SaveNpcMutation, SaveNpcMutationVariables>(
+		SaveNpcDocument,
+		options
+	);
+}
+export type SaveNpcMutationHookResult = ReturnType<typeof useSaveNpcMutation>;
+export type SaveNpcMutationResult = Apollo.MutationResult<SaveNpcMutation>;
+export type SaveNpcMutationOptions = Apollo.BaseMutationOptions<
+	SaveNpcMutation,
+	SaveNpcMutationVariables
 >;
 export const SavePlayerDocument = gql`
 	mutation SAVE_PLAYER($id: ID, $input: PlayerInput!) {
@@ -743,3 +1111,45 @@ export type CampaignSubscriptionHookResult = ReturnType<
 >;
 export type CampaignSubscriptionResult =
 	Apollo.SubscriptionResult<CampaignSubscription>;
+export const InitiativeDocument = gql`
+	subscription INITIATIVE($id: ID!) {
+		campaign(id: $id) {
+			...Initiative
+		}
+	}
+	${InitiativeFragmentDoc}
+`;
+
+/**
+ * __useInitiativeSubscription__
+ *
+ * To run a query within a React component, call `useInitiativeSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useInitiativeSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitiativeSubscription({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInitiativeSubscription(
+	baseOptions: Apollo.SubscriptionHookOptions<
+		InitiativeSubscription,
+		InitiativeSubscriptionVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useSubscription<
+		InitiativeSubscription,
+		InitiativeSubscriptionVariables
+	>(InitiativeDocument, options);
+}
+export type InitiativeSubscriptionHookResult = ReturnType<
+	typeof useInitiativeSubscription
+>;
+export type InitiativeSubscriptionResult =
+	Apollo.SubscriptionResult<InitiativeSubscription>;

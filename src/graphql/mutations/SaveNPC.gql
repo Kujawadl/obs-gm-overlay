@@ -1,0 +1,9 @@
+#import "../fragments/NpcFragment.gql"
+
+mutation SAVE_NPC($id: ID, $input: NpcInput!) {
+	npc(id: $id) {
+		save(input: $input) {
+			...NPC
+		}
+	}
+}

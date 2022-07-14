@@ -1,0 +1,6 @@
+fragment NPC on NPC {
+	id
+	name
+	public
+	initiative
+}

@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import Head from "next/head";
-import Badge from "../../components/badge";
+import Badge from "../../../components/badge";
 import {
 	CampaignFragment,
 	useCampaignSubscription,
-} from "../../graphql/client-types";
+} from "../../../graphql/client-types";
 
-export default function Overlay() {
+export default function Inspiration() {
 	const router = useRouter();
 	const { campaignId } = router.query;
 	const { data } = useCampaignSubscription({
@@ -21,7 +21,7 @@ export default function Overlay() {
 			<Head>
 				<title>{`${
 					data?.campaign?.name ?? "Campaign"
-				} Overlay | OBS GM Overlay`}</title>
+				} Inspiration | OBS GM Overlay`}</title>
 			</Head>
 			<Box
 				sx={{

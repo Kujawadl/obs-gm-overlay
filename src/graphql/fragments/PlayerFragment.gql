@@ -5,4 +5,5 @@ fragment Player on Player {
 	isGM
 	inspiration
 	lastInspirationUsed
+	initiative
 }

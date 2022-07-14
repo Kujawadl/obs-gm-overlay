@@ -15,9 +15,11 @@ const typeDefs = gql`
 		name: String!
 		gmInspiration: Boolean!
 		players: [Player!]!
+		npcs: [NPC!]!
 		cooldownType: CooldownType!
 		cooldownTime: Int!
 		lastInspirationUsed: Date
+		hideNpcNames: NpcNameType!
 	}
 
 	enum CooldownType {
@@ -26,16 +28,29 @@ const typeDefs = gql`
 		table
 	}
 
+	enum NpcNameType {
+		never
+		always
+		untilTurn
+	}
+
 	input CampaignInput {
 		name: String!
 		gmInspiration: Boolean
 		cooldownType: CooldownType
 		cooldownTime: Int
+		hideNpcNames: NpcNameType
+		round: Int
+		initiativeCount: Float
 	}
 
 	type CampaignMutation {
 		save(input: CampaignInput!): Campaign!
 		delete: Boolean!
+		resetInitiative(
+			deleteNpcs: Boolean
+			resetCombatantInitiatives: Boolean
+		): Boolean!
 	}
 
 	extend type Mutation {

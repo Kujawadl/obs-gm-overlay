@@ -1,0 +1,7 @@
+# import "../fragments/InitiativeFragment.gql"
+
+subscription INITIATIVE($id: ID!) {
+	campaign(id: $id) {
+		...Initiative
+	}
+}

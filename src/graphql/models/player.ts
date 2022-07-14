@@ -30,8 +30,9 @@ export default class PlayerModel {
           playerName,
           characterName,
           isGM,
-          inspiration
-        ) VALUES (?, ?, ?, ?, ?)
+          inspiration,
+					initiative
+        ) VALUES (?, ?, ?, ?, ?, ?)
       `
 			)
 			.run(
@@ -39,7 +40,8 @@ export default class PlayerModel {
 				input.playerName,
 				input.characterName,
 				input.isGM ?? false ? 1 : 0,
-				input.inspiration ?? 0
+				input.inspiration ?? 0,
+				input.initiative ?? 0
 			);
 		if (!result.lastInsertRowid) {
 			throw new Error("Error inserting new player record");
@@ -58,7 +60,8 @@ export default class PlayerModel {
           characterName = ?,
           isGM = ?,
           inspiration = ?,
-					lastInspirationUsed = ?
+					lastInspirationUsed = ?,
+					initiative = ?
         WHERE id = ?
       `
 			)
@@ -72,6 +75,7 @@ export default class PlayerModel {
 					input.inspiration < player.inspiration
 					? formatDate(new Date())
 					: player.lastInspirationUsed,
+				input.initiative ?? player.initiative ?? 0,
 				player.id
 			);
 		return this.get(player.id) as Promise<Player>;
@@ -86,6 +90,13 @@ export default class PlayerModel {
 		await this.db
 			.prepare("UPDATE Player SET lastInspirationUsed = NULL WHERE id = ?")
 			.run(id);
+		return true;
+	}
+
+	async resetInitiativeForCampaign(campaignId: string): Promise<boolean> {
+		await this.db
+			.prepare("UPDATE Player SET initiative = 0 WHERE campaignId = ?")
+			.run(campaignId);
 		return true;
 	}
 }

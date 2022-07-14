@@ -7,6 +7,9 @@ const resolvers: QueryResolvers = {
 	campaign(_parent, args, ctx) {
 		return ctx.Campaign.get(args.id);
 	},
+	npc(_parent, args, ctx) {
+		return ctx.NPC.get(args.id);
+	},
 	player(_parent, args, ctx) {
 		return ctx.Player.get(args.id);
 	},

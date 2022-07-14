@@ -11,6 +11,9 @@ export interface CampaignModel {
 	gmInspiration: boolean;
 	cooldownType: CooldownType;
 	cooldownTime: number;
+	hideNpcNames: boolean;
+	round: number;
+	initiativeCount: number;
 }
 
 interface Resolvers {
@@ -23,6 +26,9 @@ const resolvers: Resolvers = {
 		players(parent, _args, ctx) {
 			return ctx.Player.list(parent.id);
 		},
+		npcs(parent, _args, ctx) {
+			return ctx.NPC.list(parent.id);
+		},
 		async lastInspirationUsed(parent, _args, ctx) {
 			const players = await ctx.Player.list(parent.id);
 			const maxTimeValue = players.reduce((max: number, player) => {
@@ -33,6 +39,19 @@ const resolvers: Resolvers = {
 				return Math.max(lastInspirationUsed, max);
 			}, -1);
 			return maxTimeValue >= 0 ? formatDate(new Date(maxTimeValue)) : undefined;
+		},
+		async initiative(parent, _args, ctx) {
+			const combatants = await ctx.Initiative.get(parent.id);
+			return {
+				round: combatants[0]?.round ?? 0,
+				initiativeCount: combatants[0]?.initiativeCount ?? 0,
+				combatants: combatants
+					.map((c) => ({
+						name: c.name,
+						initiative: c.initiative,
+					}))
+					.filter((c) => Boolean(c.name)),
+			};
 		},
 	},
 	CampaignMutation: {
@@ -51,6 +70,25 @@ const resolvers: Resolvers = {
 				Campaign.publishSubscription(parent.id);
 			}
 			return result;
+		},
+		async resetInitiative(
+			parent,
+			{ deleteNpcs, resetCombatantInitiatives },
+			{ Campaign, NPC, Player }
+		) {
+			await Campaign.update(parent, {
+				name: parent.name,
+				round: 0,
+				initiativeCount: 0,
+			});
+			if (deleteNpcs) {
+				await NPC.deleteAll(parent.id);
+			}
+			if (resetCombatantInitiatives) {
+				await Player.resetInitiativeForCampaign(parent.id);
+				await NPC.resetInitiativeForCampaign(parent.id);
+			}
+			return true;
 		},
 	},
 };

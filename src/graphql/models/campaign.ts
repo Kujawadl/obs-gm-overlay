@@ -31,7 +31,10 @@ export default class CampaignModel {
           name,
           gmInspiration,
 					cooldownType,
-					cooldownTime
+					cooldownTime,
+					hideNpcNames,
+					round,
+					initiativeCount
         ) VALUES (?, ?, ?, ?)
       `
 			)
@@ -39,10 +42,13 @@ export default class CampaignModel {
 				input.name,
 				input.gmInspiration ?? false ? 1 : 0,
 				input.cooldownType ?? "none",
-				input.cooldownTime ?? 0
+				input.cooldownTime ?? 0,
+				input.hideNpcNames ?? "never",
+				input.round ?? 0,
+				input.initiativeCount ?? 0
 			);
 		if (!result.lastInsertRowid) {
-			throw new Error("Error inserting new player record");
+			throw new Error("Error inserting new campaign record");
 		}
 		return this.get(result.lastInsertRowid.toString()) as Promise<Campaign>;
 	}
@@ -56,7 +62,10 @@ export default class CampaignModel {
           name = ?,
           gmInspiration = ?,
 					cooldownType = ?,
-					cooldownTime = ?
+					cooldownTime = ?,
+					hideNpcNames = ?,
+					round = ?,
+					initiativeCount = ?
         WHERE id = ?
       `
 			)
@@ -65,6 +74,9 @@ export default class CampaignModel {
 				input.gmInspiration ?? campaign.gmInspiration ?? false ? 1 : 0,
 				input.cooldownType ?? campaign.cooldownType ?? "none",
 				input.cooldownTime ?? campaign.cooldownTime ?? 0,
+				input.hideNpcNames ?? campaign.hideNpcNames ?? "never",
+				input.round ?? campaign.round ?? 0,
+				input.initiativeCount ?? campaign.initiativeCount ?? 0,
 				campaign.id
 			);
 		return this.get(campaign.id) as Promise<Campaign>;

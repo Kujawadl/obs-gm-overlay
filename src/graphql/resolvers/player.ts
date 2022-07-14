@@ -8,6 +8,7 @@ export interface PlayerModel {
 	isGM: boolean;
 	inspiration: number;
 	lastInspirationUsed?: string;
+	initiative: number;
 }
 
 interface Resolvers {

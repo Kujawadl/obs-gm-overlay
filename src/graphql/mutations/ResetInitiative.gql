@@ -1,0 +1,12 @@
+mutation RESET_INITIATIVE(
+	$id: ID!
+	$deleteNpcs: Boolean
+	$resetCombatantInitiatives: Boolean
+) {
+	campaign(id: $id) {
+		resetInitiative(
+			deleteNpcs: $deleteNpcs
+			resetCombatantInitiatives: $resetCombatantInitiatives
+		)
+	}
+}

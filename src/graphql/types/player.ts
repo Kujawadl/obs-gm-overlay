@@ -17,6 +17,7 @@ const typeDefs = gql`
 		isGM: Boolean!
 		inspiration: Int!
 		lastInspirationUsed: Date
+		initiative: Float!
 	}
 
 	input PlayerInput {
@@ -25,6 +26,7 @@ const typeDefs = gql`
 		characterName: String
 		isGM: Boolean
 		inspiration: Int
+		initiative: Float
 	}
 
 	type PlayerMutation {

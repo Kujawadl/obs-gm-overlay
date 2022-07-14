@@ -1,0 +1,12 @@
+fragment Initiative on Campaign {
+	id
+	name
+	initiative {
+		round
+		initiativeCount
+		combatants {
+			name
+			initiative
+		}
+	}
+}

@@ -1,3 +1,5 @@
+#import "./InitiativeFragment.gql"
+#import "./NpcFragment.gql"
 #import "./PlayerFragment.gql"
 
 fragment Campaign on Campaign {
@@ -7,7 +9,12 @@ fragment Campaign on Campaign {
 	cooldownType
 	cooldownTime
 	lastInspirationUsed
+	hideNpcNames
 	players {
 		...Player
 	}
+	npcs {
+		...NPC
+	}
+	...Initiative
 }

@@ -45,6 +45,13 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Allow GM to specify whether cooldown is per player or for the entire group
   - [x] Allow GM to reset cooldown for specific players
   - [ ] Allow GM to reset cooldown for entire table
+- [ ] Initiative Tracker
+  - [x] Initiative tracker schema
+  - [ ] Allow GM to add creatures with public/private names
+  - [ ] Allow GM to enter player/creature initiative values
+  - [ ] Allow GM to reset initiative, clearing initiative values and deleting all creatures
+  - [ ] Allow GM to advance initiative by one turn
+  - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
 - [ ] Hardening
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
@@ -59,13 +66,6 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
 
 ### Possible Additional Features
 
-- [ ] Initiative Tracker
-  - [ ] Allow GM to add creatures with public/private names
-  - [ ] Allow GM to enter player/creature initiative values
-  - [ ] Allow GM to reset initiative, clearing initiative values and deleting all creatures
-  - [ ] Allow GM to advance initiative by one turn
-  - [ ] Create initiative overlay that tracks whose turn it is/how many rounds have passed
-  - [ ] Allow GM to specify cooldown duration in rounds
 - [ ] Additional Inspiration Options
   - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
   - [ ] Allow user to configure max. inspiration value
