@@ -2,6 +2,7 @@
  * GENERATED FILE: DO NOT MODIFY DIRECTLY
  * `npm run generate-types` to update
  */
+/* eslint-disable */
 import {
 	GraphQLResolveInfo,
 	GraphQLScalarType,
@@ -11,7 +12,6 @@ import { PlayerModel } from "./resolvers/player";
 import { CampaignModel } from "./resolvers/campaign";
 import { CombatantModel, EncounterModel } from "./resolvers/initiative";
 import { Context } from "./context";
-
 export type Maybe<T> = T | undefined;
 export type InputMaybe<T> = T | undefined | null;
 export type Exact<T extends { [key: string]: unknown }> = {

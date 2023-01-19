@@ -1,29 +1,28 @@
-import { ApolloServer } from "apollo-server-micro";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import { ApolloServer } from "@apollo/server";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 
 import typeDefs from "./types";
 import resolvers from "./resolvers";
-import { setupContext } from "./context";
 
 import type { Server } from "http";
+import type { Context } from "./context";
 
 async function setupApolloServer(
 	httpServer: Server,
-	wsServer: WebSocketServer
+	wsServer: WebSocketServer,
+	context: Context
 ) {
-	const context = await setupContext();
 	const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 	const serverCleanup = useServer({ schema, context }, wsServer);
 
-	const server = new ApolloServer({
+	return new ApolloServer({
 		schema,
 		csrfPrevention: true,
 		cache: "bounded",
-		context,
 		plugins: [
 			ApolloServerPluginDrainHttpServer({ httpServer }),
 			{
@@ -38,11 +37,6 @@ async function setupApolloServer(
 			},
 		],
 	});
-
-	console.log("Setting up Apollo server...");
-	await server.start();
-	console.log("Apollo server initialized!");
-	return server;
 }
 
 export default setupApolloServer;

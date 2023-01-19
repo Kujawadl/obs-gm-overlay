@@ -9,14 +9,24 @@ generates:
           loader: "./document-loader.js"
     plugins:
       - "add":
-          content: "/**\n * GENERATED FILE: DO NOT MODIFY DIRECTLY\n * `npm run generate-types` to update\n */"
+          content: |-
+            /**
+             * GENERATED FILE: DO NOT MODIFY DIRECTLY
+             * `npm run generate-types` to update
+             */
+            /* eslint-disable */
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
   ./src/graphql/server-types.ts:
     plugins:
       - "add":
-          content: "/**\n * GENERATED FILE: DO NOT MODIFY DIRECTLY\n * `npm run generate-types` to update\n */"
+          content: |-
+            /**
+             * GENERATED FILE: DO NOT MODIFY DIRECTLY
+             * `npm run generate-types` to update
+             */
+            /* eslint-disable */
       - "typescript"
       - "typescript-resolvers"
     config:

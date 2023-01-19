@@ -33,7 +33,7 @@ const resolvers: Resolvers = {
 			return ctx.Campaign.list();
 		},
 		campaign(_parent, args, ctx) {
-			return ctx.Campaign.get(args.id);
+			return ctx.Campaign.get(args.id ?? undefined);
 		},
 	},
 	Mutation: {

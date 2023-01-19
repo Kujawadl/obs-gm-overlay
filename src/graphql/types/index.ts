@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-core";
+import { gql } from "graphql-tag";
 import Campaign from "./campaign";
 import Initiative from "./initiative";
 import Player from "./player";

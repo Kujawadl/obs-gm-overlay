@@ -55,7 +55,7 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Generate and run production server builds
   - [x] Explore possibility of integrating server app into next.js API routing
     - [x] Auto-initialize WS server on server startup (currently have to run an HTTP request to initialize it first)
-    - [ ] Fix hot-reloading of server modules
+    - [x] Fix hot-reloading of server modules
 
 ### Possible Additional Features
 
