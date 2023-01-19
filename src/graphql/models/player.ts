@@ -1,9 +1,10 @@
 import { PlayerInput } from "../server-types";
 import { PlayerModel as Player } from "../resolvers/player";
 import { formatDate } from "../../utils";
+import Model from "./_model";
 import type { Database } from "better-sqlite3";
 
-export default class PlayerModel {
+export default class PlayerModel implements Model<Player, PlayerInput> {
 	private db: Database;
 
 	constructor(db: Database) {
@@ -44,6 +45,18 @@ export default class PlayerModel {
 		if (!result.lastInsertRowid) {
 			throw new Error("Error inserting new player record");
 		}
+		await this.db
+			.prepare(
+				`
+			INSERT INTO Combatant (
+				campaignId,
+				playerId,
+				name,
+				public
+			) VALUES(?, ?, ?, ?)
+		`
+			)
+			.run(input.campaignId, result.lastInsertRowid, input.characterName, 1);
 		return this.get(result.lastInsertRowid.toString()) as Promise<Player>;
 	}
 
@@ -74,10 +87,28 @@ export default class PlayerModel {
 					: player.lastInspirationUsed,
 				player.id
 			);
+		if (input.characterName && player.characterName !== input.characterName) {
+			await this.db
+				.prepare(
+					`
+				UPDATE Combatant
+				SET name = ?
+				WHERE
+					campaignId = ? AND
+					playerId = ?
+			`
+				)
+				.run(
+					input.characterName,
+					input.campaignId ?? player.campaignId,
+					player.id
+				);
+		}
 		return this.get(player.id) as Promise<Player>;
 	}
 
 	async delete(id: string): Promise<boolean> {
+		await this.db.prepare("DELETE FROM Combatant WHERE playerId = ?").run(id);
 		await this.db.prepare("DELETE FROM Player WHERE id = ?").run(id);
 		return true;
 	}

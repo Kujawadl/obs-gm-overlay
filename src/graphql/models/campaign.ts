@@ -2,8 +2,9 @@ import { PubSub } from "graphql-subscriptions";
 import { CampaignInput } from "../server-types";
 import { CampaignModel as Campaign } from "../resolvers/campaign";
 import type { Database } from "better-sqlite3";
+import type Model from "./_model";
 
-export default class CampaignModel {
+export default class CampaignModel implements Model<Campaign, CampaignInput> {
 	private db: Database;
 	private pubsub: PubSub;
 
@@ -31,15 +32,17 @@ export default class CampaignModel {
           name,
           gmInspiration,
 					cooldownType,
-					cooldownTime
-        ) VALUES (?, ?, ?, ?)
+					cooldownTime,
+					activeEncounter
+        ) VALUES (?, ?, ?, ?, ?)
       `
 			)
 			.run(
 				input.name,
 				input.gmInspiration ?? false ? 1 : 0,
 				input.cooldownType ?? "none",
-				input.cooldownTime ?? 0
+				input.cooldownTime ?? 0,
+				input.activeEncounter
 			);
 		if (!result.lastInsertRowid) {
 			throw new Error("Error inserting new player record");
@@ -56,7 +59,8 @@ export default class CampaignModel {
           name = ?,
           gmInspiration = ?,
 					cooldownType = ?,
-					cooldownTime = ?
+					cooldownTime = ?,
+					activeEncounter = ?
         WHERE id = ?
       `
 			)
@@ -65,12 +69,16 @@ export default class CampaignModel {
 				input.gmInspiration ?? campaign.gmInspiration ?? false ? 1 : 0,
 				input.cooldownType ?? campaign.cooldownType ?? "none",
 				input.cooldownTime ?? campaign.cooldownTime ?? 0,
+				input.activeEncounter,
 				campaign.id
 			);
 		return this.get(campaign.id) as Promise<Campaign>;
 	}
 
 	async delete(id: string): Promise<boolean> {
+		// TODO: Verify cascade
+		await this.db.prepare("DELETE FROM Combatant WHERE campaignId = ?").run(id);
+		await this.db.prepare("DELETE FROM Encounter WHERE campaignId = ?").run(id);
 		await this.db.prepare("DELETE FROM Player WHERE campaignId = ?").run(id);
 		await this.db.prepare("DELETE FROM Campaign WHERE id = ?").run(id);
 		return true;

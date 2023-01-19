@@ -26,8 +26,13 @@ generates:
         PlayerMutation: "./resolvers/player#PlayerModel"
         Campaign: "./resolvers/campaign#CampaignModel"
         CampaignMutation: "./resolvers/campaign#CampaignModel"
+        Combatant: "./resolvers/initiative#CombatantModel"
+        CombatantMutation: "./resolvers/initiative#CombatantModel"
+        Encounter: "./resolvers/initiative#EncounterModel"
+        EncounterMutation: "./resolvers/initiative#EncounterModel"
       resolverTypeWrapperSignature: Promise<T> | T | Promise<undefined> | undefined
       maybeValue: T | undefined
+      inputMaybeValue: T | undefined | null
   ./src/graphql/introspection.json:
     plugins:
       - "introspection"

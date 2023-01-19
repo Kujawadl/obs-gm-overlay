@@ -3,6 +3,7 @@ import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import setupApolloClient from "../graphql/setup-apollo-client";
 import type { AppProps } from "next/app";
+import "./global.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const apolloClient = useMemo(setupApolloClient, []);

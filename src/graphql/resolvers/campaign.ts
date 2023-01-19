@@ -1,8 +1,13 @@
+import { withFilter } from "graphql-subscriptions";
+import { Context } from "../context";
 import { formatDate, parseDate } from "../../utils";
 import {
 	CampaignMutationResolvers,
 	CampaignResolvers,
 	CooldownType,
+	MutationResolvers,
+	QueryResolvers,
+	SubscriptionResolvers,
 } from "../server-types";
 
 export interface CampaignModel {
@@ -11,14 +16,46 @@ export interface CampaignModel {
 	gmInspiration: boolean;
 	cooldownType: CooldownType;
 	cooldownTime: number;
+	activeEncounter?: string;
 }
 
 interface Resolvers {
+	Query: QueryResolvers;
+	Mutation: MutationResolvers;
+	Subscription: SubscriptionResolvers;
 	Campaign: CampaignResolvers;
 	CampaignMutation: CampaignMutationResolvers;
 }
 
 const resolvers: Resolvers = {
+	Query: {
+		campaigns(_parent, _args, ctx) {
+			return ctx.Campaign.list();
+		},
+		campaign(_parent, args, ctx) {
+			return ctx.Campaign.get(args.id);
+		},
+	},
+	Mutation: {
+		async campaign(_parent, args, ctx) {
+			const campaign = args.id ? await ctx.Campaign.get(args.id) : undefined;
+			return (campaign ?? {}) as CampaignModel;
+		},
+	},
+	Subscription: {
+		campaign: {
+			// @ts-expect-error graphql-subscriptions types are incorrect, but this 100% works
+			subscribe: withFilter(
+				(_parent: null, args: { id: string }, ctx: Context) => {
+					setImmediate(() => ctx.Campaign.publishSubscription(args.id));
+					return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
+				},
+				(payload, variables) => {
+					return payload.campaign.id === parseInt(variables.id);
+				}
+			),
+		},
+	},
 	Campaign: {
 		players(parent, _args, ctx) {
 			return ctx.Player.list(parent.id);

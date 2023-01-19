@@ -1,16 +1,8 @@
+import merge from "lodash/merge";
 import Campaign from "./campaign";
+import Initiative from "./initiative";
 import Player from "./player";
 
-import Query from "./_query";
-import Mutation from "./_mutation";
-import Subscription from "./_subscription";
-
-const resolvers = {
-	...Campaign,
-	...Player,
-	Query,
-	Mutation,
-	Subscription,
-};
+const resolvers = merge(Campaign, Initiative, Player);
 
 export default resolvers;

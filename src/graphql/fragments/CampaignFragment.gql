@@ -1,3 +1,4 @@
+#import "./EncounterFragment.gql"
 #import "./PlayerFragment.gql"
 
 fragment Campaign on Campaign {
@@ -9,5 +10,8 @@ fragment Campaign on Campaign {
 	lastInspirationUsed
 	players {
 		...Player
+	}
+	activeEncounter {
+		...Encounter
 	}
 }

@@ -29,8 +29,10 @@ export type Scalars = {
 
 export type Campaign = {
 	__typename?: "Campaign";
+	activeEncounter?: Maybe<Encounter>;
 	cooldownTime: Scalars["Int"];
 	cooldownType: CooldownType;
+	encounters: Array<Encounter>;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
@@ -39,6 +41,7 @@ export type Campaign = {
 };
 
 export type CampaignInput = {
+	activeEncounter?: InputMaybe<Scalars["ID"]>;
 	cooldownTime?: InputMaybe<Scalars["Int"]>;
 	cooldownType?: InputMaybe<CooldownType>;
 	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
@@ -48,17 +51,110 @@ export type CampaignInput = {
 export type CampaignMutation = {
 	__typename?: "CampaignMutation";
 	delete: Scalars["Boolean"];
+	encounter?: Maybe<EncounterMutation>;
 	save: Campaign;
+};
+
+export type CampaignMutationEncounterArgs = {
+	id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type CampaignMutationSaveArgs = {
 	input: CampaignInput;
 };
 
+export type Combatant = {
+	__typename?: "Combatant";
+	campaign: Campaign;
+	encounter: Encounter;
+	id: Scalars["ID"];
+	name: Scalars["String"];
+	player?: Maybe<Player>;
+	public: Scalars["Boolean"];
+	turnOrder: Scalars["Int"];
+};
+
+export type CombatantInput = {
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+	id?: InputMaybe<Scalars["ID"]>;
+	name: Scalars["String"];
+	playerId?: InputMaybe<Scalars["ID"]>;
+	public?: InputMaybe<Scalars["Boolean"]>;
+	turnOrder: Scalars["Int"];
+};
+
+export type CombatantMutation = {
+	__typename?: "CombatantMutation";
+	delete: Scalars["Boolean"];
+	save: Combatant;
+};
+
+export type CombatantMutationDeleteArgs = {
+	input: CombatantInput;
+};
+
+export type CombatantMutationSaveArgs = {
+	input: CombatantInput;
+};
+
 export enum CooldownType {
 	None = "none",
 	Player = "player",
 	Table = "table",
+}
+
+export type Encounter = {
+	__typename?: "Encounter";
+	combatants: Array<Combatant>;
+	hideMonsterNames: HideMonsterNames;
+	id: Scalars["ID"];
+	name: Scalars["String"];
+	round: Scalars["Int"];
+	turn: Scalars["Int"];
+	turnStart?: Maybe<Scalars["Date"]>;
+};
+
+export type EncounterInput = {
+	campaignId: Scalars["ID"];
+	hideMonsterNames?: InputMaybe<HideMonsterNames>;
+	id?: InputMaybe<Scalars["ID"]>;
+	name: Scalars["String"];
+	round?: InputMaybe<Scalars["Int"]>;
+	turn?: InputMaybe<Scalars["Int"]>;
+	turnStart?: InputMaybe<Scalars["Date"]>;
+};
+
+export type EncounterMutation = {
+	__typename?: "EncounterMutation";
+	combatant: CombatantMutation;
+	delete: Scalars["Boolean"];
+	next?: Maybe<Scalars["Boolean"]>;
+	prev?: Maybe<Scalars["Boolean"]>;
+	save: Encounter;
+	setActive: Scalars["Boolean"];
+};
+
+export type EncounterMutationCombatantArgs = {
+	id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type EncounterMutationDeleteArgs = {
+	encounterId: Scalars["ID"];
+};
+
+export type EncounterMutationSaveArgs = {
+	input: EncounterInput;
+};
+
+export type EncounterMutationSetActiveArgs = {
+	active?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export enum HideMonsterNames {
+	Always = "always",
+	Never = "never",
+	UntilTurn = "untilTurn",
 }
 
 export type Mutation = {
@@ -146,6 +242,47 @@ export type CampaignFragment = {
 		inspiration: number;
 		lastInspirationUsed?: any | null;
 	}>;
+	activeEncounter?: {
+		__typename?: "Encounter";
+		id: string;
+		name: string;
+		hideMonsterNames: HideMonsterNames;
+		round: number;
+		turn: number;
+		turnStart?: any | null;
+		combatants: Array<{
+			__typename?: "Combatant";
+			id: string;
+			name: string;
+			public: boolean;
+			turnOrder: number;
+		}>;
+	} | null;
+};
+
+export type CombatantFragment = {
+	__typename?: "Combatant";
+	id: string;
+	name: string;
+	public: boolean;
+	turnOrder: number;
+};
+
+export type EncounterFragment = {
+	__typename?: "Encounter";
+	id: string;
+	name: string;
+	hideMonsterNames: HideMonsterNames;
+	round: number;
+	turn: number;
+	turnStart?: any | null;
+	combatants: Array<{
+		__typename?: "Combatant";
+		id: string;
+		name: string;
+		public: boolean;
+		turnOrder: number;
+	}>;
 };
 
 export type PlayerFragment = {
@@ -211,6 +348,22 @@ export type SaveCampaignMutation = {
 				inspiration: number;
 				lastInspirationUsed?: any | null;
 			}>;
+			activeEncounter?: {
+				__typename?: "Encounter";
+				id: string;
+				name: string;
+				hideMonsterNames: HideMonsterNames;
+				round: number;
+				turn: number;
+				turnStart?: any | null;
+				combatants: Array<{
+					__typename?: "Combatant";
+					id: string;
+					name: string;
+					public: boolean;
+					turnOrder: number;
+				}>;
+			} | null;
 		};
 	} | null;
 };
@@ -278,6 +431,22 @@ export type ListCampaignsQuery = {
 			inspiration: number;
 			lastInspirationUsed?: any | null;
 		}>;
+		activeEncounter?: {
+			__typename?: "Encounter";
+			id: string;
+			name: string;
+			hideMonsterNames: HideMonsterNames;
+			round: number;
+			turn: number;
+			turnStart?: any | null;
+			combatants: Array<{
+				__typename?: "Combatant";
+				id: string;
+				name: string;
+				public: boolean;
+				turnOrder: number;
+			}>;
+		} | null;
 	}>;
 };
 
@@ -304,6 +473,22 @@ export type CampaignSubscription = {
 			inspiration: number;
 			lastInspirationUsed?: any | null;
 		}>;
+		activeEncounter?: {
+			__typename?: "Encounter";
+			id: string;
+			name: string;
+			hideMonsterNames: HideMonsterNames;
+			round: number;
+			turn: number;
+			turnStart?: any | null;
+			combatants: Array<{
+				__typename?: "Combatant";
+				id: string;
+				name: string;
+				public: boolean;
+				turnOrder: number;
+			}>;
+		} | null;
 	} | null;
 };
 
@@ -317,6 +502,28 @@ export const PlayerFragmentDoc = gql`
 		lastInspirationUsed
 	}
 `;
+export const CombatantFragmentDoc = gql`
+	fragment Combatant on Combatant {
+		id
+		name
+		public
+		turnOrder
+	}
+`;
+export const EncounterFragmentDoc = gql`
+	fragment Encounter on Encounter {
+		id
+		name
+		hideMonsterNames
+		round
+		turn
+		turnStart
+		combatants {
+			...Combatant
+		}
+	}
+	${CombatantFragmentDoc}
+`;
 export const CampaignFragmentDoc = gql`
 	fragment Campaign on Campaign {
 		id
@@ -328,8 +535,12 @@ export const CampaignFragmentDoc = gql`
 		players {
 			...Player
 		}
+		activeEncounter {
+			...Encounter
+		}
 	}
 	${PlayerFragmentDoc}
+	${EncounterFragmentDoc}
 `;
 export const DeleteCampaignDocument = gql`
 	mutation DELETE_CAMPAIGN($id: ID!) {

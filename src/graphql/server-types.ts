@@ -9,10 +9,11 @@ import {
 } from "graphql";
 import { PlayerModel } from "./resolvers/player";
 import { CampaignModel } from "./resolvers/campaign";
+import { CombatantModel, EncounterModel } from "./resolvers/initiative";
 import { Context } from "./context";
 
 export type Maybe<T> = T | undefined;
-export type InputMaybe<T> = T | undefined;
+export type InputMaybe<T> = T | undefined | null;
 export type Exact<T extends { [key: string]: unknown }> = {
 	[K in keyof T]: T[K];
 };
@@ -37,8 +38,10 @@ export type Scalars = {
 
 export type Campaign = {
 	__typename?: "Campaign";
+	activeEncounter?: Maybe<Encounter>;
 	cooldownTime: Scalars["Int"];
 	cooldownType: CooldownType;
+	encounters: Array<Encounter>;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
@@ -47,6 +50,7 @@ export type Campaign = {
 };
 
 export type CampaignInput = {
+	activeEncounter?: InputMaybe<Scalars["ID"]>;
 	cooldownTime?: InputMaybe<Scalars["Int"]>;
 	cooldownType?: InputMaybe<CooldownType>;
 	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
@@ -56,17 +60,110 @@ export type CampaignInput = {
 export type CampaignMutation = {
 	__typename?: "CampaignMutation";
 	delete: Scalars["Boolean"];
+	encounter?: Maybe<EncounterMutation>;
 	save: Campaign;
+};
+
+export type CampaignMutationEncounterArgs = {
+	id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type CampaignMutationSaveArgs = {
 	input: CampaignInput;
 };
 
+export type Combatant = {
+	__typename?: "Combatant";
+	campaign: Campaign;
+	encounter: Encounter;
+	id: Scalars["ID"];
+	name: Scalars["String"];
+	player?: Maybe<Player>;
+	public: Scalars["Boolean"];
+	turnOrder: Scalars["Int"];
+};
+
+export type CombatantInput = {
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+	id?: InputMaybe<Scalars["ID"]>;
+	name: Scalars["String"];
+	playerId?: InputMaybe<Scalars["ID"]>;
+	public?: InputMaybe<Scalars["Boolean"]>;
+	turnOrder: Scalars["Int"];
+};
+
+export type CombatantMutation = {
+	__typename?: "CombatantMutation";
+	delete: Scalars["Boolean"];
+	save: Combatant;
+};
+
+export type CombatantMutationDeleteArgs = {
+	input: CombatantInput;
+};
+
+export type CombatantMutationSaveArgs = {
+	input: CombatantInput;
+};
+
 export enum CooldownType {
 	None = "none",
 	Player = "player",
 	Table = "table",
+}
+
+export type Encounter = {
+	__typename?: "Encounter";
+	combatants: Array<Combatant>;
+	hideMonsterNames: HideMonsterNames;
+	id: Scalars["ID"];
+	name: Scalars["String"];
+	round: Scalars["Int"];
+	turn: Scalars["Int"];
+	turnStart?: Maybe<Scalars["Date"]>;
+};
+
+export type EncounterInput = {
+	campaignId: Scalars["ID"];
+	hideMonsterNames?: InputMaybe<HideMonsterNames>;
+	id?: InputMaybe<Scalars["ID"]>;
+	name: Scalars["String"];
+	round?: InputMaybe<Scalars["Int"]>;
+	turn?: InputMaybe<Scalars["Int"]>;
+	turnStart?: InputMaybe<Scalars["Date"]>;
+};
+
+export type EncounterMutation = {
+	__typename?: "EncounterMutation";
+	combatant: CombatantMutation;
+	delete: Scalars["Boolean"];
+	next?: Maybe<Scalars["Boolean"]>;
+	prev?: Maybe<Scalars["Boolean"]>;
+	save: Encounter;
+	setActive: Scalars["Boolean"];
+};
+
+export type EncounterMutationCombatantArgs = {
+	id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type EncounterMutationDeleteArgs = {
+	encounterId: Scalars["ID"];
+};
+
+export type EncounterMutationSaveArgs = {
+	input: EncounterInput;
+};
+
+export type EncounterMutationSetActiveArgs = {
+	active?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export enum HideMonsterNames {
+	Always = "always",
+	Never = "never",
+	UntilTurn = "untilTurn",
 }
 
 export type Mutation = {
@@ -252,8 +349,15 @@ export type ResolversTypes = {
 	Campaign: ResolverTypeWrapper<CampaignModel>;
 	CampaignInput: CampaignInput;
 	CampaignMutation: ResolverTypeWrapper<CampaignModel>;
+	Combatant: ResolverTypeWrapper<CombatantModel>;
+	CombatantInput: CombatantInput;
+	CombatantMutation: ResolverTypeWrapper<CombatantModel>;
 	CooldownType: CooldownType;
 	Date: ResolverTypeWrapper<Scalars["Date"]>;
+	Encounter: ResolverTypeWrapper<EncounterModel>;
+	EncounterInput: EncounterInput;
+	EncounterMutation: ResolverTypeWrapper<EncounterModel>;
+	HideMonsterNames: HideMonsterNames;
 	ID: ResolverTypeWrapper<Scalars["ID"]>;
 	Int: ResolverTypeWrapper<Scalars["Int"]>;
 	Mutation: ResolverTypeWrapper<{}>;
@@ -271,7 +375,13 @@ export type ResolversParentTypes = {
 	Campaign: CampaignModel;
 	CampaignInput: CampaignInput;
 	CampaignMutation: CampaignModel;
+	Combatant: CombatantModel;
+	CombatantInput: CombatantInput;
+	CombatantMutation: CombatantModel;
 	Date: Scalars["Date"];
+	Encounter: EncounterModel;
+	EncounterInput: EncounterInput;
+	EncounterMutation: EncounterModel;
 	ID: Scalars["ID"];
 	Int: Scalars["Int"];
 	Mutation: {};
@@ -287,9 +397,19 @@ export type CampaignResolvers<
 	ContextType = Context,
 	ParentType extends ResolversParentTypes["Campaign"] = ResolversParentTypes["Campaign"]
 > = {
+	activeEncounter?: Resolver<
+		Maybe<ResolversTypes["Encounter"]>,
+		ParentType,
+		ContextType
+	>;
 	cooldownTime?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 	cooldownType?: Resolver<
 		ResolversTypes["CooldownType"],
+		ParentType,
+		ContextType
+	>;
+	encounters?: Resolver<
+		Array<ResolversTypes["Encounter"]>,
 		ParentType,
 		ContextType
 	>;
@@ -310,6 +430,12 @@ export type CampaignMutationResolvers<
 	ParentType extends ResolversParentTypes["CampaignMutation"] = ResolversParentTypes["CampaignMutation"]
 > = {
 	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+	encounter?: Resolver<
+		Maybe<ResolversTypes["EncounterMutation"]>,
+		ParentType,
+		ContextType,
+		Partial<CampaignMutationEncounterArgs>
+	>;
 	save?: Resolver<
 		ResolversTypes["Campaign"],
 		ParentType,
@@ -319,10 +445,98 @@ export type CampaignMutationResolvers<
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CombatantResolvers<
+	ContextType = Context,
+	ParentType extends ResolversParentTypes["Combatant"] = ResolversParentTypes["Combatant"]
+> = {
+	campaign?: Resolver<ResolversTypes["Campaign"], ParentType, ContextType>;
+	encounter?: Resolver<ResolversTypes["Encounter"], ParentType, ContextType>;
+	id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	player?: Resolver<Maybe<ResolversTypes["Player"]>, ParentType, ContextType>;
+	public?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+	turnOrder?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CombatantMutationResolvers<
+	ContextType = Context,
+	ParentType extends ResolversParentTypes["CombatantMutation"] = ResolversParentTypes["CombatantMutation"]
+> = {
+	delete?: Resolver<
+		ResolversTypes["Boolean"],
+		ParentType,
+		ContextType,
+		RequireFields<CombatantMutationDeleteArgs, "input">
+	>;
+	save?: Resolver<
+		ResolversTypes["Combatant"],
+		ParentType,
+		ContextType,
+		RequireFields<CombatantMutationSaveArgs, "input">
+	>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateScalarConfig
 	extends GraphQLScalarTypeConfig<ResolversTypes["Date"], any> {
 	name: "Date";
 }
+
+export type EncounterResolvers<
+	ContextType = Context,
+	ParentType extends ResolversParentTypes["Encounter"] = ResolversParentTypes["Encounter"]
+> = {
+	combatants?: Resolver<
+		Array<ResolversTypes["Combatant"]>,
+		ParentType,
+		ContextType
+	>;
+	hideMonsterNames?: Resolver<
+		ResolversTypes["HideMonsterNames"],
+		ParentType,
+		ContextType
+	>;
+	id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	round?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+	turn?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+	turnStart?: Resolver<Maybe<ResolversTypes["Date"]>, ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EncounterMutationResolvers<
+	ContextType = Context,
+	ParentType extends ResolversParentTypes["EncounterMutation"] = ResolversParentTypes["EncounterMutation"]
+> = {
+	combatant?: Resolver<
+		ResolversTypes["CombatantMutation"],
+		ParentType,
+		ContextType,
+		Partial<EncounterMutationCombatantArgs>
+	>;
+	delete?: Resolver<
+		ResolversTypes["Boolean"],
+		ParentType,
+		ContextType,
+		RequireFields<EncounterMutationDeleteArgs, "encounterId">
+	>;
+	next?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+	prev?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+	save?: Resolver<
+		ResolversTypes["Encounter"],
+		ParentType,
+		ContextType,
+		RequireFields<EncounterMutationSaveArgs, "input">
+	>;
+	setActive?: Resolver<
+		ResolversTypes["Boolean"],
+		ParentType,
+		ContextType,
+		Partial<EncounterMutationSetActiveArgs>
+	>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type MutationResolvers<
 	ContextType = Context,
@@ -418,7 +632,11 @@ export type SubscriptionResolvers<
 export type Resolvers<ContextType = Context> = {
 	Campaign?: CampaignResolvers<ContextType>;
 	CampaignMutation?: CampaignMutationResolvers<ContextType>;
+	Combatant?: CombatantResolvers<ContextType>;
+	CombatantMutation?: CombatantMutationResolvers<ContextType>;
 	Date?: GraphQLScalarType;
+	Encounter?: EncounterResolvers<ContextType>;
+	EncounterMutation?: EncounterMutationResolvers<ContextType>;
 	Mutation?: MutationResolvers<ContextType>;
 	Player?: PlayerResolvers<ContextType>;
 	PlayerMutation?: PlayerMutationResolvers<ContextType>;

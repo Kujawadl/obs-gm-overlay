@@ -1,0 +1,13 @@
+#import "./CombatantFragment.gql"
+
+fragment Encounter on Encounter {
+	id
+	name
+	hideMonsterNames
+	round
+	turn
+	turnStart
+	combatants {
+		...Combatant
+	}
+}

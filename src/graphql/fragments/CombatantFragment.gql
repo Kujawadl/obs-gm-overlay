@@ -1,0 +1,6 @@
+fragment Combatant on Combatant {
+	id
+	name
+	public
+	turnOrder
+}

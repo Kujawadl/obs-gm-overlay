@@ -62,9 +62,9 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
 - [ ] Initiative Tracker
   - [ ] Allow GM to add creatures with public/private names
   - [ ] Allow GM to enter player/creature initiative values
-  - [ ] Allow GM to reset initiative, clearing initiative values and deleting all creatures
-  - [ ] Allow GM to advance initiative by one turn
-  - [ ] Create initiative overlay that tracks whose turn it is/how many rounds have passed
+  - [ ] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
+  - [ ] Allow GM to advance initiative forward/backward by one turn
+  - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
 - [ ] Additional Inspiration Options
   - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)

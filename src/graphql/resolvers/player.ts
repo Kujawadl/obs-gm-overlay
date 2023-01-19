@@ -1,4 +1,9 @@
-import { PlayerMutationResolvers, PlayerResolvers } from "../server-types";
+import {
+	MutationResolvers,
+	PlayerMutationResolvers,
+	PlayerResolvers,
+	QueryResolvers,
+} from "../server-types";
 
 export interface PlayerModel {
 	id: string;
@@ -11,11 +16,24 @@ export interface PlayerModel {
 }
 
 interface Resolvers {
+	Query: QueryResolvers;
+	Mutation: MutationResolvers;
 	Player: PlayerResolvers;
 	PlayerMutation: PlayerMutationResolvers;
 }
 
 const resolvers: Resolvers = {
+	Query: {
+		player(_parent, args, ctx) {
+			return ctx.Player.get(args.id);
+		},
+	},
+	Mutation: {
+		async player(_parent, args, ctx) {
+			const player = args.id ? await ctx.Player.get(args.id) : undefined;
+			return (player ?? {}) as PlayerModel;
+		},
+	},
 	Player: {
 		campaign(parent, _args, { Campaign }) {
 			return Campaign.get(parent.campaignId);
