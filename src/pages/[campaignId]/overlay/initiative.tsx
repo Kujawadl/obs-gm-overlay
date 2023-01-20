@@ -66,12 +66,16 @@ export default function Initiative() {
 			</Head>
 			<Box
 				sx={{
-					display: "flex",
+					display: "inline-flex",
 					flexDirection: "column",
+					width: "auto",
 					justifyContent: "space-around",
+					border: "50px solid transparent",
+					borderImage: "url(/celtic-frame.png)",
+					borderImageSlice: "160 fill",
 				}}
 			>
-				<Typography variant="h5" sx={{ marginLeft: 4 }}>
+				<Typography variant="h5" sx={{ marginLeft: 4, marginRight: 4 }}>
 					Round {round}
 					<Box
 						className={overTime ? "blink" : undefined}
@@ -83,6 +87,15 @@ export default function Initiative() {
 						{turnDuration && `(${turnDuration})`}
 					</Box>
 				</Typography>
+				<hr
+					style={{
+						width: "100%",
+						padding: 0,
+						border: "none",
+						borderTop: "medium double #333",
+						color: "#333",
+					}}
+				/>
 				{combatants.map((combatant, i) => (
 					<Box
 						key={`combatant_${i}_${combatant}`}
