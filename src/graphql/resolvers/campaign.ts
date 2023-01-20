@@ -51,7 +51,7 @@ const resolvers: Resolvers = {
 					return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
 				},
 				(payload, variables) => {
-					return payload.campaign.id === parseInt(variables.id);
+					return payload.campaign.id === variables.id;
 				}
 			),
 		},

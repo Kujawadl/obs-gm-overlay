@@ -1,90 +1,85 @@
 import type Model from "./_model";
 import type { EncounterInput } from "../server-types";
 import type { EncounterModel as Encounter } from "../resolvers/initiative";
-import type { Database } from "better-sqlite3";
+import type { Sql } from "postgres";
+
+interface TurnQuery {
+	encounterId: string;
+	turn: number;
+}
 
 export default class EncounterModel
 	implements Model<Encounter, EncounterInput>
 {
-	private db: Database;
+	private sql: Sql;
 
-	constructor(db: Database) {
-		this.db = db;
+	constructor(sql: Sql) {
+		this.sql = sql;
 	}
 
 	async get(id: string): Promise<Encounter | undefined> {
-		return await this.db
-			.prepare("SELECT * FROM Encounter WHERE id = ?")
-			.get(id);
+		const results = await this.sql<Encounter[]>`
+			SELECT *
+			FROM "Encounter"
+			WHERE "id" = ${id}
+		`;
+		return results[0];
 	}
 
 	async list(campaignId: string): Promise<Encounter[]> {
-		const players = await this.db
-			.prepare("SELECT * FROM Encounter WHERE campaignId = ?")
-			.all(campaignId);
-		return players.length ? players : [];
+		const results = await this.sql<Encounter[]>`
+			SELECT *
+			FROM "Encounter"
+			WHERE "campaignId" = ${campaignId}
+			ORDER BY "name"
+		`;
+		return results?.length ? results : [];
 	}
 
 	async create(input: EncounterInput): Promise<Encounter> {
-		const result = await this.db
-			.prepare(
-				`
-        INSERT INTO Encounter (
-          campaignId,
-          name,
-          hideMonsterNames,
-          round,
-          turn,
-          turnStart
-        ) VALUES (?, ?, ?, ?, ?, ?)
-      `
-			)
-			.run(
-				input.campaignId,
-				input.name ?? "n/a",
-				input.hideMonsterNames ?? "never",
-				input.round ?? 0,
-				input.turn ?? 0,
-				input.turnStart
-			);
-		if (!result.lastInsertRowid) {
-			throw new Error("Error inserting new encounter record");
-		}
-		return this.get(result.lastInsertRowid.toString()) as Promise<Encounter>;
+		const results = await this.sql<Encounter[]>`
+			INSERT INTO "Encounter" (
+				"campaignId",
+				"name",
+				"hideMonsterNames",
+				"round",
+				"turn",
+				"turnStart"
+			) VALUES (
+				${input.campaignId},
+				${input.name ?? "n/a"},
+				${input.hideMonsterNames ?? "never"},
+				${input.round ?? 0},
+				${input.turn ?? 0},
+				${input.turnStart ?? null}
+			) RETURNING *
+		`;
+		return results[0];
 	}
 
 	async update(
 		encounter: Encounter,
 		input: EncounterInput
 	): Promise<Encounter> {
-		await this.db
-			.prepare(
-				`
-        UPDATE Encounter
-        SET
-          campaignId = ?,
-          name = ?,
-          hideMonsterNames = ?,
-          round = ?,
-          turn = ?,
-          turnStart = ?
-        WHERE id = ?
-      `
-			)
-			.run(
-				input.campaignId ?? encounter.campaignId,
-				input.name ?? encounter.name ?? "n/a",
-				input.hideMonsterNames ?? encounter.hideMonsterNames ?? "never",
-				input.round ?? encounter.round ?? 0,
-				input.turn ?? encounter.turn ?? 0,
-				input.turnStart ?? encounter.turnStart,
-				encounter.id
-			);
-		return this.get(encounter.id) as Promise<Encounter>;
+		const results = await this.sql<Encounter[]>`
+			UPDATE "Encounter"
+			SET
+				"campaignId" = ${input.campaignId ?? encounter.campaignId},
+				"name" = ${input.name ?? encounter.name ?? "n/a"},
+				"hideMonsterNames" = ${
+					input.hideMonsterNames ?? encounter.hideMonsterNames ?? "never"
+				},
+				"round" = ${input.round ?? encounter.round ?? 0},
+				"turn" = ${input.turn ?? encounter.turn ?? 0},
+				"turnStart" = ${input.turnStart ?? encounter.turnStart}
+			WHERE "id" = ${encounter.id}
+			RETURNING *
+		`;
+		return results[0];
 	}
 
 	async delete(id: string): Promise<boolean> {
-		await this.db.prepare("DELETE FROM Encounter WHERE id = ?").run(id);
+		await this.sql`DELETE FROM "Encounter" WHERE "id" = ${id}`;
 		return true;
 	}
 
@@ -93,20 +88,17 @@ export default class EncounterModel
 		currentTurn: number,
 		currentRound: number
 	): Promise<[nextTurn: number, nextRound: number]> {
-		const nextTurn = await this.db
-			.prepare(
-				`
-					SELECT
-						encounterId,
-						MIN(turnOrder) turn
-					FROM Combatant
-					WHERE
-						encounterId = ? AND
-						turnOrder > ?
-					GROUP BY encounterId
-				`
-			)
-			.get(encounterId, currentTurn);
+		const [nextTurn] =
+			(await this.sql<TurnQuery[]>`
+				SELECT
+					"encounterId",
+					MIN("turnOrder") turn
+				FROM "Combatant"
+				WHERE
+					"encounterId" = ${encounterId} AND
+					"turnOrder" > ${currentTurn}
+				GROUP BY "encounterId"
+			`) ?? [];
 		return nextTurn?.turn
 			? [nextTurn.turn, currentRound || 1]
 			: [1, currentRound + 1];
@@ -120,37 +112,31 @@ export default class EncounterModel
 		if (currentTurn === 0 && currentRound === 0) {
 			return [currentTurn, currentRound];
 		}
-		const prevTurn = await this.db
-			.prepare(
-				`
-					SELECT
-						encounterId,
-						MAX(turnOrder) turn
-					FROM Combatant
-					WHERE
-						encounterId = ? AND
-						turnOrder < ?
-					GROUP BY encounterId
-				`
-			)
-			.get(encounterId, currentTurn);
-		const maxTurn = await this.db
-			.prepare(
-				`
-					SELECT
-						encounterId,
-						MAX(turnOrder) turn
-					FROM Combatant
-					WHERE
-						encounterId = ?
-					GROUP BY encounterId
-				`
-			)
-			.get(encounterId);
+		const [prevTurn] =
+			(await this.sql<TurnQuery[]>`
+				SELECT
+					"encounterId",
+					MAX("turnOrder") turn
+				FROM "Combatant"
+				WHERE
+					"encounterId" = ${encounterId} AND
+					"turnOrder" < ${currentTurn}
+				GROUP BY "encounterId"
+			`) ?? [];
+		const [maxTurn] =
+			(await this.sql<TurnQuery[]>`
+				SELECT
+					"encounterId",
+					MAX("turnOrder") turn
+				FROM "Combatant"
+				WHERE
+					"encounterId" = ${encounterId}
+				GROUP BY "encounterId"
+			`) ?? [];
 		return prevTurn?.turn
 			? [prevTurn.turn, currentRound]
 			: currentRound === 1
 			? [0, 0]
-			: [maxTurn.turn, currentRound - 1];
+			: [maxTurn?.turn ?? 0, currentRound - 1];
 	}
 }

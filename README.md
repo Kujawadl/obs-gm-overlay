@@ -4,13 +4,7 @@ A simple web application, designed to be run locally by a GM in-session, which
 generates some simple OBS overlays to impose over your Discord camera.
 
 Designed to help GMs present information to the players to avoid the inevitable
-questions of "when is my turn" or "how much inspiration do I have?"
-
-NOT designed in ANY way to be used in a production system. I have zero interest
-in adding support for user accounts/authentication/production databases/CI-CD
-pipelines, etc. I already do this 40 hours a week at work, and it's my least
-favorite part of software development. This is just meant to be a
-quick-and-dirty solution to a minor annoyance I've had for a while.
+questions of "when is my turn" or "do I have inspiration?"
 
 ## To Do
 
@@ -45,6 +39,13 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Allow GM to specify whether cooldown is per player or for the entire group
   - [x] Allow GM to reset cooldown for specific players
   - [ ] Allow GM to reset cooldown for entire table
+- [ ] Initiative Tracker
+  - [ ] Allow GM to add creatures with public/private names
+  - [ ] Allow GM to enter player/creature initiative values
+  - [ ] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
+  - [ ] Allow GM to advance initiative forward/backward by one turn
+  - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
+  - [ ] Allow GM to specify cooldown duration in rounds
 - [ ] Hardening
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
@@ -56,16 +57,18 @@ quick-and-dirty solution to a minor annoyance I've had for a while.
   - [x] Explore possibility of integrating server app into next.js API routing
     - [x] Auto-initialize WS server on server startup (currently have to run an HTTP request to initialize it first)
     - [x] Fix hot-reloading of server modules
+  - [x] Switch to another DB implementation (sqlite is not cutting it, migrations are a nightmare)
+    - [x] Change all IDs to no longer be incremental (e.g. GUIDs generated at resource creation)
+  - [ ] Host app on Vercel (free for hobbyists)
+    - [ ] Host DB on a live server
+  - [ ] Add user accounts (SSO, don't want to deal with auth)
+    - [ ] Restrict account creation to unique invite links (fewer users = more likely to stay in free tiers)
+    - [ ] Link campaigns to users so each user gets their own private campaigns list
+    - [ ] Secure all edit access to the user who owns that campaign
+    - [ ] Overlays are readonly and always public
 
 ### Possible Additional Features
 
-- [ ] Initiative Tracker
-  - [ ] Allow GM to add creatures with public/private names
-  - [ ] Allow GM to enter player/creature initiative values
-  - [ ] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
-  - [ ] Allow GM to advance initiative forward/backward by one turn
-  - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
-  - [ ] Allow GM to specify cooldown duration in rounds
 - [ ] Additional Inspiration Options
   - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
   - [ ] Allow user to configure max. inspiration value

@@ -1,90 +1,76 @@
 import { CombatantInput } from "../server-types";
 import { CombatantModel as Combatant } from "../resolvers/initiative";
 import Model from "./_model";
-import type { Database } from "better-sqlite3";
+import type { Sql } from "postgres";
 
 export default class CombatantModel
 	implements Model<Combatant, CombatantInput>
 {
-	private db: Database;
+	private sql: Sql;
 
-	constructor(db: Database) {
-		this.db = db;
+	constructor(sql: Sql) {
+		this.sql = sql;
 	}
 
 	async get(id: string): Promise<Combatant | undefined> {
-		return this.db.prepare("SELECT * FROM Combatant WHERE id = ?").get(id);
+		const results = await this.sql<
+			Combatant[]
+		>`SELECT * FROM "Combatant" WHERE "id" = ${id}`;
+		return results[0];
 	}
 
 	async list(encounterId: string): Promise<Combatant[]> {
-		const players = await this.db
-			.prepare(
-				"SELECT * FROM Combatant WHERE encounterId = ? ORDER BY turnOrder, name"
-			)
-			.all(encounterId);
-		return players.length ? players : [];
+		const results = await this.sql<Combatant[]>`
+			SELECT *
+			FROM "Combatant"
+			WHERE "encounterId" = ${encounterId}
+			ORDER BY "turnOrder", "name"
+		`;
+		return results?.length ? results : [];
 	}
 
 	async create(input: CombatantInput): Promise<Combatant> {
-		const result = await this.db
-			.prepare(
-				`
-        INSERT INTO Combatant (
-          campaignId,
-					encounterId,
-          playerId,
-          name,
-          public,
-					turnOrder
-        ) VALUES (?, ?, ?, ?, ?, ?)
-      `
-			)
-			.run(
-				input.campaignId,
-				input.encounterId,
-				input.playerId,
-				input.name ?? "n/a",
-				input.public ?? false ? 1 : 0,
-				input.turnOrder ?? 0
-			);
-		if (!result.lastInsertRowid) {
-			throw new Error("Error inserting new combatant record");
-		}
-		return this.get(result.lastInsertRowid.toString()) as Promise<Combatant>;
+		const results = await this.sql<Combatant[]>`
+			INSERT INTO "Combatant" (
+				"campaignId",
+				"encounterId",
+				"playerId",
+				"name",
+				"public",
+				"turnOrder"
+			) VALUES (
+				${input.campaignId},
+				${input.encounterId},
+				${input.playerId ?? null},
+				${input.name ?? "n/a"},
+				${input.public ?? false},
+				${input.turnOrder ?? 0}
+			) RETURNING *
+		`;
+		return results[0];
 	}
 
 	async update(
 		combatant: Combatant,
 		input: CombatantInput
 	): Promise<Combatant> {
-		await this.db
-			.prepare(
-				`
-        UPDATE Combatant
-        SET
-				campaignId,
-				encounterId,
-				playerId,
-				name,
-				public,
-				turnOrder
-        WHERE id = ?
-      `
-			)
-			.run(
-				input.campaignId ?? combatant.campaignId,
-				input.encounterId ?? combatant.encounterId,
-				input.playerId ?? combatant.playerId,
-				input.name ?? combatant.name,
-				input.public ?? combatant.public ?? false ? 1 : 0,
-				input.turnOrder ?? combatant.turnOrder ?? 0,
-				combatant.id
-			);
-		return this.get(combatant.id) as Promise<Combatant>;
+		const results = await this.sql<Combatant[]>`
+			UPDATE "Combatant"
+			SET
+				"campaignId" = ${input.campaignId ?? combatant.campaignId},
+				"encounterId" = ${input.encounterId ?? combatant.encounterId},
+				"playerId" = ${input.playerId ?? combatant.playerId ?? null},
+				"name" = ${input.name ?? combatant.name ?? ""},
+				"public" = ${input.public ?? combatant.public ?? false},
+				"turnOrder" = ${input.turnOrder ?? combatant.turnOrder ?? 0}
+			WHERE "id" = ${combatant.id}
+			RETURNING *
+		`;
+		return results[0];
 	}
 
 	async delete(id: string): Promise<boolean> {
-		await this.db.prepare("DELETE FROM Combatant WHERE id = ?").run(id);
+		await this.sql`DELETE FROM "Combatant" WHERE "id" = ${id}`;
 		return true;
 	}
 }

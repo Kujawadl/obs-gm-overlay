@@ -30,7 +30,7 @@ async function setupApolloServer(
 					return {
 						async drainServer() {
 							await serverCleanup.dispose();
-							await context.db.close();
+							await context.sql.end();
 						},
 					};
 				},

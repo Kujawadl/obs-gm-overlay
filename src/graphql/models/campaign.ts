@@ -1,86 +1,81 @@
 import { PubSub } from "graphql-subscriptions";
 import { CampaignInput } from "../server-types";
 import { CampaignModel as Campaign } from "../resolvers/campaign";
-import type { Database } from "better-sqlite3";
+import type { Sql } from "postgres";
 import type Model from "./_model";
 
 export default class CampaignModel implements Model<Campaign, CampaignInput> {
-	private db: Database;
+	private sql: Sql;
 	private pubsub: PubSub;
 
-	constructor(db: Database, pubsub: PubSub) {
-		this.db = db;
+	constructor(sql: Sql, pubsub: PubSub) {
+		this.sql = sql;
 		this.pubsub = pubsub;
 	}
 
-	get(id?: string): Promise<Campaign | undefined> {
-		return id
-			? this.db.prepare("SELECT * FROM Campaign WHERE id = ?").get(id)
-			: Promise.resolve(undefined);
+	async get(id?: string): Promise<Campaign | undefined> {
+		if (!id) {
+			return Promise.resolve(undefined);
+		}
+		const results = await this.sql<
+			Campaign[]
+		>`SELECT * FROM "Campaign" WHERE "id" = ${id}`;
+		return results[0];
 	}
 
 	async list(): Promise<Campaign[]> {
-		const campaigns = await this.db.prepare("SELECT * FROM Campaign").all();
-		return campaigns.length ? campaigns : [];
+		const results = await this.sql<Campaign[]>`
+			SELECT *
+			FROM "Campaign"
+			ORDER BY "name"
+		`;
+		return results.length ? results : [];
 	}
 
 	async create(input: CampaignInput): Promise<Campaign> {
-		const result = await this.db
-			.prepare(
-				`
-        INSERT INTO Campaign (
-          name,
-          gmInspiration,
-					cooldownType,
-					cooldownTime,
-					activeEncounter
-        ) VALUES (?, ?, ?, ?, ?)
-      `
-			)
-			.run(
-				input.name,
-				input.gmInspiration ?? false ? 1 : 0,
-				input.cooldownType ?? "none",
-				input.cooldownTime ?? 0,
-				input.activeEncounter
-			);
-		if (!result.lastInsertRowid) {
-			throw new Error("Error inserting new player record");
-		}
-		return this.get(result.lastInsertRowid.toString()) as Promise<Campaign>;
+		const results = await this.sql<Campaign[]>`
+        INSERT INTO "Campaign" (
+          "name",
+          "gmInspiration",
+					"cooldownType",
+					"cooldownTime",
+					"activeEncounter"
+        ) VALUES (
+					${input.name}, 
+					${input.gmInspiration ?? false},
+					${input.cooldownType ?? "none"},
+					${input.cooldownTime ?? 0},
+					${input.activeEncounter ?? null}
+				) RETURNING *
+      `;
+		return results[0];
 	}
 
 	async update(campaign: Campaign, input: CampaignInput): Promise<Campaign> {
-		await this.db
-			.prepare(
-				`
-        UPDATE Campaign
+		const results = await this.sql<Campaign[]>`
+        UPDATE "Campaign"
         SET
-          name = ?,
-          gmInspiration = ?,
-					cooldownType = ?,
-					cooldownTime = ?,
-					activeEncounter = ?
-        WHERE id = ?
-      `
-			)
-			.run(
-				input.name ?? campaign.name,
-				input.gmInspiration ?? campaign.gmInspiration ?? false ? 1 : 0,
-				input.cooldownType ?? campaign.cooldownType ?? "none",
-				input.cooldownTime ?? campaign.cooldownTime ?? 0,
-				input.activeEncounter,
-				campaign.id
-			);
-		return this.get(campaign.id) as Promise<Campaign>;
+          "name" = ${input.name ?? campaign.name},
+          "gmInspiration" = ${
+						input.gmInspiration ?? campaign.gmInspiration ?? false
+					},
+					"cooldownType" = ${input.cooldownType ?? campaign.cooldownType ?? "none"},
+					"cooldownTime" = ${input.cooldownTime ?? campaign.cooldownTime ?? 0},
+					"activeEncounter" = ${input.activeEncounter ?? null}
+        WHERE "id" = ${campaign.id}
+				RETURNING *
+      `;
+		return results[0];
 	}
 
 	async delete(id: string): Promise<boolean> {
 		// TODO: Verify cascade
-		await this.db.prepare("DELETE FROM Combatant WHERE campaignId = ?").run(id);
-		await this.db.prepare("DELETE FROM Encounter WHERE campaignId = ?").run(id);
-		await this.db.prepare("DELETE FROM Player WHERE campaignId = ?").run(id);
-		await this.db.prepare("DELETE FROM Campaign WHERE id = ?").run(id);
+		await this.sql.begin(async (sql) => {
+			await sql`DELETE FROM "Combatant" WHERE "campaignId" = ${id}`;
+			await sql`DELETE FROM "Encounter" WHERE "campaignId" = ${id}`;
+			await sql`DELETE FROM "Player" WHERE "campaignId" = ${id}`;
+			await sql`DELETE FROM "Campaign" WHERE "id" = ${id}`;
+		});
 		return true;
 	}
 

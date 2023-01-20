@@ -1,5 +1,4 @@
-import { join } from "path";
-import sqlite, { Database } from "better-sqlite3";
+import postgres, { Sql } from "postgres";
 import { PubSub } from "graphql-subscriptions";
 import {
 	CampaignModel,
@@ -9,7 +8,7 @@ import {
 } from "./models";
 
 export interface Context {
-	db: Database;
+	sql: Sql;
 	pubsub: PubSub;
 	Campaign: CampaignModel;
 	Combatant: CombatantModel;
@@ -18,14 +17,20 @@ export interface Context {
 }
 
 export async function setupContext(): Promise<Context> {
-	const db = await sqlite(join(process.cwd(), "obs-gm-overlay.db"));
+	const sql = postgres({
+		host: process.env.DB_HOST,
+		username: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		database: process.env.DB_NAME,
+		port: parseInt(process.env.DB_PORT || "") || 5432,
+	});
 	const pubsub = new PubSub();
 	return {
-		db,
+		sql,
 		pubsub,
-		Campaign: new CampaignModel(db, pubsub),
-		Combatant: new CombatantModel(db),
-		Encounter: new EncounterModel(db),
-		Player: new PlayerModel(db),
+		Campaign: new CampaignModel(sql, pubsub),
+		Combatant: new CombatantModel(sql),
+		Encounter: new EncounterModel(sql),
+		Player: new PlayerModel(sql),
 	};
 }
