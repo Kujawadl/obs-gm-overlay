@@ -6,6 +6,29 @@ generates some simple OBS overlays to impose over your Discord camera.
 Designed to help GMs present information to the players to avoid the inevitable
 questions of "when is my turn" or "do I have inspiration?"
 
+## Running the local database
+
+For local development you must spin up a local PostgreSQL instance. The easiest
+way to achieve this is using Docker:
+
+```sh
+# To install the postgres image
+docker pull postgres
+
+# Spins up a postgres container, persisting data to the local-db folder in this
+# repository. Remember to change the password on first login!
+npm run db-up
+
+# To tear down the local instance (does not delete the data)
+npm run db-down
+
+# To delete the data and start fresh (permanent!)
+rm -rf ./local-db
+
+# To run DB migrations (requires .env.local file to be configured)
+npm run migrate
+```
+
 ## To Do
 
 ### MVP
@@ -32,6 +55,9 @@ questions of "when is my turn" or "do I have inspiration?"
   - [x] Query/display player data
   - [x] Update player data on update using subscription
   - [x] Style player data suitable for OBS overlay
+- [ ] Inspiration Tracker
+  - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
+  - [ ] Allow user to configure max. inspiration value
 - [x] Inspiration Cooldown
   - [x] Track last inspiration consumption time
   - [x] Limit consumption of inspiration by a configurable cooldown window
@@ -66,9 +92,3 @@ questions of "when is my turn" or "do I have inspiration?"
     - [ ] Link campaigns to users so each user gets their own private campaigns list
     - [ ] Secure all edit access to the user who owns that campaign
     - [ ] Overlays are readonly and always public
-
-### Possible Additional Features
-
-- [ ] Additional Inspiration Options
-  - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
-  - [ ] Allow user to configure max. inspiration value

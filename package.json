@@ -15,7 +15,9 @@
 		"migrate": "ts-node migrate.ts",
 		"generate-types": "graphql-codegen --config codegen.yml",
 		"typecheck": "tsc",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"db-up": "docker-compose -f local-db-compose.yml up -d",
+		"db-down": "docker-compose -f local-db-compose.yml down"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.7.4",

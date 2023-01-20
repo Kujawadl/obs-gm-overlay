@@ -39,8 +39,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 # SQLite Database
-obs-gm-overlay.db
-obs-gm-overlay.db-*
-obs-gm-overlay.db.*
+local-db/*
 
 .env.local
