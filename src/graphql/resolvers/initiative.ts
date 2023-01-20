@@ -47,7 +47,11 @@ const resolvers: Resolvers = {
 			const encounter = parent.activeEncounter
 				? await ctx.Encounter.get(parent.activeEncounter)
 				: undefined;
-			return encounter as EncounterModel;
+			return encounter;
+		},
+		async encounter(_parent, args, ctx) {
+			const encounter = await ctx.Encounter.get(args.id);
+			return encounter;
 		},
 		async encounters(parent, _args, ctx) {
 			return ctx.Encounter.list(parent.id);
@@ -70,6 +74,9 @@ const resolvers: Resolvers = {
 	},
 	EncounterMutation: {
 		async save(parent, args, ctx) {
+			if (!parent.id && args.input.id) {
+				parent = (await ctx.Encounter.get(args.input.id)) ?? parent;
+			}
 			const result = parent.id
 				? await ctx.Encounter.update(parent, args.input)
 				: await ctx.Encounter.create(args.input);
@@ -80,6 +87,7 @@ const resolvers: Resolvers = {
 			return result;
 		},
 		async delete(parent, _args, ctx) {
+			if (!parent.id) return false;
 			const campaign = await ctx.Campaign.get(parent.campaignId);
 			if (campaign?.activeEncounter === parent.id) {
 				await ctx.Campaign.update(campaign, {
@@ -87,7 +95,7 @@ const resolvers: Resolvers = {
 				} as CampaignInput);
 				await ctx.Campaign.publishSubscription(parent.id);
 			}
-			const result = parent.id ? await ctx.Encounter.delete(parent.id) : false;
+			const result = await ctx.Encounter.delete(parent.id);
 			return result;
 		},
 		async setActive(parent, args, ctx) {
@@ -164,6 +172,9 @@ const resolvers: Resolvers = {
 	},
 	CombatantMutation: {
 		async save(parent, args, ctx) {
+			if (!parent.id && args.input.id) {
+				parent = (await ctx.Combatant.get(args.input.id)) ?? parent;
+			}
 			const result = parent.id
 				? await ctx.Combatant.update(parent, args.input)
 				: await ctx.Combatant.create(args.input);
@@ -174,7 +185,8 @@ const resolvers: Resolvers = {
 			return result;
 		},
 		async delete(parent, _args, ctx) {
-			const result = parent.id ? await ctx.Combatant.delete(parent.id) : false;
+			if (!parent.id) return false;
+			const result = await ctx.Combatant.delete(parent.id);
 			const campaign = await ctx.Campaign.get(parent.campaignId);
 			if (campaign?.activeEncounter === parent.encounterId) {
 				await ctx.Campaign.publishSubscription(campaign.id);

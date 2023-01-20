@@ -1,0 +1,12 @@
+mutation ADVANCE_INITIATIVE(
+	$campaignId: ID!
+	$encounterId: ID!
+	$forward: Boolean = true
+) {
+	campaign(id: $campaignId) {
+		encounter(id: $encounterId) {
+			next @include(if: $forward)
+			prev @skip(if: $forward)
+		}
+	}
+}

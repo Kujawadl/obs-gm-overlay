@@ -9,6 +9,7 @@ const typeDefs = gql`
 
 	extend type Campaign {
 		activeEncounter: Encounter
+		encounter(id: ID!): Encounter
 		encounters: [Encounter!]!
 	}
 
@@ -38,7 +39,7 @@ const typeDefs = gql`
 
 	type EncounterMutation {
 		save(input: EncounterInput!): Encounter!
-		delete(encounterId: ID!): Boolean!
+		delete: Boolean!
 		setActive(active: Boolean): Boolean!
 		next: Boolean
 		prev: Boolean
@@ -47,7 +48,7 @@ const typeDefs = gql`
 
 	type CombatantMutation {
 		save(input: CombatantInput!): Combatant!
-		delete(input: CombatantInput!): Boolean!
+		delete: Boolean!
 	}
 
 	extend input CampaignInput {

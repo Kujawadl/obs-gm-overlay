@@ -41,12 +41,17 @@ export type Campaign = {
 	activeEncounter?: Maybe<Encounter>;
 	cooldownTime: Scalars["Int"];
 	cooldownType: CooldownType;
+	encounter?: Maybe<Encounter>;
 	encounters: Array<Encounter>;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	name: Scalars["String"];
 	players: Array<Player>;
+};
+
+export type CampaignEncounterArgs = {
+	id: Scalars["ID"];
 };
 
 export type CampaignInput = {
@@ -99,10 +104,6 @@ export type CombatantMutation = {
 	save: Combatant;
 };
 
-export type CombatantMutationDeleteArgs = {
-	input: CombatantInput;
-};
-
 export type CombatantMutationSaveArgs = {
 	input: CombatantInput;
 };
@@ -146,10 +147,6 @@ export type EncounterMutation = {
 
 export type EncounterMutationCombatantArgs = {
 	id?: InputMaybe<Scalars["ID"]>;
-};
-
-export type EncounterMutationDeleteArgs = {
-	encounterId: Scalars["ID"];
 };
 
 export type EncounterMutationSaveArgs = {
@@ -408,6 +405,12 @@ export type CampaignResolvers<
 		ParentType,
 		ContextType
 	>;
+	encounter?: Resolver<
+		Maybe<ResolversTypes["Encounter"]>,
+		ParentType,
+		ContextType,
+		RequireFields<CampaignEncounterArgs, "id">
+	>;
 	encounters?: Resolver<
 		Array<ResolversTypes["Encounter"]>,
 		ParentType,
@@ -463,12 +466,7 @@ export type CombatantMutationResolvers<
 	ContextType = Context,
 	ParentType extends ResolversParentTypes["CombatantMutation"] = ResolversParentTypes["CombatantMutation"]
 > = {
-	delete?: Resolver<
-		ResolversTypes["Boolean"],
-		ParentType,
-		ContextType,
-		RequireFields<CombatantMutationDeleteArgs, "input">
-	>;
+	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	save?: Resolver<
 		ResolversTypes["Combatant"],
 		ParentType,
@@ -515,12 +513,7 @@ export type EncounterMutationResolvers<
 		ContextType,
 		Partial<EncounterMutationCombatantArgs>
 	>;
-	delete?: Resolver<
-		ResolversTypes["Boolean"],
-		ParentType,
-		ContextType,
-		RequireFields<EncounterMutationDeleteArgs, "encounterId">
-	>;
+	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	next?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
 	prev?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
 	save?: Resolver<

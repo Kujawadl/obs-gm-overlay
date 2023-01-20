@@ -32,12 +32,17 @@ export type Campaign = {
 	activeEncounter?: Maybe<Encounter>;
 	cooldownTime: Scalars["Int"];
 	cooldownType: CooldownType;
+	encounter?: Maybe<Encounter>;
 	encounters: Array<Encounter>;
 	gmInspiration: Scalars["Boolean"];
 	id: Scalars["ID"];
 	lastInspirationUsed?: Maybe<Scalars["Date"]>;
 	name: Scalars["String"];
 	players: Array<Player>;
+};
+
+export type CampaignEncounterArgs = {
+	id: Scalars["ID"];
 };
 
 export type CampaignInput = {
@@ -90,10 +95,6 @@ export type CombatantMutation = {
 	save: Combatant;
 };
 
-export type CombatantMutationDeleteArgs = {
-	input: CombatantInput;
-};
-
 export type CombatantMutationSaveArgs = {
 	input: CombatantInput;
 };
@@ -137,10 +138,6 @@ export type EncounterMutation = {
 
 export type EncounterMutationCombatantArgs = {
 	id?: InputMaybe<Scalars["ID"]>;
-};
-
-export type EncounterMutationDeleteArgs = {
-	encounterId: Scalars["ID"];
 };
 
 export type EncounterMutationSaveArgs = {
@@ -256,6 +253,7 @@ export type CampaignFragment = {
 			name: string;
 			public: boolean;
 			turnOrder: number;
+			player?: { __typename?: "Player"; playerName: string } | null;
 		}>;
 	} | null;
 };
@@ -266,6 +264,7 @@ export type CombatantFragment = {
 	name: string;
 	public: boolean;
 	turnOrder: number;
+	player?: { __typename?: "Player"; playerName: string } | null;
 };
 
 export type EncounterFragment = {
@@ -282,6 +281,7 @@ export type EncounterFragment = {
 		name: string;
 		public: boolean;
 		turnOrder: number;
+		player?: { __typename?: "Player"; playerName: string } | null;
 	}>;
 };
 
@@ -295,6 +295,51 @@ export type PlayerFragment = {
 	lastInspirationUsed?: any | null;
 };
 
+export type AddCombatantMutationVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+	combatant: CombatantInput;
+}>;
+
+export type AddCombatantMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: {
+			__typename?: "EncounterMutation";
+			combatant: {
+				__typename?: "CombatantMutation";
+				save: {
+					__typename?: "Combatant";
+					id: string;
+					name: string;
+					public: boolean;
+					turnOrder: number;
+					player?: { __typename?: "Player"; playerName: string } | null;
+				};
+			};
+		} | null;
+	} | null;
+};
+
+export type AdvanceInitiativeMutationVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+	forward?: InputMaybe<Scalars["Boolean"]>;
+}>;
+
+export type AdvanceInitiativeMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: {
+			__typename?: "EncounterMutation";
+			next?: boolean | null;
+			prev?: boolean | null;
+		} | null;
+	} | null;
+};
+
 export type DeleteCampaignMutationVariables = Exact<{
 	id: Scalars["ID"];
 }>;
@@ -302,6 +347,19 @@ export type DeleteCampaignMutationVariables = Exact<{
 export type DeleteCampaignMutation = {
 	__typename?: "Mutation";
 	campaign?: { __typename?: "CampaignMutation"; delete: boolean } | null;
+};
+
+export type DeleteEncounterMutationVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+}>;
+
+export type DeleteEncounterMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: { __typename?: "EncounterMutation"; delete: boolean } | null;
+	} | null;
 };
 
 export type DeletePlayerMutationVariables = Exact<{
@@ -362,9 +420,41 @@ export type SaveCampaignMutation = {
 					name: string;
 					public: boolean;
 					turnOrder: number;
+					player?: { __typename?: "Player"; playerName: string } | null;
 				}>;
 			} | null;
 		};
+	} | null;
+};
+
+export type SaveEncounterMutationVariables = Exact<{
+	encounter: EncounterInput;
+}>;
+
+export type SaveEncounterMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: {
+			__typename?: "EncounterMutation";
+			save: {
+				__typename?: "Encounter";
+				id: string;
+				name: string;
+				hideMonsterNames: HideMonsterNames;
+				round: number;
+				turn: number;
+				turnStart?: any | null;
+				combatants: Array<{
+					__typename?: "Combatant";
+					id: string;
+					name: string;
+					public: boolean;
+					turnOrder: number;
+					player?: { __typename?: "Player"; playerName: string } | null;
+				}>;
+			};
+		} | null;
 	} | null;
 };
 
@@ -389,6 +479,19 @@ export type SavePlayerMutation = {
 	} | null;
 };
 
+export type SetActiveEncounterMutationVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+}>;
+
+export type SetActiveEncounterMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: { __typename?: "EncounterMutation"; setActive: boolean } | null;
+	} | null;
+};
+
 export type SetPlayerInspirationMutationVariables = Exact<{
 	id: Scalars["ID"];
 	inspiration: Scalars["Int"];
@@ -407,6 +510,35 @@ export type SetPlayerInspirationMutation = {
 			inspiration: number;
 			lastInspirationUsed?: any | null;
 		};
+	} | null;
+};
+
+export type EncounterDetailQueryVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+}>;
+
+export type EncounterDetailQuery = {
+	__typename?: "Query";
+	campaign?: {
+		__typename?: "Campaign";
+		encounter?: {
+			__typename?: "Encounter";
+			id: string;
+			name: string;
+			hideMonsterNames: HideMonsterNames;
+			round: number;
+			turn: number;
+			turnStart?: any | null;
+			combatants: Array<{
+				__typename?: "Combatant";
+				id: string;
+				name: string;
+				public: boolean;
+				turnOrder: number;
+				player?: { __typename?: "Player"; playerName: string } | null;
+			}>;
+		} | null;
 	} | null;
 };
 
@@ -445,9 +577,38 @@ export type ListCampaignsQuery = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
+				player?: { __typename?: "Player"; playerName: string } | null;
 			}>;
 		} | null;
 	}>;
+};
+
+export type ListEncountersQueryVariables = Exact<{
+	campaignId: Scalars["ID"];
+}>;
+
+export type ListEncountersQuery = {
+	__typename?: "Query";
+	campaign?: {
+		__typename?: "Campaign";
+		encounters: Array<{
+			__typename?: "Encounter";
+			id: string;
+			name: string;
+			hideMonsterNames: HideMonsterNames;
+			round: number;
+			turn: number;
+			turnStart?: any | null;
+			combatants: Array<{
+				__typename?: "Combatant";
+				id: string;
+				name: string;
+				public: boolean;
+				turnOrder: number;
+				player?: { __typename?: "Player"; playerName: string } | null;
+			}>;
+		}>;
+	} | null;
 };
 
 export type CampaignSubscriptionVariables = Exact<{
@@ -487,6 +648,7 @@ export type CampaignSubscription = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
+				player?: { __typename?: "Player"; playerName: string } | null;
 			}>;
 		} | null;
 	} | null;
@@ -508,6 +670,9 @@ export const CombatantFragmentDoc = gql`
 		name
 		public
 		turnOrder
+		player {
+			playerName
+		}
 	}
 `;
 export const EncounterFragmentDoc = gql`
@@ -542,6 +707,128 @@ export const CampaignFragmentDoc = gql`
 	${PlayerFragmentDoc}
 	${EncounterFragmentDoc}
 `;
+export const AddCombatantDocument = gql`
+	mutation ADD_COMBATANT(
+		$campaignId: ID!
+		$encounterId: ID!
+		$combatant: CombatantInput!
+	) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				combatant {
+					save(input: $combatant) {
+						...Combatant
+					}
+				}
+			}
+		}
+	}
+	${CombatantFragmentDoc}
+`;
+export type AddCombatantMutationFn = Apollo.MutationFunction<
+	AddCombatantMutation,
+	AddCombatantMutationVariables
+>;
+
+/**
+ * __useAddCombatantMutation__
+ *
+ * To run a mutation, you first call `useAddCombatantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCombatantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCombatantMutation, { data, loading, error }] = useAddCombatantMutation({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *      combatant: // value for 'combatant'
+ *   },
+ * });
+ */
+export function useAddCombatantMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		AddCombatantMutation,
+		AddCombatantMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		AddCombatantMutation,
+		AddCombatantMutationVariables
+	>(AddCombatantDocument, options);
+}
+export type AddCombatantMutationHookResult = ReturnType<
+	typeof useAddCombatantMutation
+>;
+export type AddCombatantMutationResult =
+	Apollo.MutationResult<AddCombatantMutation>;
+export type AddCombatantMutationOptions = Apollo.BaseMutationOptions<
+	AddCombatantMutation,
+	AddCombatantMutationVariables
+>;
+export const AdvanceInitiativeDocument = gql`
+	mutation ADVANCE_INITIATIVE(
+		$campaignId: ID!
+		$encounterId: ID!
+		$forward: Boolean = true
+	) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				next @include(if: $forward)
+				prev @skip(if: $forward)
+			}
+		}
+	}
+`;
+export type AdvanceInitiativeMutationFn = Apollo.MutationFunction<
+	AdvanceInitiativeMutation,
+	AdvanceInitiativeMutationVariables
+>;
+
+/**
+ * __useAdvanceInitiativeMutation__
+ *
+ * To run a mutation, you first call `useAdvanceInitiativeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdvanceInitiativeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [advanceInitiativeMutation, { data, loading, error }] = useAdvanceInitiativeMutation({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *      forward: // value for 'forward'
+ *   },
+ * });
+ */
+export function useAdvanceInitiativeMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		AdvanceInitiativeMutation,
+		AdvanceInitiativeMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		AdvanceInitiativeMutation,
+		AdvanceInitiativeMutationVariables
+	>(AdvanceInitiativeDocument, options);
+}
+export type AdvanceInitiativeMutationHookResult = ReturnType<
+	typeof useAdvanceInitiativeMutation
+>;
+export type AdvanceInitiativeMutationResult =
+	Apollo.MutationResult<AdvanceInitiativeMutation>;
+export type AdvanceInitiativeMutationOptions = Apollo.BaseMutationOptions<
+	AdvanceInitiativeMutation,
+	AdvanceInitiativeMutationVariables
+>;
 export const DeleteCampaignDocument = gql`
 	mutation DELETE_CAMPAIGN($id: ID!) {
 		campaign(id: $id) {
@@ -591,6 +878,59 @@ export type DeleteCampaignMutationResult =
 export type DeleteCampaignMutationOptions = Apollo.BaseMutationOptions<
 	DeleteCampaignMutation,
 	DeleteCampaignMutationVariables
+>;
+export const DeleteEncounterDocument = gql`
+	mutation DELETE_ENCOUNTER($campaignId: ID!, $encounterId: ID!) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				delete
+			}
+		}
+	}
+`;
+export type DeleteEncounterMutationFn = Apollo.MutationFunction<
+	DeleteEncounterMutation,
+	DeleteEncounterMutationVariables
+>;
+
+/**
+ * __useDeleteEncounterMutation__
+ *
+ * To run a mutation, you first call `useDeleteEncounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEncounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEncounterMutation, { data, loading, error }] = useDeleteEncounterMutation({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *   },
+ * });
+ */
+export function useDeleteEncounterMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		DeleteEncounterMutation,
+		DeleteEncounterMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		DeleteEncounterMutation,
+		DeleteEncounterMutationVariables
+	>(DeleteEncounterDocument, options);
+}
+export type DeleteEncounterMutationHookResult = ReturnType<
+	typeof useDeleteEncounterMutation
+>;
+export type DeleteEncounterMutationResult =
+	Apollo.MutationResult<DeleteEncounterMutation>;
+export type DeleteEncounterMutationOptions = Apollo.BaseMutationOptions<
+	DeleteEncounterMutation,
+	DeleteEncounterMutationVariables
 >;
 export const DeletePlayerDocument = gql`
 	mutation DELETE_PLAYER($id: ID!) {
@@ -746,6 +1086,61 @@ export type SaveCampaignMutationOptions = Apollo.BaseMutationOptions<
 	SaveCampaignMutation,
 	SaveCampaignMutationVariables
 >;
+export const SaveEncounterDocument = gql`
+	mutation SAVE_ENCOUNTER($encounter: EncounterInput!) {
+		campaign {
+			encounter {
+				save(input: $encounter) {
+					...Encounter
+				}
+			}
+		}
+	}
+	${EncounterFragmentDoc}
+`;
+export type SaveEncounterMutationFn = Apollo.MutationFunction<
+	SaveEncounterMutation,
+	SaveEncounterMutationVariables
+>;
+
+/**
+ * __useSaveEncounterMutation__
+ *
+ * To run a mutation, you first call `useSaveEncounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveEncounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveEncounterMutation, { data, loading, error }] = useSaveEncounterMutation({
+ *   variables: {
+ *      encounter: // value for 'encounter'
+ *   },
+ * });
+ */
+export function useSaveEncounterMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		SaveEncounterMutation,
+		SaveEncounterMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		SaveEncounterMutation,
+		SaveEncounterMutationVariables
+	>(SaveEncounterDocument, options);
+}
+export type SaveEncounterMutationHookResult = ReturnType<
+	typeof useSaveEncounterMutation
+>;
+export type SaveEncounterMutationResult =
+	Apollo.MutationResult<SaveEncounterMutation>;
+export type SaveEncounterMutationOptions = Apollo.BaseMutationOptions<
+	SaveEncounterMutation,
+	SaveEncounterMutationVariables
+>;
 export const SavePlayerDocument = gql`
 	mutation SAVE_PLAYER($id: ID, $input: PlayerInput!) {
 		player(id: $id) {
@@ -800,6 +1195,59 @@ export type SavePlayerMutationOptions = Apollo.BaseMutationOptions<
 	SavePlayerMutation,
 	SavePlayerMutationVariables
 >;
+export const SetActiveEncounterDocument = gql`
+	mutation SET_ACTIVE_ENCOUNTER($campaignId: ID!, $encounterId: ID!) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				setActive(active: true)
+			}
+		}
+	}
+`;
+export type SetActiveEncounterMutationFn = Apollo.MutationFunction<
+	SetActiveEncounterMutation,
+	SetActiveEncounterMutationVariables
+>;
+
+/**
+ * __useSetActiveEncounterMutation__
+ *
+ * To run a mutation, you first call `useSetActiveEncounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetActiveEncounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setActiveEncounterMutation, { data, loading, error }] = useSetActiveEncounterMutation({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *   },
+ * });
+ */
+export function useSetActiveEncounterMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		SetActiveEncounterMutation,
+		SetActiveEncounterMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		SetActiveEncounterMutation,
+		SetActiveEncounterMutationVariables
+	>(SetActiveEncounterDocument, options);
+}
+export type SetActiveEncounterMutationHookResult = ReturnType<
+	typeof useSetActiveEncounterMutation
+>;
+export type SetActiveEncounterMutationResult =
+	Apollo.MutationResult<SetActiveEncounterMutation>;
+export type SetActiveEncounterMutationOptions = Apollo.BaseMutationOptions<
+	SetActiveEncounterMutation,
+	SetActiveEncounterMutationVariables
+>;
 export const SetPlayerInspirationDocument = gql`
 	mutation SET_PLAYER_INSPIRATION($id: ID!, $inspiration: Int!) {
 		player(id: $id) {
@@ -853,6 +1301,68 @@ export type SetPlayerInspirationMutationResult =
 export type SetPlayerInspirationMutationOptions = Apollo.BaseMutationOptions<
 	SetPlayerInspirationMutation,
 	SetPlayerInspirationMutationVariables
+>;
+export const EncounterDetailDocument = gql`
+	query ENCOUNTER_DETAIL($campaignId: ID!, $encounterId: ID!) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				...Encounter
+			}
+		}
+	}
+	${EncounterFragmentDoc}
+`;
+
+/**
+ * __useEncounterDetailQuery__
+ *
+ * To run a query within a React component, call `useEncounterDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEncounterDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEncounterDetailQuery({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *   },
+ * });
+ */
+export function useEncounterDetailQuery(
+	baseOptions: Apollo.QueryHookOptions<
+		EncounterDetailQuery,
+		EncounterDetailQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<EncounterDetailQuery, EncounterDetailQueryVariables>(
+		EncounterDetailDocument,
+		options
+	);
+}
+export function useEncounterDetailLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		EncounterDetailQuery,
+		EncounterDetailQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<
+		EncounterDetailQuery,
+		EncounterDetailQueryVariables
+	>(EncounterDetailDocument, options);
+}
+export type EncounterDetailQueryHookResult = ReturnType<
+	typeof useEncounterDetailQuery
+>;
+export type EncounterDetailLazyQueryHookResult = ReturnType<
+	typeof useEncounterDetailLazyQuery
+>;
+export type EncounterDetailQueryResult = Apollo.QueryResult<
+	EncounterDetailQuery,
+	EncounterDetailQueryVariables
 >;
 export const ListCampaignsDocument = gql`
 	query LIST_CAMPAIGNS {
@@ -911,6 +1421,67 @@ export type ListCampaignsLazyQueryHookResult = ReturnType<
 export type ListCampaignsQueryResult = Apollo.QueryResult<
 	ListCampaignsQuery,
 	ListCampaignsQueryVariables
+>;
+export const ListEncountersDocument = gql`
+	query LIST_ENCOUNTERS($campaignId: ID!) {
+		campaign(id: $campaignId) {
+			encounters {
+				...Encounter
+			}
+		}
+	}
+	${EncounterFragmentDoc}
+`;
+
+/**
+ * __useListEncountersQuery__
+ *
+ * To run a query within a React component, call `useListEncountersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListEncountersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListEncountersQuery({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *   },
+ * });
+ */
+export function useListEncountersQuery(
+	baseOptions: Apollo.QueryHookOptions<
+		ListEncountersQuery,
+		ListEncountersQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<ListEncountersQuery, ListEncountersQueryVariables>(
+		ListEncountersDocument,
+		options
+	);
+}
+export function useListEncountersLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		ListEncountersQuery,
+		ListEncountersQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<ListEncountersQuery, ListEncountersQueryVariables>(
+		ListEncountersDocument,
+		options
+	);
+}
+export type ListEncountersQueryHookResult = ReturnType<
+	typeof useListEncountersQuery
+>;
+export type ListEncountersLazyQueryHookResult = ReturnType<
+	typeof useListEncountersLazyQuery
+>;
+export type ListEncountersQueryResult = Apollo.QueryResult<
+	ListEncountersQuery,
+	ListEncountersQueryVariables
 >;
 export const CampaignDocument = gql`
 	subscription CAMPAIGN($id: ID!) {

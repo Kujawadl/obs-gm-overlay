@@ -100,7 +100,7 @@ export default class EncounterModel
 				GROUP BY "encounterId"
 			`) ?? [];
 		return nextTurn?.turn
-			? [nextTurn.turn, currentRound || 1]
+			? [nextTurn.turn, Math.max(currentRound, 1) || 1]
 			: [1, currentRound + 1];
 	}
 
@@ -137,6 +137,6 @@ export default class EncounterModel
 			? [prevTurn.turn, currentRound]
 			: currentRound === 1
 			? [0, 0]
-			: [maxTurn?.turn ?? 0, currentRound - 1];
+			: [maxTurn?.turn ?? 0, Math.max(currentRound - 1, 0)];
 	}
 }

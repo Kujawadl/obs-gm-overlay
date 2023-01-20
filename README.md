@@ -56,8 +56,8 @@ npm run migrate
   - [x] Update player data on update using subscription
   - [x] Style player data suitable for OBS overlay
 - [ ] Inspiration Tracker
-  - [ ] Allow user to disable multiple-inspiration (i.e. inspiration is either on or off)
-  - [ ] Allow user to configure max. inspiration value
+  - [ ] Allow GM to disable multiple-inspiration (i.e. inspiration is either on or off)
+  - [ ] Allow GM to configure max. inspiration value
 - [x] Inspiration Cooldown
   - [x] Track last inspiration consumption time
   - [x] Limit consumption of inspiration by a configurable cooldown window
@@ -68,8 +68,8 @@ npm run migrate
 - [ ] Initiative Tracker
   - [ ] Allow GM to add creatures with public/private names
   - [ ] Allow GM to enter player/creature initiative values
-  - [ ] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
-  - [ ] Allow GM to advance initiative forward/backward by one turn
+  - [x] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
+  - [x] Allow GM to advance initiative forward/backward by one turn
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
 - [ ] Hardening

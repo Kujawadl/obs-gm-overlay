@@ -3,4 +3,7 @@ fragment Combatant on Combatant {
 	name
 	public
 	turnOrder
+	player {
+		playerName
+	}
 }

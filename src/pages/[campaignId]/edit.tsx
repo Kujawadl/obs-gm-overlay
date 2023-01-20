@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import CampaignEditor from "../../components/campaign-editor";
 import { useCampaignSubscription } from "../../graphql/client-types";
 
-export default function Overlay() {
+export default function EditCampaign() {
 	const router = useRouter();
 	const { campaignId } = router.query;
 	const { data } = useCampaignSubscription({

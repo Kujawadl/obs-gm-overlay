@@ -7,7 +7,7 @@ import {
 	useCampaignSubscription,
 } from "../../../graphql/client-types";
 
-export default function Inspiration() {
+export default function InspirationOverlay() {
 	const router = useRouter();
 	const { campaignId } = router.query;
 	const { data } = useCampaignSubscription({

@@ -1,0 +1,11 @@
+#import "../fragments/EncounterFragment.gql"
+
+mutation SAVE_ENCOUNTER($encounter: EncounterInput!) {
+	campaign {
+		encounter {
+			save(input: $encounter) {
+				...Encounter
+			}
+		}
+	}
+}

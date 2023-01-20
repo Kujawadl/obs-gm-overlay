@@ -1,0 +1,9 @@
+#import "../fragments/EncounterFragment.gql"
+
+query LIST_ENCOUNTERS($campaignId: ID!) {
+	campaign(id: $campaignId) {
+		encounters {
+			...Encounter
+		}
+	}
+}

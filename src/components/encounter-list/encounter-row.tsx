@@ -1,9 +1,9 @@
 import {
 	Delete as DeleteIcon,
 	Edit as EditIcon,
-	List as ListIcon,
-	OpenInNew as OpenInNewIcon,
+	PlayArrow as PlayArrowIcon,
 	Preview as PreviewIcon,
+	OpenInNew as OpenInNewIcon,
 } from "@mui/icons-material";
 import {
 	Box,
@@ -24,17 +24,23 @@ import Link from "next/link";
 import { useState } from "react";
 import {
 	CampaignFragment,
-	useDeleteCampaignMutation,
+	EncounterFragment,
+	useDeleteEncounterMutation,
 } from "../../graphql/client-types";
 
-export interface CampaignRowProps {
+export interface EncounterRowProps {
 	campaign: CampaignFragment;
+	encounter: EncounterFragment;
 	refetch: () => void;
 }
 
-export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
-	const [deleteCampaign] = useDeleteCampaignMutation({
-		variables: { id: campaign.id },
+export default function EncounterRow({
+	campaign,
+	encounter,
+	refetch,
+}: EncounterRowProps) {
+	const [deleteCampaign] = useDeleteEncounterMutation({
+		variables: { campaignId: campaign.id, encounterId: encounter?.id },
 	});
 	const [deleting, setDeleting] = useState(false);
 	const theme = useTheme();
@@ -43,7 +49,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 	return (
 		<>
 			<ListItem
-				key={campaign.id}
+				key={encounter.id}
 				sx={{
 					flexWrap: "wrap",
 					border: 0,
@@ -53,7 +59,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 				}}
 			>
 				<ListItemText sx={{ flexBasis: "100%" }}>
-					<Typography variant="h5">{campaign.name}</Typography>
+					<Typography variant="h5">{encounter.name}</Typography>
 				</ListItemText>
 				<Box
 					sx={{
@@ -69,23 +75,10 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<Link href={`/${campaign.id}/edit`}>
+						<Link href={`/${campaign.id}/encounter/${encounter.id}/edit`}>
 							<Button component="a">
 								<EditIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Edit
-							</Button>
-						</Link>
-					</Box>
-					<Box
-						sx={{
-							flexGrow: 1,
-							flexBasis: isMobileView ? "100%" : "auto",
-						}}
-					>
-						<Link href={`/${campaign.id}/encounter`}>
-							<Button component="a">
-								<ListIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
-								Encounters
 							</Button>
 						</Link>
 					</Box>
@@ -99,7 +92,25 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							component="a"
 							underline="none"
 							color="inherit"
-							href={`/${campaign.id}/overlay/inspiration`}
+							href={`/${campaign.id}/encounter/${encounter.id}/run`}
+						>
+							<Button>
+								<PlayArrowIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
+								<Box sx={{ display: "flex", alignItems: "baseline" }}>Run</Box>
+							</Button>
+						</MUILink>
+					</Box>
+					<Box
+						sx={{
+							flexGrow: 1,
+							flexBasis: isMobileView ? "100%" : "auto",
+						}}
+					>
+						<MUILink
+							component="a"
+							underline="none"
+							color="inherit"
+							href={`/${campaign.id}/overlay/initiative`}
 							target="_blank"
 							rel="noreferrer"
 						>
@@ -125,9 +136,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 				</Box>
 			</ListItem>
 			<Dialog open={deleting} onClose={() => setDeleting(false)}>
-				<DialogTitle>
-					Delete campaign {campaign.name} and all of its players?
-				</DialogTitle>
+				<DialogTitle>Delete encounter {encounter.name}?</DialogTitle>
 				<DialogContent>
 					<DialogContentText>This action cannot be undone.</DialogContentText>
 				</DialogContent>
@@ -139,7 +148,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 						variant="contained"
 						onClick={() => {
 							deleteCampaign().then(({ data }) => {
-								if (data?.campaign?.delete) {
+								if (data?.campaign?.encounter?.delete) {
 									refetch();
 									setDeleting(false);
 								} else {

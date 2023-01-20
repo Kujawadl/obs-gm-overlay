@@ -1,0 +1,7 @@
+mutation DELETE_ENCOUNTER($campaignId: ID!, $encounterId: ID!) {
+	campaign(id: $campaignId) {
+		encounter(id: $encounterId) {
+			delete
+		}
+	}
+}
