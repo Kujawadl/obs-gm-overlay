@@ -1,6 +1,4 @@
-import { format, parse } from "date-fns";
-
-export const sqliteDateFormat = "yyyy-MM-dd HH:mm:ss";
+import { formatISO, parseISO } from "date-fns";
 
 /**
  * Formats a datetime value for SQLite use
@@ -13,12 +11,12 @@ export function formatDate(value?: string | Date): string {
 		value = new Date(value);
 	}
 
-	return format(value, sqliteDateFormat);
+	return formatISO(value);
 }
 
 /**
  * Formats a datetime value from SQLite into a Date object
  */
 export function parseDate(value: string): Date {
-	return parse(value, sqliteDateFormat, new Date());
+	return parseISO(value);
 }

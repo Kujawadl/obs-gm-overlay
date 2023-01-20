@@ -4,12 +4,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { useInterval } from "react-use";
-import humanizeDuration from "humanize-duration";
 import {
 	HideMonsterNames,
 	useCampaignSubscription,
 } from "../../../graphql/client-types";
-import { parseDate } from "../../../utils";
+import { parseDate, formatTimeDuration } from "../../../utils";
 
 export default function Initiative() {
 	const router = useRouter();
@@ -39,12 +38,22 @@ export default function Initiative() {
 		);
 	}, [data]);
 
-	const [turnDuration, setTurnDuration] = useState<number | null>(null);
+	const [turnDuration, setTurnDuration] = useState<string | null>(null);
+	const [overTime, setOverTime] = useState<boolean>(false);
 	useInterval(() => {
 		if ((round > 0 || turn > 0) && turnStart) {
-			setTurnDuration(new Date().getTime() - parseDate(turnStart).getTime());
+			const currentTime = new Date();
+			const startTime = parseDate(turnStart);
+			setTurnDuration(
+				formatTimeDuration(currentTime, parseDate(turnStart), [
+					"minutes",
+					"seconds",
+				])
+			);
+			setOverTime(currentTime.getTime() - startTime.getTime() > 60 * 1000);
 		} else if (turnDuration) {
 			setTurnDuration(null);
+			setOverTime(false);
 		}
 	}, 1000);
 
@@ -65,19 +74,13 @@ export default function Initiative() {
 				<Typography variant="h5" sx={{ marginLeft: 4 }}>
 					Round {round}
 					<Box
-						className={
-							turnDuration && turnDuration > 60 * 1000 ? "blink" : undefined
-						}
+						className={overTime ? "blink" : undefined}
 						sx={{
-							color:
-								turnDuration && turnDuration > 60 * 1000
-									? "error.main"
-									: "text.secondary",
+							color: overTime ? "error.main" : "text.secondary",
 							display: "inline-flex",
 						}}
 					>
-						{turnDuration &&
-							`(${humanizeDuration(turnDuration, { round: true })})`}
+						{turnDuration && `(${turnDuration})`}
 					</Box>
 				</Typography>
 				{combatants.map((combatant, i) => (
