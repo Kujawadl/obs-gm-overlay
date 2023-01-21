@@ -226,7 +226,7 @@ export default function CombatantEditor({
 														key={`${index}_${player.id}`}
 														value={player.id}
 													>
-														{player.playerName}
+														{player.playerName} ({player.characterName})
 													</MenuItem>
 												))}
 											</Select>
