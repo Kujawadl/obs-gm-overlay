@@ -47,7 +47,6 @@ npm run migrate
   - [x] Allow adding campaign
   - [x] Allow deleting campaign
   - [x] List player data
-  - [x] Allow updating player inspiration count
   - [x] Allow editing player data
   - [x] Allow adding player
   - [x] Allow deleting player
@@ -56,9 +55,9 @@ npm run migrate
   - [x] Update player data on update using subscription
   - [x] Style player data suitable for OBS overlay
 - [ ] Inspiration Tracker
+  - [x] Allow updating player inspiration count
   - [ ] Allow GM to disable multiple-inspiration (i.e. inspiration is either on or off)
   - [ ] Allow GM to configure max. inspiration value
-- [x] Inspiration Cooldown
   - [x] Track last inspiration consumption time
   - [x] Limit consumption of inspiration by a configurable cooldown window
   - [x] Allow GM to specify a cooldown time in minutes
