@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Formik } from "formik";
 import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
@@ -14,7 +14,6 @@ import {
 	useSaveCombatantMutation,
 	useSaveCombatantsMutation,
 } from "../../graphql/client-types";
-import { useDebouncedCallback } from "../../utils";
 import CombatantEditor from "./combatant-editor";
 
 interface CombatantListProps {
@@ -68,17 +67,20 @@ export default function CombatantList({
 		[campaignData]
 	);
 
-	const onSubmit = useDebouncedCallback((values: typeof initialValues) => {
-		const newValues = values.combatants.map((combatant, i) => ({
-			...combatant,
-			turnOrder: i + 1,
-		}));
-		saveCombatants({
-			variables: {
-				combatants: newValues,
-			},
-		});
-	}, 500);
+	const onSubmit = useCallback(
+		(values: typeof initialValues) => {
+			const newValues = values.combatants.map((combatant, i) => ({
+				...combatant,
+				turnOrder: i + 1,
+			}));
+			saveCombatants({
+				variables: {
+					combatants: newValues,
+				},
+			});
+		},
+		[saveCombatants]
+	);
 
 	return (
 		<Formik
