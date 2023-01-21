@@ -1,4 +1,4 @@
-import { Add as AddIcon } from "@mui/icons-material";
+import { Add as AddIcon, Clear as ClearIcon } from "@mui/icons-material";
 import {
 	Box,
 	Breadcrumbs,
@@ -15,6 +15,7 @@ import EncounterList from "../../../components/encounter-list";
 import {
 	useCampaignSubscription,
 	useListEncountersQuery,
+	useSaveCampaignMutation,
 	useSaveEncounterMutation,
 } from "../../../graphql/client-types";
 
@@ -31,10 +32,11 @@ export default function Encounters() {
 			campaignId: campaignId as string,
 		},
 	});
-	const [addEncounter] = useSaveEncounterMutation();
+	const [saveCampaign] = useSaveCampaignMutation();
+	const [saveEncounter] = useSaveEncounterMutation();
 
 	const onAddEncounter = useCallback(() => {
-		addEncounter({
+		saveEncounter({
 			variables: {
 				encounter: {
 					campaignId: campaignId as string,
@@ -51,7 +53,21 @@ export default function Encounters() {
 			}
 			refetch();
 		});
-	}, [addEncounter, campaignId, router, refetch]);
+	}, [saveEncounter, campaignId, router, refetch]);
+
+	const onClearActive = useCallback(() => {
+		if (campaignData?.campaign) {
+			saveCampaign({
+				variables: {
+					id: campaignId as string,
+					input: {
+						name: campaignData.campaign.name,
+						activeEncounter: null,
+					},
+				},
+			});
+		}
+	}, [saveCampaign, campaignData, campaignId]);
 
 	return campaignData?.campaign && data?.campaign?.encounters ? (
 		<>
@@ -78,7 +94,14 @@ export default function Encounters() {
 					encounters={data.campaign.encounters}
 					refetch={refetch}
 				/>
-				<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+				<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+					<Button
+						disabled={!campaignData?.campaign?.activeEncounter}
+						onClick={onClearActive}
+					>
+						<ClearIcon />
+						Clear Active Encounter
+					</Button>
 					<Button variant="contained" color="success" onClick={onAddEncounter}>
 						<AddIcon /> New Encounter
 					</Button>

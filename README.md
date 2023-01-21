@@ -69,8 +69,8 @@ npm run migrate
   - [x] Allow GM to add combatants with public/private names
   - [x] Allow GM to set combatant initiative order
   - [x] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
-  - [ ] Allow GM to unset active encounter (leaving encounter in list, but just making not active at this time)
-  - [ ] Allow GM to reset encounter initiative (set round/turn back to 0/0)
+  - [x] Allow GM to unset active encounter (leaving encounter in list, but just making not active at this time)
+  - [x] Allow GM to reset encounter initiative (set round/turn back to 0/0)
   - [x] Allow GM to advance initiative forward/backward by one turn
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds

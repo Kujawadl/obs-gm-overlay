@@ -10,14 +10,18 @@ import {
 import {
 	ArrowBackIos as ArrowBackIcon,
 	ArrowForwardIos as ArrowForwardIcon,
+	History as HistoryIcon,
 } from "@mui/icons-material";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import omit from "lodash/omit";
 import InitiativeList from "../../../components/initiative-list/initiative-list";
 import {
+	EncounterDetailDocument,
 	useAdvanceInitiativeMutation,
 	useCampaignSubscription,
+	useSaveEncounterMutation,
 } from "../../../graphql/client-types";
 
 export default function RunInitiative() {
@@ -32,6 +36,19 @@ export default function RunInitiative() {
 	const campaign = useMemo(() => data?.campaign, [data]);
 
 	const [advanceInitiative, { loading }] = useAdvanceInitiativeMutation();
+
+	const [resetInitiative] = useSaveEncounterMutation({
+		variables: {
+			encounter: {
+				...omit(campaign?.activeEncounter, "__typename", "combatants"),
+				campaignId: campaignId as string,
+				round: 0,
+				turn: 0,
+				turnStart: null,
+			},
+		},
+		refetchQueries: [EncounterDetailDocument],
+	});
 
 	const next = useCallback(
 		() =>
@@ -114,6 +131,13 @@ export default function RunInitiative() {
 						>
 							<ArrowBackIcon />
 							Previous
+						</Button>
+						<Button
+							disabled={loading || campaign.activeEncounter.round === 0}
+							onClick={() => resetInitiative()}
+						>
+							<HistoryIcon />
+							Restart
 						</Button>
 						<Button
 							variant="contained"
