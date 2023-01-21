@@ -1,11 +1,12 @@
-import { useCallback, useMemo, useState } from "react";
-import { useDebounce } from "react-use";
+import { Formik } from "formik";
+import clone from "lodash/clone";
 import omit from "lodash/omit";
 import { Reorder } from "framer-motion";
 import {
 	CombatantFragment,
-	useSaveCombatantMutation,
+	useSaveCombatantsMutation,
 } from "../../graphql/client-types";
+import { useDebouncedCallback } from "../../utils";
 import CombatantEditor from "./combatant-editor";
 
 interface CombatantListProps {
@@ -19,78 +20,69 @@ export default function CombatantList({
 	encounterId,
 	combatants: initialCombatants,
 }: CombatantListProps) {
-	const [combatants, setCombatants] = useState(initialCombatants);
-	const [saveCombatant] = useSaveCombatantMutation();
+	const [saveCombatants] = useSaveCombatantsMutation();
 
-	const ids = useMemo(() => combatants.map(({ id }) => id), [combatants]);
-
-	useDebounce(
-		() => {
-			setCombatants(initialCombatants);
-		},
-		1000,
-		[initialCombatants]
-	);
-
-	const onReorder = useCallback(
-		(ids: string[]) => {
-			setCombatants(
-				ids.map(
-					(id) =>
-						initialCombatants.find(
-							(combatant) => combatant.id === id
-						) as CombatantFragment
-				)
-			);
-		},
-		[initialCombatants]
-	);
-
-	const onDragEnd = useCallback(() => {
-		combatants.forEach(({ id }, i) => {
-			const combatant = combatants.find((combatant) => combatant.id === id);
-			if (combatant && combatant.turnOrder !== i + 1) {
-				// TODO: Maybe make a new mutation that sets all orders at once in a transaction?
-				saveCombatant({
-					variables: {
-						combatant: {
-							...omit(combatant, "__typename", "player"),
-							campaignId,
-							encounterId,
-							turnOrder: i + 1,
+	const onSubmit = useDebouncedCallback(
+		(values: typeof initialCombatants) => {
+			const newValues = values.map((combatant, i) => ({
+				...omit(combatant, "__typename", "player"),
+				campaignId,
+				encounterId,
+				turnOrder: i + 1,
+			}));
+			saveCombatants({
+				variables: {
+					combatants: newValues,
+				},
+				optimisticResponse: {
+					campaign: {
+						encounter: {
+							saveCombatants: newValues,
 						},
 					},
-					optimisticResponse: {
-						campaign: {
-							encounter: {
-								combatant: {
-									save: {
-										...combatant,
-										turnOrder: i + 1,
-									},
-								},
-							},
-						},
-					},
-				});
-			}
-		});
-	}, [combatants, campaignId, encounterId, saveCombatant]);
+				},
+			});
+		},
+		500,
+		[campaignId, encounterId, saveCombatants]
+	);
 
 	return (
-		<Reorder.Group
-			axis="y"
-			values={ids}
-			onReorder={onReorder}
-			style={{ padding: 0 }}
+		<Formik
+			initialValues={initialCombatants}
+			onSubmit={onSubmit}
+			enableReinitialize
 		>
-			{combatants.map((combatant) => (
-				<CombatantEditor
-					key={combatant.id}
-					combatant={combatant}
-					onDragEnd={onDragEnd}
-				/>
-			))}
-		</Reorder.Group>
+			{(form) => {
+				const ids = form.values.map((combatant) => combatant.id);
+				const onReorder = (ids: string[]) => {
+					form.setValues(
+						ids.map((id, i) => {
+							const combatant = clone(
+								form.values.find((c) => c.id === id) as CombatantFragment
+							);
+							combatant.turnOrder = i + 1;
+							return combatant;
+						})
+					);
+				};
+				return (
+					<Reorder.Group
+						axis="y"
+						values={ids}
+						onReorder={onReorder}
+						style={{ padding: 0 }}
+					>
+						{form.values.map((combatant) => (
+							<CombatantEditor
+								key={combatant.id}
+								combatant={combatant}
+								onDragEnd={form.submitForm}
+							/>
+						))}
+					</Reorder.Group>
+				);
+			}}
+		</Formik>
 	);
 }

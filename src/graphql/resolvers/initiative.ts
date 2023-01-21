@@ -1,4 +1,4 @@
-// import { formatDate, parseDate } from "../../utils";
+import uniq from "lodash/uniq";
 import { formatDate } from "../../utils";
 import { CampaignInput } from "../client-types";
 import {
@@ -159,6 +159,14 @@ const resolvers: Resolvers = {
 			} else {
 				return {} as CombatantModel;
 			}
+		},
+		async saveCombatants(_parent, args, ctx) {
+			const result = await ctx.Combatant.bulkUpdate(args.input);
+			const campaignIds = uniq(args.input.map((c) => c.campaignId));
+			for (let campaignId of campaignIds) {
+				await ctx.Campaign.publishSubscription(campaignId);
+			}
+			return result;
 		},
 	},
 	Combatant: {

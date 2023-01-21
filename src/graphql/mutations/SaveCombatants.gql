@@ -1,0 +1,11 @@
+#import "../fragments/CombatantFragment.gql"
+
+mutation SAVE_COMBATANTS($combatants: [CombatantInput!]!) {
+	campaign {
+		encounter {
+			saveCombatants(input: $combatants) {
+				...Combatant
+			}
+		}
+	}
+}

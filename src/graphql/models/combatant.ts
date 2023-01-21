@@ -73,4 +73,45 @@ export default class CombatantModel
 		await this.sql`DELETE FROM "Combatant" WHERE "id" = ${id}`;
 		return true;
 	}
+
+	async bulkUpdate(input: CombatantInput[]): Promise<Combatant[]> {
+		return await this.sql.begin((sql) => {
+			return Promise.all(
+				input.map((combatant) => {
+					if (!combatant.id) {
+						return sql<Combatant[]>`
+							INSERT INTO "Combatant" (
+								"campaignId",
+								"encounterId",
+								"playerId",
+								"name",
+								"public",
+								"turnOrder"
+							) VALUES (
+								${combatant.campaignId},
+								${combatant.encounterId},
+								${combatant.playerId ?? null},
+								${combatant.name ?? ""},
+								${combatant.public ?? false},
+								${combatant.turnOrder ?? 0}
+							) RETURNING *
+						`.then((results) => results[0]);
+					} else {
+						return sql<Combatant[]>`
+							UPDATE "Combatant"
+							SET
+								"campaignId" = ${combatant.campaignId},
+								"encounterId" = ${combatant.encounterId},
+								"playerId" = ${combatant.playerId ?? null},
+								"name" = ${combatant.name ?? ""},
+								"public" = ${combatant.public ?? false},
+								"turnOrder" = ${combatant.turnOrder ?? 0}
+							WHERE "id" = ${combatant.id}
+							RETURNING *
+						`.then((results) => results[0]);
+					}
+				})
+			);
+		});
+	}
 }

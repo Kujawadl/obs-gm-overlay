@@ -142,6 +142,7 @@ export type EncounterMutation = {
 	next?: Maybe<Scalars["Boolean"]>;
 	prev?: Maybe<Scalars["Boolean"]>;
 	save: Encounter;
+	saveCombatants: Array<Combatant>;
 	setActive: Scalars["Boolean"];
 };
 
@@ -151,6 +152,10 @@ export type EncounterMutationCombatantArgs = {
 
 export type EncounterMutationSaveArgs = {
 	input: EncounterInput;
+};
+
+export type EncounterMutationSaveCombatantsArgs = {
+	input: Array<CombatantInput>;
 };
 
 export type EncounterMutationSetActiveArgs = {
@@ -521,6 +526,12 @@ export type EncounterMutationResolvers<
 		ParentType,
 		ContextType,
 		RequireFields<EncounterMutationSaveArgs, "input">
+	>;
+	saveCombatants?: Resolver<
+		Array<ResolversTypes["Combatant"]>,
+		ParentType,
+		ContextType,
+		RequireFields<EncounterMutationSaveCombatantsArgs, "input">
 	>;
 	setActive?: Resolver<
 		ResolversTypes["Boolean"],

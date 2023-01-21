@@ -44,6 +44,7 @@ const typeDefs = gql`
 		next: Boolean
 		prev: Boolean
 		combatant(id: ID): CombatantMutation!
+		saveCombatants(input: [CombatantInput!]!): [Combatant!]!
 	}
 
 	type CombatantMutation {
