@@ -17,7 +17,7 @@ import {
 	HideMonsterNames,
 	useSaveEncounterMutation,
 } from "../../graphql/client-types";
-// import PlayerList from "./player-list";
+import CombatantList from "./combatant-list";
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().required("Campaign Name is required"),
@@ -137,7 +137,11 @@ export default function EncounterEditor({
 					</Form>
 				)}
 			</Formik>
-			{/* <PlayerList campaign={campaign} /> */}
+			<CombatantList
+				campaignId={campaign.id}
+				encounterId={encounter.id}
+				combatants={encounter.combatants}
+			/>
 		</>
 	);
 }

@@ -295,33 +295,6 @@ export type PlayerFragment = {
 	lastInspirationUsed?: any | null;
 };
 
-export type AddCombatantMutationVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
-	combatant: CombatantInput;
-}>;
-
-export type AddCombatantMutation = {
-	__typename?: "Mutation";
-	campaign?: {
-		__typename?: "CampaignMutation";
-		encounter?: {
-			__typename?: "EncounterMutation";
-			combatant: {
-				__typename?: "CombatantMutation";
-				save: {
-					__typename?: "Combatant";
-					id: string;
-					name: string;
-					public: boolean;
-					turnOrder: number;
-					player?: { __typename?: "Player"; playerName: string } | null;
-				};
-			};
-		} | null;
-	} | null;
-};
-
 export type AdvanceInitiativeMutationVariables = Exact<{
 	campaignId: Scalars["ID"];
 	encounterId: Scalars["ID"];
@@ -424,6 +397,31 @@ export type SaveCampaignMutation = {
 				}>;
 			} | null;
 		};
+	} | null;
+};
+
+export type SaveCombatantMutationVariables = Exact<{
+	combatant: CombatantInput;
+}>;
+
+export type SaveCombatantMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: {
+			__typename?: "EncounterMutation";
+			combatant: {
+				__typename?: "CombatantMutation";
+				save: {
+					__typename?: "Combatant";
+					id: string;
+					name: string;
+					public: boolean;
+					turnOrder: number;
+					player?: { __typename?: "Player"; playerName: string } | null;
+				};
+			};
+		} | null;
 	} | null;
 };
 
@@ -707,69 +705,6 @@ export const CampaignFragmentDoc = gql`
 	${PlayerFragmentDoc}
 	${EncounterFragmentDoc}
 `;
-export const AddCombatantDocument = gql`
-	mutation ADD_COMBATANT(
-		$campaignId: ID!
-		$encounterId: ID!
-		$combatant: CombatantInput!
-	) {
-		campaign(id: $campaignId) {
-			encounter(id: $encounterId) {
-				combatant {
-					save(input: $combatant) {
-						...Combatant
-					}
-				}
-			}
-		}
-	}
-	${CombatantFragmentDoc}
-`;
-export type AddCombatantMutationFn = Apollo.MutationFunction<
-	AddCombatantMutation,
-	AddCombatantMutationVariables
->;
-
-/**
- * __useAddCombatantMutation__
- *
- * To run a mutation, you first call `useAddCombatantMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddCombatantMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addCombatantMutation, { data, loading, error }] = useAddCombatantMutation({
- *   variables: {
- *      campaignId: // value for 'campaignId'
- *      encounterId: // value for 'encounterId'
- *      combatant: // value for 'combatant'
- *   },
- * });
- */
-export function useAddCombatantMutation(
-	baseOptions?: Apollo.MutationHookOptions<
-		AddCombatantMutation,
-		AddCombatantMutationVariables
-	>
-) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useMutation<
-		AddCombatantMutation,
-		AddCombatantMutationVariables
-	>(AddCombatantDocument, options);
-}
-export type AddCombatantMutationHookResult = ReturnType<
-	typeof useAddCombatantMutation
->;
-export type AddCombatantMutationResult =
-	Apollo.MutationResult<AddCombatantMutation>;
-export type AddCombatantMutationOptions = Apollo.BaseMutationOptions<
-	AddCombatantMutation,
-	AddCombatantMutationVariables
->;
 export const AdvanceInitiativeDocument = gql`
 	mutation ADVANCE_INITIATIVE(
 		$campaignId: ID!
@@ -1085,6 +1020,63 @@ export type SaveCampaignMutationResult =
 export type SaveCampaignMutationOptions = Apollo.BaseMutationOptions<
 	SaveCampaignMutation,
 	SaveCampaignMutationVariables
+>;
+export const SaveCombatantDocument = gql`
+	mutation SAVE_COMBATANT($combatant: CombatantInput!) {
+		campaign {
+			encounter {
+				combatant {
+					save(input: $combatant) {
+						...Combatant
+					}
+				}
+			}
+		}
+	}
+	${CombatantFragmentDoc}
+`;
+export type SaveCombatantMutationFn = Apollo.MutationFunction<
+	SaveCombatantMutation,
+	SaveCombatantMutationVariables
+>;
+
+/**
+ * __useSaveCombatantMutation__
+ *
+ * To run a mutation, you first call `useSaveCombatantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveCombatantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveCombatantMutation, { data, loading, error }] = useSaveCombatantMutation({
+ *   variables: {
+ *      combatant: // value for 'combatant'
+ *   },
+ * });
+ */
+export function useSaveCombatantMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		SaveCombatantMutation,
+		SaveCombatantMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		SaveCombatantMutation,
+		SaveCombatantMutationVariables
+	>(SaveCombatantDocument, options);
+}
+export type SaveCombatantMutationHookResult = ReturnType<
+	typeof useSaveCombatantMutation
+>;
+export type SaveCombatantMutationResult =
+	Apollo.MutationResult<SaveCombatantMutation>;
+export type SaveCombatantMutationOptions = Apollo.BaseMutationOptions<
+	SaveCombatantMutation,
+	SaveCombatantMutationVariables
 >;
 export const SaveEncounterDocument = gql`
 	mutation SAVE_ENCOUNTER($encounter: EncounterInput!) {
