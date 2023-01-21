@@ -42,7 +42,7 @@ export default class CombatantModel
 				${input.campaignId},
 				${input.encounterId},
 				${input.playerId ?? null},
-				${input.name ?? "n/a"},
+				${(input.name ?? "").trim()},
 				${input.public ?? false},
 				${input.turnOrder ?? 0}
 			) RETURNING *
@@ -60,7 +60,7 @@ export default class CombatantModel
 				"campaignId" = ${input.campaignId ?? combatant.campaignId},
 				"encounterId" = ${input.encounterId ?? combatant.encounterId},
 				"playerId" = ${input.playerId ?? combatant.playerId ?? null},
-				"name" = ${input.name ?? combatant.name ?? ""},
+				"name" = ${(input.name ?? combatant.name ?? "").trim()},
 				"public" = ${input.public ?? combatant.public ?? false},
 				"turnOrder" = ${input.turnOrder ?? combatant.turnOrder ?? 0}
 			WHERE "id" = ${combatant.id}
@@ -91,7 +91,7 @@ export default class CombatantModel
 								${combatant.campaignId},
 								${combatant.encounterId},
 								${combatant.playerId ?? null},
-								${combatant.name ?? ""},
+								${(combatant.name ?? "").trim()},
 								${combatant.public ?? false},
 								${combatant.turnOrder ?? 0}
 							) RETURNING *
@@ -103,7 +103,7 @@ export default class CombatantModel
 								"campaignId" = ${combatant.campaignId},
 								"encounterId" = ${combatant.encounterId},
 								"playerId" = ${combatant.playerId ?? null},
-								"name" = ${combatant.name ?? ""},
+								"name" = ${(combatant.name ?? "").trim()},
 								"public" = ${combatant.public ?? false},
 								"turnOrder" = ${combatant.turnOrder ?? 0}
 							WHERE "id" = ${combatant.id}

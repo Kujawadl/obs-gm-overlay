@@ -66,8 +66,8 @@ npm run migrate
   - [x] Allow GM to reset cooldown for specific players
   - [ ] Allow GM to reset cooldown for entire table
 - [ ] Initiative Tracker
-  - [ ] Allow GM to add creatures with public/private names
-  - [ ] Allow GM to enter player/creature initiative values
+  - [x] Allow GM to add combatants with public/private names
+  - [x] Allow GM to set combatant initiative order
   - [x] Allow GM to add multiple encounters, each with its own initiative tracking, and set one as active
   - [ ] Allow GM to unset active encounter (leaving encounter in list, but just making not active at this time)
   - [ ] Allow GM to reset encounter initiative (set round/turn back to 0/0)

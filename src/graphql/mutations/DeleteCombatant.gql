@@ -1,0 +1,11 @@
+#import "../fragments/CombatantFragment.gql"
+
+mutation DELETE_COMBATANT($id: ID!) {
+	campaign {
+		encounter {
+			combatant(id: $id) {
+				delete
+			}
+		}
+	}
+}

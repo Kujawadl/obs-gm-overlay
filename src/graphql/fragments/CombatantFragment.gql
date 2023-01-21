@@ -4,6 +4,7 @@ fragment Combatant on Combatant {
 	public
 	turnOrder
 	player {
+		id
 		playerName
 	}
 }

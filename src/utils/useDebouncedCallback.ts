@@ -9,8 +9,7 @@ import { useRef, useCallback } from "react";
 // eslint-disable-next-line unused-imports/no-unused-vars
 export function useDebouncedCallback<T extends (...args: any[]) => any>(
 	func: T,
-	wait: number,
-	deps?: any[]
+	wait: number
 ) {
 	// Use a ref to store the timeout between renders
 	// and prevent changes to it from causing re-renders
@@ -27,6 +26,6 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
 			timeout.current = window.setTimeout(later, wait);
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[func, wait, ...(deps ?? [])]
+		[func, wait]
 	);
 }

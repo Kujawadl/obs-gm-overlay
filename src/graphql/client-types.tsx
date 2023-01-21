@@ -258,7 +258,7 @@ export type CampaignFragment = {
 			name: string;
 			public: boolean;
 			turnOrder: number;
-			player?: { __typename?: "Player"; playerName: string } | null;
+			player?: { __typename?: "Player"; id: string; playerName: string } | null;
 		}>;
 	} | null;
 };
@@ -269,7 +269,7 @@ export type CombatantFragment = {
 	name: string;
 	public: boolean;
 	turnOrder: number;
-	player?: { __typename?: "Player"; playerName: string } | null;
+	player?: { __typename?: "Player"; id: string; playerName: string } | null;
 };
 
 export type EncounterFragment = {
@@ -286,7 +286,7 @@ export type EncounterFragment = {
 		name: string;
 		public: boolean;
 		turnOrder: number;
-		player?: { __typename?: "Player"; playerName: string } | null;
+		player?: { __typename?: "Player"; id: string; playerName: string } | null;
 	}>;
 };
 
@@ -325,6 +325,21 @@ export type DeleteCampaignMutationVariables = Exact<{
 export type DeleteCampaignMutation = {
 	__typename?: "Mutation";
 	campaign?: { __typename?: "CampaignMutation"; delete: boolean } | null;
+};
+
+export type DeleteCombatantMutationVariables = Exact<{
+	id: Scalars["ID"];
+}>;
+
+export type DeleteCombatantMutation = {
+	__typename?: "Mutation";
+	campaign?: {
+		__typename?: "CampaignMutation";
+		encounter?: {
+			__typename?: "EncounterMutation";
+			combatant: { __typename?: "CombatantMutation"; delete: boolean };
+		} | null;
+	} | null;
 };
 
 export type DeleteEncounterMutationVariables = Exact<{
@@ -398,7 +413,11 @@ export type SaveCampaignMutation = {
 					name: string;
 					public: boolean;
 					turnOrder: number;
-					player?: { __typename?: "Player"; playerName: string } | null;
+					player?: {
+						__typename?: "Player";
+						id: string;
+						playerName: string;
+					} | null;
 				}>;
 			} | null;
 		};
@@ -423,7 +442,11 @@ export type SaveCombatantMutation = {
 					name: string;
 					public: boolean;
 					turnOrder: number;
-					player?: { __typename?: "Player"; playerName: string } | null;
+					player?: {
+						__typename?: "Player";
+						id: string;
+						playerName: string;
+					} | null;
 				};
 			};
 		} | null;
@@ -446,7 +469,11 @@ export type SaveCombatantsMutation = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
-				player?: { __typename?: "Player"; playerName: string } | null;
+				player?: {
+					__typename?: "Player";
+					id: string;
+					playerName: string;
+				} | null;
 			}>;
 		} | null;
 	} | null;
@@ -476,7 +503,11 @@ export type SaveEncounterMutation = {
 					name: string;
 					public: boolean;
 					turnOrder: number;
-					player?: { __typename?: "Player"; playerName: string } | null;
+					player?: {
+						__typename?: "Player";
+						id: string;
+						playerName: string;
+					} | null;
 				}>;
 			};
 		} | null;
@@ -561,7 +592,11 @@ export type EncounterDetailQuery = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
-				player?: { __typename?: "Player"; playerName: string } | null;
+				player?: {
+					__typename?: "Player";
+					id: string;
+					playerName: string;
+				} | null;
 			}>;
 		} | null;
 	} | null;
@@ -602,7 +637,11 @@ export type ListCampaignsQuery = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
-				player?: { __typename?: "Player"; playerName: string } | null;
+				player?: {
+					__typename?: "Player";
+					id: string;
+					playerName: string;
+				} | null;
 			}>;
 		} | null;
 	}>;
@@ -630,7 +669,11 @@ export type ListEncountersQuery = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
-				player?: { __typename?: "Player"; playerName: string } | null;
+				player?: {
+					__typename?: "Player";
+					id: string;
+					playerName: string;
+				} | null;
 			}>;
 		}>;
 	} | null;
@@ -673,7 +716,11 @@ export type CampaignSubscription = {
 				name: string;
 				public: boolean;
 				turnOrder: number;
-				player?: { __typename?: "Player"; playerName: string } | null;
+				player?: {
+					__typename?: "Player";
+					id: string;
+					playerName: string;
+				} | null;
 			}>;
 		} | null;
 	} | null;
@@ -696,6 +743,7 @@ export const CombatantFragmentDoc = gql`
 		public
 		turnOrder
 		player {
+			id
 			playerName
 		}
 	}
@@ -840,6 +888,60 @@ export type DeleteCampaignMutationResult =
 export type DeleteCampaignMutationOptions = Apollo.BaseMutationOptions<
 	DeleteCampaignMutation,
 	DeleteCampaignMutationVariables
+>;
+export const DeleteCombatantDocument = gql`
+	mutation DELETE_COMBATANT($id: ID!) {
+		campaign {
+			encounter {
+				combatant(id: $id) {
+					delete
+				}
+			}
+		}
+	}
+`;
+export type DeleteCombatantMutationFn = Apollo.MutationFunction<
+	DeleteCombatantMutation,
+	DeleteCombatantMutationVariables
+>;
+
+/**
+ * __useDeleteCombatantMutation__
+ *
+ * To run a mutation, you first call `useDeleteCombatantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCombatantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCombatantMutation, { data, loading, error }] = useDeleteCombatantMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCombatantMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		DeleteCombatantMutation,
+		DeleteCombatantMutationVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useMutation<
+		DeleteCombatantMutation,
+		DeleteCombatantMutationVariables
+	>(DeleteCombatantDocument, options);
+}
+export type DeleteCombatantMutationHookResult = ReturnType<
+	typeof useDeleteCombatantMutation
+>;
+export type DeleteCombatantMutationResult =
+	Apollo.MutationResult<DeleteCombatantMutation>;
+export type DeleteCombatantMutationOptions = Apollo.BaseMutationOptions<
+	DeleteCombatantMutation,
+	DeleteCombatantMutationVariables
 >;
 export const DeleteEncounterDocument = gql`
 	mutation DELETE_ENCOUNTER($campaignId: ID!, $encounterId: ID!) {
