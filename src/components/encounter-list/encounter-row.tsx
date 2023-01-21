@@ -21,11 +21,14 @@ import {
 	useTheme,
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 import {
 	CampaignFragment,
+	EncounterDetailDocument,
 	EncounterFragment,
 	useDeleteEncounterMutation,
+	useSetActiveEncounterMutation,
 } from "../../graphql/client-types";
 
 export interface EncounterRowProps {
@@ -39,12 +42,33 @@ export default function EncounterRow({
 	encounter,
 	refetch,
 }: EncounterRowProps) {
+	const router = useRouter();
 	const [deleteCampaign] = useDeleteEncounterMutation({
 		variables: { campaignId: campaign.id, encounterId: encounter?.id },
 	});
+	const [setActive] = useSetActiveEncounterMutation({
+		variables: {
+			campaignId: campaign.id,
+			encounterId: encounter.id,
+		},
+		refetchQueries: [EncounterDetailDocument],
+	});
+
 	const [deleting, setDeleting] = useState(false);
 	const theme = useTheme();
 	const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));
+
+	const onSetActive = useCallback(() => {
+		setActive().then(({ data }) => {
+			if (data?.campaign?.encounter?.setActive) {
+				router.push(`/${campaign.id}/encounter/run`);
+			} else {
+				// TODO: Display an error here
+			}
+		});
+	}, [setActive, router, campaign.id]);
+
+	console.log(encounter);
 
 	return (
 		<>
@@ -59,7 +83,14 @@ export default function EncounterRow({
 				}}
 			>
 				<ListItemText sx={{ flexBasis: "100%" }}>
-					<Typography variant="h5">{encounter.name}</Typography>
+					<Typography variant="h5">
+						{encounter.name}{" "}
+						{encounter.id === campaign.activeEncounter?.id ? (
+							<Typography color="text.secondary" component="span">
+								(Active)
+							</Typography>
+						) : null}
+					</Typography>
 				</ListItemText>
 				<Box
 					sx={{
@@ -88,17 +119,12 @@ export default function EncounterRow({
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<MUILink
-							component="a"
-							underline="none"
-							color="inherit"
-							href={`/${campaign.id}/encounter/${encounter.id}/run`}
-						>
-							<Button>
-								<PlayArrowIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
-								<Box sx={{ display: "flex", alignItems: "baseline" }}>Run</Box>
-							</Button>
-						</MUILink>
+						<Button onClick={onSetActive}>
+							<PlayArrowIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
+							<Box sx={{ display: "flex", alignItems: "baseline", width: 70 }}>
+								{encounter.round > 0 ? "Resume" : "Run"}
+							</Box>
+						</Button>
 					</Box>
 					<Box
 						sx={{

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useMemo } from "react";
 import {
 	Box,
 	Breadcrumbs,
@@ -14,62 +14,51 @@ import {
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import InitiativeList from "../../../../components/initiative-list/initiative-list";
+import InitiativeList from "../../../components/initiative-list/initiative-list";
 import {
 	useAdvanceInitiativeMutation,
 	useCampaignSubscription,
-	useSetActiveEncounterMutation,
-} from "../../../../graphql/client-types";
+} from "../../../graphql/client-types";
 
 export default function RunInitiative() {
 	const router = useRouter();
-	const { campaignId, encounterId } = router.query;
+	const { campaignId } = router.query;
 	const { data } = useCampaignSubscription({
 		variables: {
 			id: campaignId as string,
 		},
 	});
-	const [setActive] = useSetActiveEncounterMutation({
-		variables: {
-			campaignId: campaignId as string,
-			encounterId: encounterId as string,
-		},
-	});
+
+	const campaign = useMemo(() => data?.campaign, [data]);
+
 	const [advanceInitiative, { loading }] = useAdvanceInitiativeMutation();
 
 	const next = useCallback(
 		() =>
 			advanceInitiative({
 				variables: {
-					campaignId: campaignId as string,
-					encounterId: encounterId as string,
+					campaignId: campaign?.id as string,
+					encounterId: campaign?.activeEncounter?.id as string,
 					forward: true,
 				},
 			}),
-		[advanceInitiative, campaignId, encounterId]
+		[advanceInitiative, campaign]
 	);
 	const prev = useCallback(
 		() =>
 			advanceInitiative({
 				variables: {
-					campaignId: campaignId as string,
-					encounterId: encounterId as string,
+					campaignId: campaign?.id as string,
+					encounterId: campaign?.activeEncounter?.id as string,
 					forward: false,
 				},
 			}),
-		[advanceInitiative, campaignId, encounterId]
+		[advanceInitiative, campaign]
 	);
 
-	useEffect(() => {
-		if (data?.campaign && data.campaign.activeEncounter?.id !== encounterId) {
-			setActive();
-		}
-	}, [data, encounterId, setActive]);
-
 	return (
-		data?.campaign &&
-		data?.campaign.activeEncounter &&
-		data.campaign.activeEncounter.id === encounterId && (
+		campaign &&
+		campaign.activeEncounter && (
 			<>
 				<Head>
 					<title>{`${
@@ -85,7 +74,7 @@ export default function RunInitiative() {
 						</Link>
 						<Link href={`/${campaignId}/edit`}>
 							<MUILink component="a" underline="hover" color="inherit">
-								{data.campaign.name}
+								{campaign.name}
 							</MUILink>
 						</Link>
 						<Link href={`/${campaignId}/encounter`}>
@@ -94,19 +83,19 @@ export default function RunInitiative() {
 							</MUILink>
 						</Link>
 						<Link
-							href={`/${campaignId}/encounter/${data.campaign.activeEncounter.id}/edit`}
+							href={`/${campaignId}/encounter/${campaign.activeEncounter.id}/edit`}
 						>
 							<MUILink component="a" underline="hover" color="inherit">
-								{data.campaign.activeEncounter.name}
+								{campaign.activeEncounter.name}
 							</MUILink>
 						</Link>
 						<Typography color="text.primary">Run Initiative</Typography>
 					</Breadcrumbs>
 					<Typography variant="h3" mb={2}>
-						{data.campaign.activeEncounter.name}
+						{campaign.activeEncounter.name}
 					</Typography>
 					<InitiativeList
-						campaign={data?.campaign}
+						campaign={campaign}
 						style="editor"
 						forceShowMonsterNames={true}
 					/>
@@ -121,7 +110,7 @@ export default function RunInitiative() {
 							variant="contained"
 							color="secondary"
 							onClick={prev}
-							disabled={loading || data.campaign.activeEncounter.round === 0}
+							disabled={loading || campaign.activeEncounter.round === 0}
 						>
 							<ArrowBackIcon />
 							Previous
