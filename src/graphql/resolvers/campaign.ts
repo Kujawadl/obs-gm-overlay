@@ -1,7 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
-import { Context } from "../context";
+import checkAuth from "../checkAuth";
 import { formatDate, parseDate } from "../../utils";
-import {
+import type { Context } from "../context";
+import type {
 	CampaignMutationResolvers,
 	CampaignResolvers,
 	CooldownType,
@@ -12,6 +13,7 @@ import {
 
 export interface CampaignModel {
 	id: string;
+	userId: string;
 	name: string;
 	gmInspiration: boolean;
 	cooldownType: CooldownType;
@@ -29,15 +31,19 @@ interface Resolvers {
 
 const resolvers: Resolvers = {
 	Query: {
-		campaigns(_parent, _args, ctx) {
-			return ctx.Campaign.list();
+		async campaigns(_parent, _args, ctx) {
+			const userId = await checkAuth(ctx);
+			if (!userId) return [];
+			return ctx.Campaign.list(userId);
 		},
-		campaign(_parent, args, ctx) {
+		async campaign(_parent, args, ctx) {
 			return ctx.Campaign.get(args.id ?? undefined);
 		},
 	},
 	Mutation: {
 		async campaign(_parent, args, ctx) {
+			const userId = await checkAuth(ctx, args.id);
+			if (!userId) return {} as CampaignModel;
 			const campaign = args.id ? await ctx.Campaign.get(args.id) : undefined;
 			return (campaign ?? {}) as CampaignModel;
 		},
@@ -73,12 +79,14 @@ const resolvers: Resolvers = {
 		},
 	},
 	CampaignMutation: {
-		async save(parent, { input }, { Campaign }) {
+		async save(parent, { input }, ctx) {
+			const userId = await checkAuth(ctx);
+			if (!userId) return undefined;
 			const result = parent.id
-				? await Campaign.update(parent, input)
-				: await Campaign.create(input);
+				? await ctx.Campaign.update(parent, input)
+				: await ctx.Campaign.create(input, userId);
 			if (result) {
-				Campaign.publishSubscription(result.id);
+				ctx.Campaign.publishSubscription(result.id);
 			}
 			return result;
 		},

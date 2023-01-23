@@ -1,4 +1,5 @@
-import {
+import checkAuth from "../checkAuth";
+import type {
 	MutationResolvers,
 	PlayerMutationResolvers,
 	PlayerResolvers,
@@ -24,13 +25,18 @@ interface Resolvers {
 
 const resolvers: Resolvers = {
 	Query: {
-		player(_parent, args, ctx) {
-			return ctx.Player.get(args.id);
+		async player(_parent, args, ctx) {
+			const player = await ctx.Player.get(args.id);
+			const userId = await checkAuth(ctx, player?.campaignId);
+			if (!userId) return await undefined;
+			return player;
 		},
 	},
 	Mutation: {
 		async player(_parent, args, ctx) {
 			const player = args.id ? await ctx.Player.get(args.id) : undefined;
+			const userId = await checkAuth(ctx, player?.campaignId);
+			if (!userId) return {} as PlayerModel;
 			return (player ?? {}) as PlayerModel;
 		},
 	},

@@ -2,8 +2,6 @@ import {
 	Delete as DeleteIcon,
 	Edit as EditIcon,
 	PlayArrow as PlayArrowIcon,
-	Preview as PreviewIcon,
-	OpenInNew as OpenInNewIcon,
 } from "@mui/icons-material";
 import {
 	Box,
@@ -13,7 +11,6 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	Link as MUILink,
 	ListItem,
 	ListItemText,
 	Typography,
@@ -67,8 +64,6 @@ export default function EncounterRow({
 			}
 		});
 	}, [setActive, router, campaign.id]);
-
-	console.log(encounter);
 
 	return (
 		<>
@@ -125,29 +120,6 @@ export default function EncounterRow({
 								{encounter.round > 0 ? "Resume" : "Run"}
 							</Box>
 						</Button>
-					</Box>
-					<Box
-						sx={{
-							flexGrow: 1,
-							flexBasis: isMobileView ? "100%" : "auto",
-						}}
-					>
-						<MUILink
-							component="a"
-							underline="none"
-							color="inherit"
-							href={`/${campaign.id}/overlay/initiative`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							<Button>
-								<PreviewIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
-								<Box sx={{ display: "flex", alignItems: "baseline" }}>
-									Preview Overlay
-									<OpenInNewIcon sx={{ fontSize: "0.8rem", marginLeft: 0.5 }} />
-								</Box>
-							</Button>
-						</MUILink>
 					</Box>
 					<Box
 						sx={{

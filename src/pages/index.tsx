@@ -1,5 +1,5 @@
 import { Add as AddIcon } from "@mui/icons-material";
-import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
@@ -38,9 +38,6 @@ export default function Home() {
 				<title>List Campaigns | OBS GM Overlay</title>
 			</Head>
 			<Container fixed>
-				<Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
-					<Typography color="text.primary">Campaigns</Typography>
-				</Breadcrumbs>
 				<Typography variant="h3">Campaigns</Typography>
 				<CampaignList campaigns={data.campaigns} refetch={refetch} />
 				<Box sx={{ display: "flex", justifyContent: "flex-end" }}>

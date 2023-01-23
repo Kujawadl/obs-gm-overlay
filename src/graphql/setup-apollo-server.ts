@@ -10,10 +10,10 @@ import resolvers from "./resolvers";
 import type { Server } from "http";
 import type { Context } from "./context";
 
-async function setupApolloServer(
+function setupApolloServer(
 	httpServer: Server,
 	wsServer: WebSocketServer,
-	context: Context
+	context: Omit<Context, "req" | "res">
 ) {
 	const schema = makeExecutableSchema({ typeDefs, resolvers });
 

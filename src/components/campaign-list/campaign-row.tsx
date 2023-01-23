@@ -16,6 +16,8 @@ import {
 	Link as MUILink,
 	ListItem,
 	ListItemText,
+	Menu,
+	MenuItem,
 	Typography,
 	useMediaQuery,
 	useTheme,
@@ -37,6 +39,17 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 		variables: { id: campaign.id },
 	});
 	const [deleting, setDeleting] = useState(false);
+
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+	const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
 	const theme = useTheme();
 	const isMobileView = useMediaQuery(theme.breakpoints.only("xs"));
 
@@ -95,22 +108,61 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<MUILink
-							component="a"
-							underline="none"
-							color="inherit"
-							href={`/${campaign.id}/overlay/inspiration`}
-							target="_blank"
-							rel="noreferrer"
+						<Button
+							onClick={handleOpen}
+							aria-label="preview overlay"
+							aria-controls="menu-overlays"
+							aria-haspopup="true"
 						>
-							<Button>
-								<PreviewIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
-								<Box sx={{ display: "flex", alignItems: "baseline" }}>
-									Preview Overlay
-									<OpenInNewIcon sx={{ fontSize: "0.8rem", marginLeft: 0.5 }} />
-								</Box>
-							</Button>
-						</MUILink>
+							<PreviewIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
+							<Box sx={{ display: "flex", alignItems: "baseline" }}>
+								Preview Overlay
+							</Box>
+						</Button>
+						<Menu
+							id="menu-overlays"
+							anchorEl={anchorEl}
+							keepMounted
+							open={!!anchorEl}
+							onClose={handleClose}
+						>
+							<MenuItem>
+								<MUILink
+									component="a"
+									underline="none"
+									color="inherit"
+									href={`/${campaign.id}/overlay/inspiration`}
+									target="_blank"
+									rel="noreferrer"
+									onClick={() => handleClose()}
+								>
+									<Box sx={{ display: "flex", alignItems: "baseline" }}>
+										Inspiration
+										<OpenInNewIcon
+											sx={{ fontSize: "0.8rem", marginLeft: 0.5 }}
+										/>
+									</Box>
+								</MUILink>
+							</MenuItem>
+							<MenuItem>
+								<MUILink
+									component="a"
+									underline="none"
+									color="inherit"
+									href={`/${campaign.id}/overlay/initiative`}
+									target="_blank"
+									rel="noreferrer"
+									onClick={() => handleClose()}
+								>
+									<Box sx={{ display: "flex", alignItems: "baseline" }}>
+										Initiative
+										<OpenInNewIcon
+											sx={{ fontSize: "0.8rem", marginLeft: 0.5 }}
+										/>
+									</Box>
+								</MUILink>
+							</MenuItem>
+						</Menu>
 					</Box>
 					<Box
 						sx={{

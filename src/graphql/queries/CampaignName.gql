@@ -1,0 +1,8 @@
+query CAMPAIGN_NAME($campaignId: ID!) {
+	campaign(id: $campaignId) {
+		name
+		activeEncounter {
+			name
+		}
+	}
+}

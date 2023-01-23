@@ -7,7 +7,7 @@ import type { Server } from "http";
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 
 interface NextServer extends Server {
-	apolloHandler?: Promise<NextApiHandler>;
+	apolloHandler: Promise<NextApiHandler>;
 }
 
 type Data = {
@@ -22,39 +22,46 @@ const handler: NextApiHandler = async (
 	try {
 		const server = (req as any).socket.server as NextServer;
 		if (!server.apolloHandler) {
-			server.apolloHandler = new Promise((resolve, reject) => {
+			server.apolloHandler = new Promise((resolve) => {
 				console.log("Initializing Apollo Next.JS API handler");
-				setupContext()
-					.then((context) => {
-						const wss = new WebSocketServer({
-							noServer: true,
-						});
 
-						server.on("upgrade", async function connection(req, socket, head) {
-							const { pathname } = parse(req.url as string, true);
-							if (
-								pathname === "/api/subscriptions" &&
-								!(socket as any).websocket
-							) {
-								wss.handleUpgrade(req, socket, head, function done(ws) {
-									wss.emit("connection", ws, req);
-								});
-							}
-						});
+				const wsServer = new WebSocketServer({
+					noServer: true,
+				});
 
-						return setupApolloServer(server, wss, context).then(
-							(server) => [server, context] as const
-						);
-					})
-					.then(([server, context]) => {
-						const apolloHandler = startServerAndCreateNextHandler(server, {
-							context: () => Promise.resolve(context ?? {}),
+				server.on("upgrade", async function connection(req, socket, head) {
+					const { pathname } = parse(req.url as string, true);
+					if (pathname === "/api/subscriptions" && !(socket as any).websocket) {
+						wsServer.handleUpgrade(req, socket, head, function done(ws) {
+							wsServer.emit("connection", ws, req);
 						});
-						resolve(apolloHandler);
-					})
-					.catch(reject);
+					}
+				});
+
+				const coreContext = setupContext();
+
+				const baseApolloServer = setupApolloServer(
+					server,
+					wsServer,
+					coreContext
+				);
+
+				const apolloHandler = startServerAndCreateNextHandler(
+					baseApolloServer,
+					{
+						context: async (req, res) =>
+							Promise.resolve({
+								...coreContext,
+								req,
+								res,
+							}),
+					}
+				);
+
+				resolve(apolloHandler);
 			});
 		}
+
 		const apolloHandler = await server.apolloHandler;
 		return apolloHandler(req, res);
 	} catch (error) {

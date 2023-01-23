@@ -23,24 +23,27 @@ export default class CampaignModel implements Model<Campaign, CampaignInput> {
 		return results[0];
 	}
 
-	async list(): Promise<Campaign[]> {
+	async list(userId: string): Promise<Campaign[]> {
 		const results = await this.sql<Campaign[]>`
 			SELECT *
 			FROM "Campaign"
+			WHERE "userId" = ${userId}
 			ORDER BY "name"
 		`;
 		return results.length ? results : [];
 	}
 
-	async create(input: CampaignInput): Promise<Campaign> {
+	async create(input: CampaignInput, userId: string): Promise<Campaign> {
 		const results = await this.sql<Campaign[]>`
         INSERT INTO "Campaign" (
+					"userId",
           "name",
           "gmInspiration",
 					"cooldownType",
 					"cooldownTime",
 					"activeEncounter"
         ) VALUES (
+					${userId},
 					${input.name}, 
 					${input.gmInspiration ?? false},
 					${input.cooldownType ?? "none"},

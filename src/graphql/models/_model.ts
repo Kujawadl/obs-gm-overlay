@@ -4,7 +4,7 @@ export default interface Model<Type, Input> {
 
 	list(...args: any[]): Promise<Type[]>;
 
-	create(input: Input): Promise<Type>;
+	create(input: Input, userId?: string): Promise<Type>;
 
 	update(value: Type, input: Input): Promise<Type>;
 

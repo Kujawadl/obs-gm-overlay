@@ -569,6 +569,19 @@ export type SetPlayerInspirationMutation = {
 	} | null;
 };
 
+export type CampaignNameQueryVariables = Exact<{
+	campaignId: Scalars["ID"];
+}>;
+
+export type CampaignNameQuery = {
+	__typename?: "Query";
+	campaign?: {
+		__typename?: "Campaign";
+		name: string;
+		activeEncounter?: { __typename?: "Encounter"; name: string } | null;
+	} | null;
+};
+
 export type EncounterDetailQueryVariables = Exact<{
 	campaignId: Scalars["ID"];
 	encounterId: Scalars["ID"];
@@ -599,6 +612,19 @@ export type EncounterDetailQuery = {
 				} | null;
 			}>;
 		} | null;
+	} | null;
+};
+
+export type EncounterNameQueryVariables = Exact<{
+	campaignId: Scalars["ID"];
+	encounterId: Scalars["ID"];
+}>;
+
+export type EncounterNameQuery = {
+	__typename?: "Query";
+	campaign?: {
+		__typename?: "Campaign";
+		encounter?: { __typename?: "Encounter"; name: string } | null;
 	} | null;
 };
 
@@ -1478,6 +1504,67 @@ export type SetPlayerInspirationMutationOptions = Apollo.BaseMutationOptions<
 	SetPlayerInspirationMutation,
 	SetPlayerInspirationMutationVariables
 >;
+export const CampaignNameDocument = gql`
+	query CAMPAIGN_NAME($campaignId: ID!) {
+		campaign(id: $campaignId) {
+			name
+			activeEncounter {
+				name
+			}
+		}
+	}
+`;
+
+/**
+ * __useCampaignNameQuery__
+ *
+ * To run a query within a React component, call `useCampaignNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCampaignNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCampaignNameQuery({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *   },
+ * });
+ */
+export function useCampaignNameQuery(
+	baseOptions: Apollo.QueryHookOptions<
+		CampaignNameQuery,
+		CampaignNameQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<CampaignNameQuery, CampaignNameQueryVariables>(
+		CampaignNameDocument,
+		options
+	);
+}
+export function useCampaignNameLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		CampaignNameQuery,
+		CampaignNameQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<CampaignNameQuery, CampaignNameQueryVariables>(
+		CampaignNameDocument,
+		options
+	);
+}
+export type CampaignNameQueryHookResult = ReturnType<
+	typeof useCampaignNameQuery
+>;
+export type CampaignNameLazyQueryHookResult = ReturnType<
+	typeof useCampaignNameLazyQuery
+>;
+export type CampaignNameQueryResult = Apollo.QueryResult<
+	CampaignNameQuery,
+	CampaignNameQueryVariables
+>;
 export const EncounterDetailDocument = gql`
 	query ENCOUNTER_DETAIL($campaignId: ID!, $encounterId: ID!) {
 		campaign(id: $campaignId) {
@@ -1539,6 +1626,67 @@ export type EncounterDetailLazyQueryHookResult = ReturnType<
 export type EncounterDetailQueryResult = Apollo.QueryResult<
 	EncounterDetailQuery,
 	EncounterDetailQueryVariables
+>;
+export const EncounterNameDocument = gql`
+	query ENCOUNTER_NAME($campaignId: ID!, $encounterId: ID!) {
+		campaign(id: $campaignId) {
+			encounter(id: $encounterId) {
+				name
+			}
+		}
+	}
+`;
+
+/**
+ * __useEncounterNameQuery__
+ *
+ * To run a query within a React component, call `useEncounterNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEncounterNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEncounterNameQuery({
+ *   variables: {
+ *      campaignId: // value for 'campaignId'
+ *      encounterId: // value for 'encounterId'
+ *   },
+ * });
+ */
+export function useEncounterNameQuery(
+	baseOptions: Apollo.QueryHookOptions<
+		EncounterNameQuery,
+		EncounterNameQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<EncounterNameQuery, EncounterNameQueryVariables>(
+		EncounterNameDocument,
+		options
+	);
+}
+export function useEncounterNameLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		EncounterNameQuery,
+		EncounterNameQueryVariables
+	>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<EncounterNameQuery, EncounterNameQueryVariables>(
+		EncounterNameDocument,
+		options
+	);
+}
+export type EncounterNameQueryHookResult = ReturnType<
+	typeof useEncounterNameQuery
+>;
+export type EncounterNameLazyQueryHookResult = ReturnType<
+	typeof useEncounterNameLazyQuery
+>;
+export type EncounterNameQueryResult = Apollo.QueryResult<
+	EncounterNameQuery,
+	EncounterNameQueryVariables
 >;
 export const ListCampaignsDocument = gql`
 	query LIST_CAMPAIGNS {

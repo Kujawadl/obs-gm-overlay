@@ -1,9 +1,17 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client";
+import {
+	ApolloClient,
+	HttpLink,
+	InMemoryCache,
+	split,
+	from,
+} from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { onError } from "@apollo/client/link/error";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
+import { signIn } from "next-auth/react";
 
-function setupApolloClient() {
+export default function useApolloClient() {
 	const httpLink = new HttpLink({
 		uri: "http://localhost:3000/api/graphql",
 	});
@@ -30,8 +38,18 @@ function setupApolloClient() {
 		  )
 		: httpLink;
 
+	const errorLink = onError(({ graphQLErrors }) => {
+		if (
+			graphQLErrors?.some(
+				(error) => error?.extensions?.code === "UNAUTHENTICATED"
+			)
+		) {
+			signIn();
+		}
+	});
+
 	return new ApolloClient({
-		link: splitLink,
+		link: from([errorLink, splitLink]),
 		cache: new InMemoryCache({
 			typePolicies: {
 				Campaign: {
@@ -55,5 +73,3 @@ function setupApolloClient() {
 		}),
 	});
 }
-
-export default setupApolloClient;

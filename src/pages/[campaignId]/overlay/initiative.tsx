@@ -14,13 +14,13 @@ export default function InitiativeOverlay() {
 	});
 
 	return (
-		!!data?.campaign?.activeEncounter?.round && (
-			<>
-				<Head>
-					<title>{`${
-						data.campaign.activeEncounter.name ?? "Encounter"
-					} Initiative | OBS GM Overlay`}</title>
-				</Head>
+		<>
+			<Head>
+				<title>{`${
+					data?.campaign?.activeEncounter?.name ?? "Encounter"
+				} Initiative | OBS GM Overlay`}</title>
+			</Head>
+			{!!data?.campaign?.activeEncounter?.round && (
 				<Box
 					sx={{
 						display: "inline-flex",
@@ -34,7 +34,7 @@ export default function InitiativeOverlay() {
 				>
 					<InitiativeList campaign={data?.campaign} />
 				</Box>
-			</>
-		)
+			)}
+		</>
 	);
 }

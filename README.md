@@ -73,6 +73,16 @@ npm run migrate
   - [x] Allow GM to advance initiative forward/backward by one turn
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
+- [ ] Authentication
+  - [x] Add user accounts (SSO, don't want to deal with auth)
+  - [x] Restrict account creation to unique invite links (fewer users = more likely to stay in free tiers)
+  - [x] Link campaigns to users so each user gets their own private campaigns list
+  - [x] Secure all edit access to the user who owns that campaign
+  - [x] Overlays are readonly and always public
+  - [ ] UI improvements to error pages
+- [ ] Production
+  - [ ] Host DB on a live server (Aurora? AWS RDS free tier?)
+  - [ ] Host app on Vercel (free tier for hobbyists)
 - [ ] Hardening
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
@@ -86,10 +96,4 @@ npm run migrate
     - [x] Fix hot-reloading of server modules
   - [x] Switch to another DB implementation (sqlite is not cutting it, migrations are a nightmare)
     - [x] Change all IDs to no longer be incremental (e.g. GUIDs generated at resource creation)
-  - [ ] Host app on Vercel (free for hobbyists)
-    - [ ] Host DB on a live server
-  - [ ] Add user accounts (SSO, don't want to deal with auth)
-    - [ ] Restrict account creation to unique invite links (fewer users = more likely to stay in free tiers)
-    - [ ] Link campaigns to users so each user gets their own private campaigns list
-    - [ ] Secure all edit access to the user who owns that campaign
-    - [ ] Overlays are readonly and always public
+  - [ ] Security audit/refactor auth flow

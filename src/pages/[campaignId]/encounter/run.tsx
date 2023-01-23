@@ -1,19 +1,11 @@
 import { useCallback, useMemo } from "react";
-import {
-	Box,
-	Breadcrumbs,
-	Button,
-	Container,
-	Link as MUILink,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import {
 	ArrowBackIos as ArrowBackIcon,
 	ArrowForwardIos as ArrowForwardIcon,
 	History as HistoryIcon,
 } from "@mui/icons-material";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import omit from "lodash/omit";
 import InitiativeList from "../../../components/initiative-list/initiative-list";
@@ -83,31 +75,6 @@ export default function RunInitiative() {
 					} Initiative | OBS GM Overlay`}</title>
 				</Head>
 				<Container fixed>
-					<Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
-						<Link href="/">
-							<MUILink component="a" underline="hover" color="inherit">
-								Campaigns
-							</MUILink>
-						</Link>
-						<Link href={`/${campaignId}/edit`}>
-							<MUILink component="a" underline="hover" color="inherit">
-								{campaign.name}
-							</MUILink>
-						</Link>
-						<Link href={`/${campaignId}/encounter`}>
-							<MUILink component="a" underline="hover" color="inherit">
-								Encounters
-							</MUILink>
-						</Link>
-						<Link
-							href={`/${campaignId}/encounter/${campaign.activeEncounter.id}/edit`}
-						>
-							<MUILink component="a" underline="hover" color="inherit">
-								{campaign.activeEncounter.name}
-							</MUILink>
-						</Link>
-						<Typography color="text.primary">Run Initiative</Typography>
-					</Breadcrumbs>
 					<Typography variant="h3" mb={2}>
 						{campaign.activeEncounter.name}
 					</Typography>

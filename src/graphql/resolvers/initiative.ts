@@ -1,7 +1,7 @@
 import uniq from "lodash/uniq";
+import checkAuth from "../checkAuth";
 import { formatDate } from "../../utils";
-import { CampaignInput } from "../client-types";
-import {
+import type {
 	CampaignMutationResolvers,
 	CampaignResolvers,
 	CombatantMutationResolvers,
@@ -9,8 +9,9 @@ import {
 	EncounterMutationResolvers,
 	EncounterResolvers,
 	HideMonsterNames,
+	CampaignInput,
 } from "../server-types";
-import { CampaignModel } from "./campaign";
+import type { CampaignModel } from "./campaign";
 
 export interface CombatantModel {
 	id: string;
@@ -60,7 +61,10 @@ const resolvers: Resolvers = {
 	CampaignMutation: {
 		async encounter(_parent, args, ctx) {
 			if (args.id) {
-				return await ctx.Encounter.get(args.id);
+				const encounter = await ctx.Encounter.get(args.id);
+				const userId = await checkAuth(ctx, encounter?.campaignId);
+				if (!userId) return {} as EncounterModel;
+				return encounter;
 			} else {
 				return {} as EncounterModel;
 			}
@@ -155,7 +159,13 @@ const resolvers: Resolvers = {
 		},
 		async combatant(_parent, args, ctx) {
 			if (args.id) {
-				return await ctx.Combatant.get(args.id);
+				const combatant = await ctx.Combatant.get(args.id);
+				const encounter =
+					_parent ??
+					(combatant && (await ctx.Encounter.get(combatant?.encounterId)));
+				const userId = await checkAuth(ctx, encounter?.campaignId);
+				if (!userId) return {} as CombatantModel;
+				return combatant;
 			} else {
 				return {} as CombatantModel;
 			}

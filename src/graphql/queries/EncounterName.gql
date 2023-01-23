@@ -1,0 +1,7 @@
+query ENCOUNTER_NAME($campaignId: ID!, $encounterId: ID!) {
+	campaign(id: $campaignId) {
+		encounter(id: $encounterId) {
+			name
+		}
+	}
+}

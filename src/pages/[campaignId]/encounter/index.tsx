@@ -1,15 +1,7 @@
 import { Add as AddIcon, Clear as ClearIcon } from "@mui/icons-material";
-import {
-	Box,
-	Breadcrumbs,
-	Button,
-	Container,
-	Typography,
-	Link as MUILink,
-} from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useCallback } from "react";
 import EncounterList from "../../../components/encounter-list";
 import {
@@ -31,6 +23,7 @@ export default function Encounters() {
 		variables: {
 			campaignId: campaignId as string,
 		},
+		skip: !campaignId,
 	});
 	const [saveCampaign] = useSaveCampaignMutation();
 	const [saveEncounter] = useSaveEncounterMutation();
@@ -75,19 +68,6 @@ export default function Encounters() {
 				<title>List Encounters | OBS GM Overlay</title>
 			</Head>
 			<Container fixed>
-				<Breadcrumbs aria-label="breadcrumb" sx={{ pt: 4, pb: 2 }}>
-					<Link href="/">
-						<MUILink component="a" underline="hover" color="inherit">
-							Campaigns
-						</MUILink>
-					</Link>
-					<Link href={`/${campaignId}/edit`}>
-						<MUILink component="a" underline="hover" color="inherit">
-							{campaignData.campaign.name}
-						</MUILink>
-					</Link>
-					<Typography color="text.primary">Encounters</Typography>
-				</Breadcrumbs>
 				<Typography variant="h3">Encounters</Typography>
 				<EncounterList
 					campaign={campaignData.campaign}

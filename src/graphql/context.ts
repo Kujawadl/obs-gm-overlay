@@ -6,17 +6,20 @@ import {
 	EncounterModel,
 	PlayerModel,
 } from "./models";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export interface Context {
 	sql: Sql;
 	pubsub: PubSub;
+	req: NextApiRequest;
+	res: NextApiResponse;
 	Campaign: CampaignModel;
 	Combatant: CombatantModel;
 	Encounter: EncounterModel;
 	Player: PlayerModel;
 }
 
-export async function setupContext(): Promise<Context> {
+export function setupContext(): Omit<Context, "req" | "res"> {
 	const sql = postgres({
 		host: process.env.DB_HOST,
 		username: process.env.DB_USER,
