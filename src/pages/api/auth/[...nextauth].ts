@@ -1,6 +1,7 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import SequelizeAdapter from "@next-auth/sequelize-adapter";
+import * as pg from "pg";
 import { Sequelize } from "sequelize";
 import postgres from "postgres";
 import { AccountModel, UserModel } from "../../../graphql/models";
@@ -15,6 +16,7 @@ const dbOptions = {
 
 const sequelize = new Sequelize({
 	dialect: "postgres",
+	dialectModule: pg,
 	...dbOptions,
 });
 
