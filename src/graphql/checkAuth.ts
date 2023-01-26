@@ -9,6 +9,7 @@ export default async function checkAuth(
 	const token = await getToken({
 		req: context.req,
 		secret: process.env.NEXTAUTH_SECRET,
+		secureCookie: process.env.NEXT_PUBLIC_HTTPS === "true",
 	});
 	if (token?.sub) {
 		if (campaignId) {
