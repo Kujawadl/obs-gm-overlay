@@ -3,6 +3,7 @@ import { WebSocketServer } from "ws";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import setupApolloServer from "../../graphql/setup-apollo-server";
 import { setupContext } from "../../graphql/context";
+import { initSecrets } from "../../utils";
 import type { Server } from "http";
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 
@@ -22,7 +23,7 @@ const handler: NextApiHandler = async (
 	try {
 		const server = (req as any).socket.server as NextServer;
 		if (!server.apolloHandler) {
-			server.apolloHandler = new Promise((resolve) => {
+			server.apolloHandler = initSecrets().then(() => {
 				console.log("Initializing Apollo Next.JS API handler");
 
 				const wsServer = new WebSocketServer({
@@ -46,19 +47,14 @@ const handler: NextApiHandler = async (
 					coreContext
 				);
 
-				const apolloHandler = startServerAndCreateNextHandler(
-					baseApolloServer,
-					{
-						context: async (req, res) =>
-							Promise.resolve({
-								...coreContext,
-								req,
-								res,
-							}),
-					}
-				);
-
-				resolve(apolloHandler);
+				return startServerAndCreateNextHandler(baseApolloServer, {
+					context: async (req, res) =>
+						Promise.resolve({
+							...coreContext,
+							req,
+							res,
+						}),
+				});
 			});
 		}
 

@@ -15,7 +15,7 @@ export default function useApolloClient() {
 	const httpLink = new HttpLink({
 		uri: `http${process.env.HTTPS ? "s" : ""}://${
 			process.env.NEXT_PUBLIC_HOST
-		}:${process.env.PORT || 80}/api/graphql`,
+		}:${process.env.NEXT_PUBLIC_PORT || 80}/api/graphql`,
 	});
 
 	const wsLink = process.browser
@@ -23,7 +23,7 @@ export default function useApolloClient() {
 				createClient({
 					url: `ws${process.env.HTTPS ? "s" : ""}://${
 						process.env.NEXT_PUBLIC_HOST
-					}:${process.env.PORT || 80}/api/subscriptions`,
+					}:${process.env.NEXT_PUBLIC_PORT || 80}/api/subscriptions`,
 				})
 		  )
 		: null;
