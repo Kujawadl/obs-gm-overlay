@@ -12,18 +12,20 @@ import { createClient } from "graphql-ws";
 import { signIn } from "next-auth/react";
 
 export default function useApolloClient() {
-	const httpLink = new HttpLink({
-		uri: `http${process.env.NEXT_PUBLIC_HTTPS === "true" ? "s" : ""}://${
+	const host = (protocol: "http" | "ws") =>
+		`${protocol}${process.env.NEXT_PUBLIC_HTTPS === "true" ? "s" : ""}://${
 			process.env.NEXT_PUBLIC_HOST
-		}:${process.env.PORT || 80}/api/graphql`,
+		}${process.env.PORT ? `:${process.env.PORT}` : ""}/api/${
+			protocol === "http" ? "graphql" : "subscriptions"
+		}`;
+	const httpLink = new HttpLink({
+		uri: host("http"),
 	});
 
 	const wsLink = process.browser
 		? new GraphQLWsLink(
 				createClient({
-					url: `ws${process.env.NEXT_PUBLIC_HTTPS === "true" ? "s" : ""}://${
-						process.env.NEXT_PUBLIC_HOST
-					}:${process.env.PORT || 80}/api/subscriptions`,
+					url: host("ws"),
 				})
 		  )
 		: null;
