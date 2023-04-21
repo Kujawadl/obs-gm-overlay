@@ -81,8 +81,9 @@ npm run migrate
   - [x] Overlays are readonly and always public
   - [ ] UI improvements to error pages
 - [ ] Production
-  - [ ] Host DB on a live server (Aurora? AWS RDS free tier?)
-  - [ ] Host app on Vercel (free tier for hobbyists)
+  - [x] Host DB on AWS RDS (free tier)
+  - [x] Host app on AWS EC2 (free tier)
+  - [ ] Create CI/CD pipeline
 - [ ] Hardening
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
