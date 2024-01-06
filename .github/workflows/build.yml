@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  Build:
+    runs-on: [linux]
+    steps:
+      - name: Git clone repository 
+        uses: actions/checkout@v4
+        with:
+          token: ${{env:GH_TOKEN}}
+
+      - name: Configure tools
+        uses: asdf-vm/actions/install@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Increment version
+        run: npm version patch --commit-hooks=false
+
+      - name: Next build
+        run: |
+          npm run build
+          mv .next build
+          git add -f build
+          git stash
+          git checkout releases
+          git stash pop
+          rm -rf node_modules .husky .eslintcache tsconfig.tsbuildinfo .next
+          echo ".env*" > .gitignore
+          mv build/standalone/* .
+          mv build/standalone/.next .next
+          mv build/static .next/static
+          git checkout main -- public
+          rm -rf build
+          git add .
+          git commit --no-verify -m "v$(node -p -e "require('./package.json').version")"
+          git push
+          git checkout main
+          git push
