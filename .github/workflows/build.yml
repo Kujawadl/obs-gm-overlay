@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   Build:
-    runs-on: [linux]
+    runs-on: ubuntu-latest
     steps:
       - name: Git config
         run: |
