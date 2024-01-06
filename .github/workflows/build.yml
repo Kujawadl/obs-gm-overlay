@@ -36,17 +36,17 @@ jobs:
           git add -f build
           git stash
           git fetch origin
-          git checkout -b releases origin/releases
+          git checkout -q -b releases origin/releases
           git stash pop
           rm -rf node_modules .husky .eslintcache tsconfig.tsbuildinfo .next
           echo ".env*" > .gitignore
           mv build/standalone/* .
           mv build/standalone/.next .next
           mv build/static .next/static
-          git checkout main -- public .tool-versions
+          git checkout -q main -- public .tool-versions
           rm -rf build
           git add .
           git commit --no-verify -m "v$(node -p -e "require('./package.json').version")"
           git push
-          git checkout main
+          git checkout -q main
           git push
