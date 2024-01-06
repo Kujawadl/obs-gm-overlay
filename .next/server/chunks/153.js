@@ -4,8 +4,9 @@ exports.ids = [153];
 exports.modules = {
 
 /***/ 2153:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Z": () => (/* binding */ InitiativeList)
 /* harmony export */ });
@@ -22,7 +23,9 @@ exports.modules = {
 /* harmony import */ var react_use__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9755);
 /* harmony import */ var react_use__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_use__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _graphql_client_types__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6457);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4505);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5332);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_utils__WEBPACK_IMPORTED_MODULE_7__]);
+_utils__WEBPACK_IMPORTED_MODULE_7__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
 
 
@@ -165,6 +168,8 @@ function InitiativeList({ campaign , style ="overlay" , forceShowMonsterNames =f
     });
 }
 
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
 
 /***/ })
 

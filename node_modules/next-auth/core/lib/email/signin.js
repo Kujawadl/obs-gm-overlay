@@ -10,7 +10,7 @@ var _crypto = require("crypto");
 var _utils = require("../utils");
 
 async function email(identifier, options) {
-  var _await$provider$gener, _provider$generateVer, _provider$maxAge;
+  var _await$provider$gener, _provider$generateVer, _provider$maxAge, _adapter$createVerifi;
 
   const {
     url,
@@ -35,7 +35,7 @@ async function email(identifier, options) {
     url: _url,
     provider,
     theme
-  }), adapter.createVerificationToken({
+  }), (_adapter$createVerifi = adapter.createVerificationToken) === null || _adapter$createVerifi === void 0 ? void 0 : _adapter$createVerifi.call(adapter, {
     identifier,
     token: (0, _utils.hashToken)(token, options),
     expires

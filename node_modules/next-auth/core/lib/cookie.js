@@ -147,9 +147,14 @@ class SessionStore {
   }
 
   get value() {
-    var _Object$values;
+    const sortedKeys = Object.keys((0, _classPrivateFieldGet3.default)(this, _chunks)).sort((a, b) => {
+      var _a$split$pop, _b$split$pop;
 
-    return (_Object$values = Object.values((0, _classPrivateFieldGet3.default)(this, _chunks))) === null || _Object$values === void 0 ? void 0 : _Object$values.join("");
+      const aSuffix = parseInt((_a$split$pop = a.split(".").pop()) !== null && _a$split$pop !== void 0 ? _a$split$pop : "0");
+      const bSuffix = parseInt((_b$split$pop = b.split(".").pop()) !== null && _b$split$pop !== void 0 ? _b$split$pop : "0");
+      return aSuffix - bSuffix;
+    });
+    return sortedKeys.map(key => (0, _classPrivateFieldGet3.default)(this, _chunks)[key]).join("");
   }
 
   chunk(value, options) {

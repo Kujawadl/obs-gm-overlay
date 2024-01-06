@@ -1,16 +1,16 @@
 {
   "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/[campaignId]/edit": "pages/[campaignId]/edit.html",
   "/[campaignId]/encounter/[encounterId]/edit": "pages/[campaignId]/encounter/[encounterId]/edit.html",
   "/[campaignId]/encounter": "pages/[campaignId]/encounter.html",
-  "/[campaignId]/overlay/initiative": "pages/[campaignId]/overlay/initiative.html",
   "/[campaignId]/encounter/run": "pages/[campaignId]/encounter/run.html",
+  "/[campaignId]/overlay/initiative": "pages/[campaignId]/overlay/initiative.html",
   "/[campaignId]/overlay/inspiration": "pages/[campaignId]/overlay/inspiration.html",
-  "/invite-only": "pages/invite-only.html",
-  "/api/graphql": "pages/api/graphql.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/_error": "pages/_error.js",
+  "/api/graphql": "pages/api/graphql.js",
   "/": "pages/index.html",
+  "/invite-only": "pages/invite-only.html",
   "/404": "pages/404.html"
 }
