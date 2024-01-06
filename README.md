@@ -29,6 +29,62 @@ rm -rf ./local-db
 npm run migrate
 ```
 
+## Database Schema ER Diagram
+
+```mermaid
+erDiagram
+    Campaign ||--o{ Player : "has"
+    Campaign ||--o{ Encounter : "has"
+    Campaign ||--o{ Combatant : "has"
+    Encounter ||--o{ Combatant : "has"
+    Combatant ||--o| Player : "played by"
+    Campaign {
+        UUID id PK
+        TEXT name
+        BOOLEAN gmInspiration
+        CooldownTypes CooldownTypes
+        INTEGER cooldownTime
+        UUID activeEncounter
+    }
+    CooldownTypes {
+        TEXT none
+        TEXT player
+        TEXT table
+    }
+    Player {
+        UUID id PK
+        UUID campaignId
+        TEXT playerName
+        TEXT characterName
+        BOOLEAN isGM
+        INTEGER inspiration
+        TIMESTAMPTZ lastInspirationUsed
+    }
+    Encounter {
+        UUID id PK
+        UUID campaignId
+        TEXT name
+        HideMonsterNamesOptions hideMonsterNames
+        INTEGER round
+        INTEGER turn
+        TIMESTAMPTZ turnStart
+    }
+    HideMonsterNamesOptions {
+        TEXT never
+        TEXT always
+        TEXT untilTurn
+    }
+    Combatant {
+        UUID id
+        UUID campaignId
+        UUID encounterId
+        UUID playerId
+        TEXT name
+        BOOLEAN public
+        INTEGER turnOrder
+    }
+```
+
 ## To Do
 
 ### MVP
