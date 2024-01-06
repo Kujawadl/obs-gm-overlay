@@ -43,7 +43,7 @@ jobs:
           mv build/standalone/* .
           mv build/standalone/.next .next
           mv build/static .next/static
-          git checkout main -- public
+          git checkout main -- public .tool-versions
           rm -rf build
           git add .
           git commit --no-verify -m "v$(node -p -e "require('./package.json').version")"
