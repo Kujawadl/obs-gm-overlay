@@ -1,0 +1,99 @@
+{
+  "polyfillFiles": [
+    "static/chunks/polyfills-c67a75d1b6f99dc8.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/vjWXeyxTJOzCRhNHrl2kh/_buildManifest.js",
+    "static/vjWXeyxTJOzCRhNHrl2kh/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "pages": {
+    "/": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/387-15ff321ea4038356.js",
+      "static/chunks/934-f0e8117d45f3b3b6.js",
+      "static/chunks/pages/index-8abbb6b27f06e613.js"
+    ],
+    "/[campaignId]/edit": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/26-47858be36f6e42ee.js",
+      "static/chunks/387-15ff321ea4038356.js",
+      "static/chunks/897-5528993da9a3e6d7.js",
+      "static/chunks/934-f0e8117d45f3b3b6.js",
+      "static/chunks/451-a8926b0e33169ed7.js",
+      "static/chunks/pages/[campaignId]/edit-2a116de3be608717.js"
+    ],
+    "/[campaignId]/encounter": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/387-15ff321ea4038356.js",
+      "static/chunks/934-f0e8117d45f3b3b6.js",
+      "static/chunks/pages/[campaignId]/encounter-0c18e4240f5daeb8.js"
+    ],
+    "/[campaignId]/encounter/[encounterId]/edit": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/26-47858be36f6e42ee.js",
+      "static/chunks/387-15ff321ea4038356.js",
+      "static/chunks/897-5528993da9a3e6d7.js",
+      "static/chunks/451-a8926b0e33169ed7.js",
+      "static/chunks/557-3cf83d1b35405602.js",
+      "static/chunks/199-506681f7b9601bf4.js",
+      "static/chunks/pages/[campaignId]/encounter/[encounterId]/edit-c4c8beb0e73a5d0e.js"
+    ],
+    "/[campaignId]/encounter/run": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/26-47858be36f6e42ee.js",
+      "static/chunks/897-5528993da9a3e6d7.js",
+      "static/chunks/675-3171fbb66937b3d3.js",
+      "static/chunks/557-3cf83d1b35405602.js",
+      "static/chunks/pages/[campaignId]/encounter/run-112adaf0408f9ccc.js"
+    ],
+    "/[campaignId]/overlay/initiative": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/26-47858be36f6e42ee.js",
+      "static/chunks/675-3171fbb66937b3d3.js",
+      "static/chunks/pages/[campaignId]/overlay/initiative-5d94bead9b526d22.js"
+    ],
+    "/[campaignId]/overlay/inspiration": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/26-47858be36f6e42ee.js",
+      "static/chunks/675-3171fbb66937b3d3.js",
+      "static/chunks/pages/[campaignId]/overlay/inspiration-05b18b041f72ee16.js"
+    ],
+    "/_app": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/css/f8c25f3b607fe79b.css",
+      "static/chunks/pages/_app-480c7f5a10d568f8.js"
+    ],
+    "/_error": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/pages/_error-409f831d3504c8f5.js"
+    ],
+    "/invite-only": [
+      "static/chunks/webpack-2d6c20b89449f43d.js",
+      "static/chunks/framework-50116e63224baba2.js",
+      "static/chunks/main-d3435d9ce096e6a4.js",
+      "static/chunks/pages/invite-only-52ca307e8fecac11.js"
+    ]
+  },
+  "ampFirstPages": []
+}
