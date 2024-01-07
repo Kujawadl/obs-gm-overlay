@@ -11,6 +11,10 @@ permissions:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    environment: Production
+    env:
+      NEXT_PUBLIC_HTTPS: ${{ vars.NEXT_PUBLIC_HTTPS }}
+      NEXT_PUBLIC_HOST: ${{ vars.NEXT_PUBLIC_HOST }}
     steps:
       - name: Git clone repository 
         uses: actions/checkout@v4
@@ -28,6 +32,11 @@ jobs:
 
       - name: Increment version
         run: npm version patch --commit-hooks=false
+      
+      - name: Create .env
+        run: |
+          echo "NEXT_PUBLIC_HTTPS=$NEXT_PUBLIC_HTTPS" >> .env.production
+          echo "NEXT_PUBLIC_HOST=$NEXT_PUBLIC_HOST" >> .env.production
 
       - name: Next build
         run: |
