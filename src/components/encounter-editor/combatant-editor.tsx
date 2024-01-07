@@ -28,7 +28,6 @@ import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import { Field, FieldProps, useFormikContext } from "formik";
 import { Reorder, useDragControls } from "framer-motion";
-import { useDebouncedCallback } from "../../utils";
 import {
 	CombatantInput,
 	EncounterDetailDocument,
@@ -76,15 +75,7 @@ export default function CombatantEditor({
 		refetchQueries: [EncounterDetailDocument],
 	});
 
-	const handleQuickSubmit = useDebouncedCallback(
-		formik.handleSubmit.bind(formik),
-		250
-	);
-
-	const handleLongSubmit = useDebouncedCallback(
-		formik.handleSubmit.bind(formik),
-		500
-	);
+	const handleSubmit = formik.handleSubmit.bind(formik);
 
 	return (
 		<Reorder.Item
@@ -145,9 +136,8 @@ export default function CombatantEditor({
 													error={meta.touched && !!meta.error}
 													helperText={meta.touched ? meta.error : undefined}
 													{...field}
-													onChange={(e) => {
-														field.onChange(e);
-														handleLongSubmit();
+													onBlur={() => {
+														handleSubmit();
 													}}
 												/>
 											</span>
@@ -163,14 +153,14 @@ export default function CombatantEditor({
 									form,
 								}: FieldProps<string, { combatants: CombatantInput[] }>) => {
 									const selectedPlayer = playerList.find(
-										(p) => p.id === field.value
+										(p) => p.id === field.value,
 									);
 									const filteredPlayerList = playerList.filter(
 										(player) =>
 											selectedPlayer?.id === player.id ||
 											!form.values.combatants
 												.map((c) => c.playerId)
-												.includes(player.id)
+												.includes(player.id),
 									);
 									return (
 										<FormControl fullWidth>
@@ -188,6 +178,7 @@ export default function CombatantEditor({
 													!filteredPlayerList.length || form.isSubmitting
 												}
 												{...field}
+												value={field.value || ""}
 												endAdornment={
 													<ClearIcon
 														sx={{
@@ -199,26 +190,26 @@ export default function CombatantEditor({
 														onClick={() => {
 															form.setFieldValue(
 																`combatants[${index}].playerId`,
-																undefined
+																undefined,
 															);
-															handleQuickSubmit();
+															handleSubmit();
 														}}
 													/>
 												}
 												onChange={(e) => {
 													const newPlayer = playerList.find(
-														(p) => p.id === e.target.value
+														(p) => p.id === e.target.value,
 													) as PlayerFragment;
 													field.onChange(e);
 													form.setFieldValue(
 														`combatants[${index}].name`,
-														newPlayer.characterName
+														newPlayer.characterName,
 													);
 													form.setFieldValue(
 														`combatants[${index}].public`,
-														true
+														true,
 													);
-													handleQuickSubmit();
+													handleSubmit();
 												}}
 											>
 												{filteredPlayerList.map((player) => (
@@ -273,7 +264,7 @@ export default function CombatantEditor({
 															{...field}
 															onChange={(e) => {
 																field.onChange(e);
-																handleQuickSubmit();
+																handleSubmit();
 															}}
 														/>
 													}

@@ -1,7 +1,11 @@
 import { useCallback, useMemo } from "react";
 import { Formik } from "formik";
 import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
-import { Add as AddIcon } from "@mui/icons-material";
+import {
+	Add as AddIcon,
+	Delete as DeleteIcon,
+	GroupAdd as GroupAddIcon,
+} from "@mui/icons-material";
 import { Reorder } from "framer-motion";
 import clone from "lodash/clone";
 import maxBy from "lodash/maxBy";
@@ -31,20 +35,22 @@ export default function CombatantList({
 		variables: { id: campaignId },
 	});
 
-	const [addCombatant] = useSaveCombatantMutation({
-		variables: {
-			combatant: {
-				campaignId,
-				encounterId,
-				name: "New Combatant",
-				turnOrder: (maxBy(combatants, "turnOrder")?.turnOrder ?? 0) + 1,
+	const [addCombatant, { loading: addCombatantLoading }] =
+		useSaveCombatantMutation({
+			variables: {
+				combatant: {
+					campaignId,
+					encounterId,
+					name: "New Combatant",
+					turnOrder: (maxBy(combatants, "turnOrder")?.turnOrder ?? 0) + 1,
+				},
 			},
-		},
-		refetchQueries: [EncounterDetailDocument],
-	});
-	const [saveCombatants] = useSaveCombatantsMutation({
-		refetchQueries: [EncounterDetailDocument],
-	});
+			refetchQueries: [EncounterDetailDocument],
+		});
+	const [saveCombatants, { loading: saveCombatantsLoading }] =
+		useSaveCombatantsMutation({
+			refetchQueries: [EncounterDetailDocument],
+		});
 
 	const initialValues = useMemo(
 		() => ({
@@ -55,17 +61,64 @@ export default function CombatantList({
 						campaignId,
 						encounterId,
 						playerId: combatant.player?.id,
-					} as CombatantInput)
+					}) as CombatantInput,
 			),
 		}),
-		[combatants, campaignId, encounterId]
+		[combatants, campaignId, encounterId],
 	);
 
 	const playerList = useMemo(
 		() =>
 			(campaignData?.campaign?.players ?? []).filter((player) => !player.isGM),
-		[campaignData]
+		[campaignData],
 	);
+
+	const missingPlayers = useMemo(
+		() =>
+			playerList.filter(
+				(player) =>
+					!combatants.some((combatant) => combatant.player?.id === player.id),
+			),
+		[playerList, combatants],
+	);
+
+	const deleteAllCombatants = useCallback(() => {
+		saveCombatants({
+			variables: {
+				combatants: [],
+			},
+		});
+	}, [saveCombatants]);
+
+	const addAllPlayers = useCallback(() => {
+		const playersToAdd = missingPlayers.map(
+			(player, i): CombatantInput => ({
+				campaignId,
+				encounterId,
+				name: player.characterName || player.playerName,
+				public: true,
+				turnOrder: (maxBy(combatants, "turnOrder")?.turnOrder ?? 0) + i + 1,
+				playerId: player.id,
+			}),
+		);
+		saveCombatants({
+			variables: {
+				combatants: combatants
+					.map(
+						(combatant): CombatantInput => ({
+							campaignId,
+							encounterId,
+							id: combatant.id,
+							public: combatant.public,
+							name: combatant.name,
+							playerId: combatant.player?.id,
+							turnOrder: combatant.turnOrder,
+						}),
+					)
+					.concat(playersToAdd),
+			},
+		});
+	}, [missingPlayers, combatants, campaignId, encounterId, saveCombatants]);
 
 	const onSubmit = useCallback(
 		(values: typeof initialValues) => {
@@ -79,7 +132,7 @@ export default function CombatantList({
 				},
 			});
 		},
-		[saveCombatants]
+		[saveCombatants],
 	);
 
 	return (
@@ -95,8 +148,8 @@ export default function CombatantList({
 						combatants: ids.map((id, i) => {
 							const combatant = clone(
 								form.values.combatants.find(
-									(c) => c.id === id
-								) as CombatantInput
+									(c) => c.id === id,
+								) as CombatantInput,
 							);
 							combatant.turnOrder = i + 1;
 							return combatant;
@@ -107,7 +160,7 @@ export default function CombatantList({
 					<>
 						<Backdrop
 							sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-							open={form.isSubmitting}
+							open={saveCombatantsLoading || addCombatantLoading}
 						>
 							<CircularProgress color="inherit" />
 						</Backdrop>
@@ -127,14 +180,35 @@ export default function CombatantList({
 								/>
 							))}
 						</Reorder.Group>
-						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-							<Button
-								variant="contained"
-								color="success"
-								onClick={() => addCombatant()}
-							>
-								<AddIcon /> New Combatant
-							</Button>
+						<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+							<div>
+								<Button
+									variant="contained"
+									color="error"
+									onClick={deleteAllCombatants}
+								>
+									<DeleteIcon /> Clear Combatants
+								</Button>
+							</div>
+							<div>
+								{missingPlayers.length > 0 && (
+									<Button
+										variant="contained"
+										color="primary"
+										onClick={addAllPlayers}
+										style={{ marginRight: 8 }}
+									>
+										<GroupAddIcon /> Add All PCs
+									</Button>
+								)}
+								<Button
+									variant="contained"
+									color="success"
+									onClick={addCombatant as () => void}
+								>
+									<AddIcon /> New Combatant
+								</Button>
+							</div>
 						</Box>
 					</>
 				);
