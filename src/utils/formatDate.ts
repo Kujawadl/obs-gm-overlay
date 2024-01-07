@@ -17,12 +17,15 @@ export function formatDate(value?: string | Date): string {
 /**
  * Formats a datetime value from SQLite into a Date object
  */
-export function parseDate(value?: string | Date): Date | undefined {
+export function parseDate(
+	value?: string | Date | null,
+): typeof value extends undefined | null ? undefined : Date {
 	if (value instanceof Date) {
 		return value;
 	} else if (value) {
 		return parseISO(value);
 	} else {
+		// @ts-ignore Weird TS quirk here
 		return undefined;
 	}
 }
