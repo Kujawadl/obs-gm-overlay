@@ -581,7 +581,11 @@ function setupApolloServer(httpServer, wsServer, context) {
                     };
                 }
             }
-        ]
+        ],
+        formatError: (err)=>{
+            console.error(err);
+            return err;
+        }
     });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (setupApolloServer);
