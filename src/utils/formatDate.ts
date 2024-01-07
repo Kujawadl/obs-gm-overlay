@@ -17,6 +17,6 @@ export function formatDate(value?: string | Date): string {
 /**
  * Formats a datetime value from SQLite into a Date object
  */
-export function parseDate(value: string): Date {
-	return parseISO(value);
+export function parseDate(value: string | Date): Date {
+	return value instanceof Date ? value : parseISO(value);
 }

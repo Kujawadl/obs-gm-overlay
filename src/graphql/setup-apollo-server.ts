@@ -13,7 +13,7 @@ import type { Context } from "./context";
 function setupApolloServer(
 	httpServer: Server,
 	wsServer: WebSocketServer,
-	context: Omit<Context, "req" | "res">
+	context: Omit<Context, "req" | "res">,
 ) {
 	const schema = makeExecutableSchema({ typeDefs, resolvers });
 
@@ -36,6 +36,10 @@ function setupApolloServer(
 				},
 			},
 		],
+		formatError: (err) => {
+			console.error(err);
+			return err;
+		},
 	});
 }
 

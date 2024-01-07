@@ -15,9 +15,9 @@ export default function useApolloClient() {
 	const host = (protocol: "http" | "ws") =>
 		`${protocol}${process.env.NEXT_PUBLIC_HTTPS === "true" ? "s" : ""}://${
 			process.env.NEXT_PUBLIC_HOST
-		}${process.env.PORT ? `:${process.env.PORT}` : ""}/api/${
-			protocol === "http" ? "graphql" : "subscriptions"
-		}`;
+		}${
+			process.env.NEXT_PUBLIC_PORT ? `:${process.env.NEXT_PUBLIC_PORT}` : ""
+		}/api/${protocol === "http" ? "graphql" : "subscriptions"}`;
 	const httpLink = new HttpLink({
 		uri: host("http"),
 	});
@@ -26,8 +26,8 @@ export default function useApolloClient() {
 		? new GraphQLWsLink(
 				createClient({
 					url: host("ws"),
-				})
-		  )
+				}),
+			)
 		: null;
 
 	const splitLink = process.browser
@@ -40,14 +40,14 @@ export default function useApolloClient() {
 					);
 				},
 				wsLink as GraphQLWsLink,
-				httpLink
-		  )
+				httpLink,
+			)
 		: httpLink;
 
 	const errorLink = onError(({ graphQLErrors }) => {
 		if (
 			graphQLErrors?.some(
-				(error) => error?.extensions?.code === "UNAUTHENTICATED"
+				(error) => error?.extensions?.code === "UNAUTHENTICATED",
 			)
 		) {
 			signIn();
