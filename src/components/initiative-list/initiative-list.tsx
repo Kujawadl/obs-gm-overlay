@@ -25,13 +25,13 @@ export default function InitiativeList({
 				turn: 0,
 				turnStart: null,
 			},
-		[campaign]
+		[campaign],
 	);
 
 	const combatants = useMemo(() => {
 		return (
 			campaign?.activeEncounter?.combatants.sort(
-				(a, b) => a.turnOrder - b.turnOrder
+				(a, b) => a.turnOrder - b.turnOrder,
 			) ?? []
 		);
 	}, [campaign]);
@@ -42,12 +42,11 @@ export default function InitiativeList({
 		if ((round > 0 || turn > 0) && turnStart) {
 			const currentTime = new Date();
 			const startTime = parseDate(turnStart);
-			setTurnDuration(
-				formatTimeDuration(currentTime, parseDate(turnStart), [
-					"minutes",
-					"seconds",
-				])
-			);
+			const duration = formatTimeDuration(parseDate(turnStart), currentTime, [
+				"minutes",
+				"seconds",
+			]);
+			setTurnDuration(duration);
 			setOverTime(currentTime.getTime() - startTime.getTime() > 60 * 1000);
 		} else if (turnDuration) {
 			setTurnDuration(null);
@@ -69,7 +68,7 @@ export default function InitiativeList({
 						? {
 								marginLeft: 2,
 								marginRight: 2,
-						  }
+							}
 						: {
 								paddingTop: 2,
 								paddingBottom: 2,
@@ -81,7 +80,7 @@ export default function InitiativeList({
 								borderTopColor: "primary.light",
 								borderBottom: 1,
 								borderBottomColor: "grey.400",
-						  }
+							}
 				}
 			>
 				{round ? `Round ${round}` : "Combat Not Started"}
@@ -120,7 +119,7 @@ export default function InitiativeList({
 									flexDirection: "row",
 									alignItems: "center",
 									height: 32,
-							  }
+								}
 							: {
 									display: "flex",
 									flexDirection: "row",
@@ -132,7 +131,7 @@ export default function InitiativeList({
 									borderBottom: 1,
 									borderStyle: "solid",
 									borderColor: "grey.400",
-							  }
+								}
 					}
 				>
 					<Box
@@ -165,7 +164,7 @@ export default function InitiativeList({
 										default:
 											return combatant.name;
 									}
-							  })()}
+								})()}
 					</Box>
 				</Box>
 			))}

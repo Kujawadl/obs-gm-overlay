@@ -1,4 +1,4 @@
-import { Add as AddIcon, Clear as ClearIcon } from "@mui/icons-material";
+import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Button, Container, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -7,7 +7,6 @@ import EncounterList from "../../../components/encounter-list";
 import {
 	useCampaignSubscription,
 	useListEncountersQuery,
-	useSaveCampaignMutation,
 	useSaveEncounterMutation,
 } from "../../../graphql/client-types";
 
@@ -25,7 +24,6 @@ export default function Encounters() {
 		},
 		skip: !campaignId,
 	});
-	const [saveCampaign] = useSaveCampaignMutation();
 	const [saveEncounter] = useSaveEncounterMutation();
 
 	const onAddEncounter = useCallback(() => {
@@ -39,7 +37,7 @@ export default function Encounters() {
 		}).then(({ data }) => {
 			if (data?.campaign?.encounter?.save) {
 				router.push(
-					`/${campaignId}/encounter/${data.campaign.encounter.save.id}/edit`
+					`/${campaignId}/encounter/${data.campaign.encounter.save.id}/edit`,
 				);
 			} else {
 				// TODO: Display an error here
@@ -47,20 +45,6 @@ export default function Encounters() {
 			refetch();
 		});
 	}, [saveEncounter, campaignId, router, refetch]);
-
-	const onClearActive = useCallback(() => {
-		if (campaignData?.campaign) {
-			saveCampaign({
-				variables: {
-					id: campaignId as string,
-					input: {
-						name: campaignData.campaign.name,
-						activeEncounter: null,
-					},
-				},
-			});
-		}
-	}, [saveCampaign, campaignData, campaignId]);
 
 	return campaignData?.campaign && data?.campaign?.encounters ? (
 		<>
@@ -74,14 +58,7 @@ export default function Encounters() {
 					encounters={data.campaign.encounters}
 					refetch={refetch}
 				/>
-				<Box sx={{ display: "flex", justifyContent: "space-between" }}>
-					<Button
-						disabled={!campaignData?.campaign?.activeEncounter}
-						onClick={onClearActive}
-					>
-						<ClearIcon />
-						Clear Active Encounter
-					</Button>
+				<Box sx={{ display: "flex", justifyContent: "end" }}>
 					<Button variant="contained" color="success" onClick={onAddEncounter}>
 						<AddIcon /> New Encounter
 					</Button>

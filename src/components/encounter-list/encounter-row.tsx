@@ -78,14 +78,16 @@ export default function EncounterRow({
 				}}
 			>
 				<ListItemText sx={{ flexBasis: "100%" }}>
-					<Typography variant="h5">
-						{encounter.name}{" "}
-						{encounter.id === campaign.activeEncounter?.id ? (
-							<Typography color="text.secondary" component="span">
-								(Active)
+					<Box display="flex" justifyContent="space-between" width="100%">
+						<Typography variant="h5" component="span">
+							{encounter.name}
+						</Typography>
+						{encounter.round > 0 ? (
+							<Typography variant="h6" color="text.secondary" component="span">
+								(Round {encounter.round})
 							</Typography>
 						) : null}
-					</Typography>
+					</Box>
 				</ListItemText>
 				<Box
 					sx={{
