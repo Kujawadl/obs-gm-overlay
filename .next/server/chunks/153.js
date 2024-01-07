@@ -54,10 +54,11 @@ function InitiativeList({ campaign , style ="overlay" , forceShowMonsterNames =f
         if ((round > 0 || turn > 0) && turnStart) {
             const currentTime = new Date();
             const startTime = (0,_utils__WEBPACK_IMPORTED_MODULE_7__/* .parseDate */ .sG)(turnStart);
-            setTurnDuration((0,_utils__WEBPACK_IMPORTED_MODULE_7__/* .formatTimeDuration */ .J_)(currentTime, (0,_utils__WEBPACK_IMPORTED_MODULE_7__/* .parseDate */ .sG)(turnStart), [
+            const duration = (0,_utils__WEBPACK_IMPORTED_MODULE_7__/* .formatTimeDuration */ .J_)((0,_utils__WEBPACK_IMPORTED_MODULE_7__/* .parseDate */ .sG)(turnStart), currentTime, [
                 "minutes",
                 "seconds"
-            ]));
+            ]);
+            setTurnDuration(duration);
             setOverTime(currentTime.getTime() - startTime.getTime() > 60 * 1000);
         } else if (turnDuration) {
             setTurnDuration(null);
