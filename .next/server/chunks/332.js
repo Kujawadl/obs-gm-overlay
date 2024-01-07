@@ -29,7 +29,14 @@ date_fns__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (
 /**
  * Formats a datetime value from SQLite into a Date object
  */ function parseDate(value) {
-    return value instanceof Date ? value : (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.parseISO)(value);
+    if (value instanceof Date) {
+        return value;
+    } else if (value) {
+        return (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.parseISO)(value);
+    } else {
+        // @ts-ignore Weird TS quirk here
+        return undefined;
+    }
 }
 
 __webpack_async_result__();
@@ -85,8 +92,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "J_": () => (/* reexport safe */ _formatTimeDuration__WEBPACK_IMPORTED_MODULE_1__.J),
 /* harmony export */   "qI": () => (/* reexport safe */ _useCooldown__WEBPACK_IMPORTED_MODULE_2__.q),
-/* harmony export */   "sG": () => (/* reexport safe */ _formatDate__WEBPACK_IMPORTED_MODULE_0__.s),
-/* harmony export */   "y1": () => (/* reexport safe */ _useDebouncedCallback__WEBPACK_IMPORTED_MODULE_3__.y)
+/* harmony export */   "sG": () => (/* reexport safe */ _formatDate__WEBPACK_IMPORTED_MODULE_0__.s)
 /* harmony export */ });
 /* harmony import */ var _formatDate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8742);
 /* harmony import */ var _formatTimeDuration__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4566);
@@ -178,9 +184,7 @@ __webpack_async_result__();
 /***/ 8592:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "y": () => (/* binding */ useDebouncedCallback)
-/* harmony export */ });
+/* unused harmony export useDebouncedCallback */
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -193,8 +197,8 @@ __webpack_async_result__();
 function useDebouncedCallback(func, wait) {
     // Use a ref to store the timeout between renders
     // and prevent changes to it from causing re-renders
-    const timeout = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)((...args)=>{
+    const timeout = useRef();
+    return useCallback((...args)=>{
         const later = ()=>{
             clearTimeout(timeout.current);
             func(...args);

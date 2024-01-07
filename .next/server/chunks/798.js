@@ -557,7 +557,14 @@ date_fns__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (
 /**
  * Formats a datetime value from SQLite into a Date object
  */ function parseDate(value) {
-    return value instanceof Date ? value : (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.parseISO)(value);
+    if (value instanceof Date) {
+        return value;
+    } else if (value) {
+        return (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.parseISO)(value);
+    } else {
+        // @ts-ignore Weird TS quirk here
+        return undefined;
+    }
 }
 
 __webpack_async_result__();
