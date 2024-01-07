@@ -129,6 +129,7 @@ erDiagram
   - [x] Allow GM to advance initiative forward/backward by one turn
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
+  - [ ] Add optional alternative (MCDM) inspiration mode (teams go together and decide order on each turn)
 - [ ] Authentication
   - [x] Add user accounts (SSO, don't want to deal with auth)
   - [x] Restrict account creation to unique invite links (fewer users = more likely to stay in free tiers)
@@ -136,10 +137,10 @@ erDiagram
   - [x] Secure all edit access to the user who owns that campaign
   - [x] Overlays are readonly and always public
   - [ ] UI improvements to error pages
-- [ ] Production
+- [x] Production
   - [x] Host DB on AWS RDS (free tier)
   - [x] Host app on AWS EC2 (free tier)
-  - [ ] Create CI/CD pipeline
+  - [x] Create CI/CD pipeline
 - [ ] Hardening
   - [x] Automatic GQL type generation
     - [x] Use generated types in web
