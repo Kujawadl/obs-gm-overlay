@@ -261,7 +261,7 @@ graphql_ws__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__.then ?
 
 
 function useApolloClient() {
-    const host = (protocol)=>`${protocol}${process.env.NEXT_PUBLIC_HTTPS === "true" ? "s" : ""}://${process.env.NEXT_PUBLIC_HOST}${process.env.PORT ? `:${process.env.PORT}` : ""}/api/${protocol === "http" ? "graphql" : "subscriptions"}`;
+    const host = (protocol)=>`${protocol}${ true ? "s" : 0}://${"obs.jager-kujawa.com"}${process.env.PORT ? `:${process.env.PORT}` : ""}/api/${protocol === "http" ? "graphql" : "subscriptions"}`;
     const httpLink = new _apollo_client__WEBPACK_IMPORTED_MODULE_0__.HttpLink({
         uri: host("http")
     });

@@ -123,7 +123,7 @@ async function checkAuth(context, campaignId) {
     const token = await (0,jwt_namespaceObject.getToken)({
         req: context.req,
         secret: process.env.NEXTAUTH_SECRET,
-        secureCookie: process.env.NEXT_PUBLIC_HTTPS === "true"
+        secureCookie: "true" === "true"
     });
     if (token?.sub) {
         if (campaignId) {
