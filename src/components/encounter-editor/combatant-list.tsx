@@ -126,7 +126,7 @@ export default function CombatantList({
 				...combatant,
 				turnOrder: i + 1,
 			}));
-			saveCombatants({
+			return saveCombatants({
 				variables: {
 					combatants: newValues,
 				},
