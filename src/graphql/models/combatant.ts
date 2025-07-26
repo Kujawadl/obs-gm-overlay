@@ -1,117 +1,167 @@
-import { CombatantInput } from "../server-types";
+import { createId } from "@paralleldrive/cuid2";
 import { CombatantModel as Combatant } from "../resolvers/initiative";
+import { CombatantInput } from "../server-types";
 import Model from "./_model";
-import type { Sql } from "postgres";
+import type { DatabaseSync } from "node:sqlite";
 
-export default class CombatantModel
-	implements Model<Combatant, CombatantInput>
-{
-	private sql: Sql;
-
-	constructor(sql: Sql) {
-		this.sql = sql;
+export default class CombatantModel extends Model<Combatant, CombatantInput> {
+	constructor(private sql: DatabaseSync) {
+		super();
 	}
 
-	async get(id: string): Promise<Combatant | undefined> {
-		const results = await this.sql<
-			Combatant[]
-		>`SELECT * FROM "Combatant" WHERE "id" = ${id}`;
-		return results[0];
+	get(id: string): Combatant | undefined {
+		return id
+			? (this.sql
+					.prepare(`SELECT * FROM "Combatant" WHERE "id" = ?`)
+					.get(id) as unknown as Combatant)
+			: undefined;
 	}
 
-	async list(encounterId: string): Promise<Combatant[]> {
-		const results = await this.sql<Combatant[]>`
-			SELECT *
-			FROM "Combatant"
-			WHERE "encounterId" = ${encounterId}
-			ORDER BY "turnOrder", "name"
-		`;
+	list(encounterId: string): Combatant[] {
+		const results = this.sql
+			.prepare(
+				`
+					SELECT *
+					FROM "Combatant"
+					WHERE "encounterId" = ?
+					ORDER BY "turnOrder", "name"
+				`,
+			)
+			.all(encounterId) as unknown as Combatant[];
 		return results?.length ? results : [];
 	}
 
-	async create(input: CombatantInput): Promise<Combatant> {
-		const results = await this.sql<Combatant[]>`
-			INSERT INTO "Combatant" (
-				"campaignId",
-				"encounterId",
-				"playerId",
-				"name",
-				"public",
-				"turnOrder"
-			) VALUES (
-				${input.campaignId},
-				${input.encounterId},
-				${input.playerId ?? null},
-				${(input.name ?? "").trim()},
-				${input.public ?? false},
-				${input.turnOrder ?? 0}
-			) RETURNING *
-		`;
-		return results[0];
+	create(input: CombatantInput): Combatant {
+		const id = createId();
+		this.sql
+			.prepare(
+				`
+					INSERT INTO "Combatant" (
+						"id",
+						"campaignId",
+						"encounterId",
+						"playerId",
+						"name",
+						"public",
+						"turnOrder"
+					) VALUES (
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					);
+				`,
+			)
+			.run(
+				id,
+				input.campaignId,
+				input.encounterId,
+				input.playerId ?? null,
+				(input.name ?? "").trim(),
+				this.boolean(input.public ?? false),
+				input.turnOrder ?? 0,
+			);
+		return this.get(id) as Combatant;
 	}
 
-	async update(
-		combatant: Combatant,
-		input: CombatantInput
-	): Promise<Combatant> {
-		const results = await this.sql<Combatant[]>`
-			UPDATE "Combatant"
-			SET
-				"campaignId" = ${input.campaignId ?? combatant.campaignId},
-				"encounterId" = ${input.encounterId ?? combatant.encounterId},
-				"playerId" = ${input.playerId ?? combatant.playerId ?? null},
-				"name" = ${(input.name ?? combatant.name ?? "").trim()},
-				"public" = ${input.public ?? combatant.public ?? false},
-				"turnOrder" = ${input.turnOrder ?? combatant.turnOrder ?? 0}
-			WHERE "id" = ${combatant.id}
-			RETURNING *
-		`;
-		return results[0];
+	update(combatant: Combatant, input: CombatantInput): Combatant {
+		this.sql
+			.prepare(
+				`
+					UPDATE "Combatant"
+					SET
+						"campaignId" = ?,
+						"encounterId" = ?,
+						"playerId" = ?,
+						"name" = ?,
+						"public" = ?,
+						"turnOrder" = ?
+					WHERE "id" = ?
+					RETURNING *
+				`,
+			)
+			.run(
+				input.campaignId ?? combatant.campaignId,
+				input.encounterId ?? combatant.encounterId,
+				input.playerId ?? combatant.playerId ?? null,
+				(input.name ?? combatant.name ?? "").trim(),
+				this.boolean(input.public ?? combatant.public ?? false),
+				input.turnOrder ?? combatant.turnOrder ?? 0,
+				combatant.id,
+			);
+		return this.get(combatant.id) as Combatant;
 	}
 
-	async delete(id: string): Promise<boolean> {
-		await this.sql`DELETE FROM "Combatant" WHERE "id" = ${id}`;
+	delete(id: string): boolean {
+		this.sql.prepare(`DELETE FROM "Combatant" WHERE "id" = ?`).run(id);
 		return true;
 	}
 
-	async bulkUpdate(input: CombatantInput[]): Promise<Combatant[]> {
-		return await this.sql.begin((sql) => {
-			return Promise.all(
-				input.map((combatant) => {
-					if (!combatant.id) {
-						return sql<Combatant[]>`
-							INSERT INTO "Combatant" (
-								"campaignId",
-								"encounterId",
-								"playerId",
-								"name",
-								"public",
-								"turnOrder"
-							) VALUES (
-								${combatant.campaignId},
-								${combatant.encounterId},
-								${combatant.playerId ?? null},
-								${(combatant.name ?? "").trim()},
-								${combatant.public ?? false},
-								${combatant.turnOrder ?? 0}
-							) RETURNING *
-						`.then((results) => results[0]);
-					} else {
-						return sql<Combatant[]>`
+	bulkUpdate(input: CombatantInput[]): Combatant[] {
+		return input.map((combatant) => {
+			let id = combatant.id;
+			if (!id) {
+				id = createId();
+				this.sql
+					.prepare(
+						`
+					INSERT INTO "Combatant" (
+					  "id",
+						"campaignId",
+						"encounterId",
+						"playerId",
+						"name",
+						"public",
+						"turnOrder"
+					) VALUES (
+					  ?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+				`,
+					)
+					.run(
+						id,
+						combatant.campaignId,
+						combatant.encounterId,
+						combatant.playerId ?? null,
+						(combatant.name ?? "").trim(),
+						this.boolean(combatant.public ?? false),
+						combatant.turnOrder ?? 0,
+					);
+			} else {
+				this.sql
+					.prepare(
+						`
 							UPDATE "Combatant"
 							SET
-								"campaignId" = ${combatant.campaignId},
-								"encounterId" = ${combatant.encounterId},
-								"playerId" = ${combatant.playerId ?? null},
-								"name" = ${(combatant.name ?? "").trim()},
-								"public" = ${combatant.public ?? false},
-								"turnOrder" = ${combatant.turnOrder ?? 0}
-							WHERE "id" = ${combatant.id}
-							RETURNING *
-						`.then((results) => results[0]);
-					}
-				})
-			);
+								"campaignId" = ?,
+								"encounterId" = ?,
+								"playerId" = ?,
+								"name" = ?,
+								"public" = ?,
+								"turnOrder" = ?
+							WHERE "id" = ?;
+						`,
+					)
+					.run(
+						combatant.campaignId,
+						combatant.encounterId,
+						combatant.playerId ?? null,
+						(combatant.name ?? "").trim(),
+						this.boolean(combatant.public ?? false),
+						combatant.turnOrder ?? 0,
+						id,
+					);
+			}
+			return this.get(id) as Combatant;
 		});
 	}
 }

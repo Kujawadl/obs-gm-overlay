@@ -1,8 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
-import checkAuth from "../checkAuth";
 import { formatDate, parseDate } from "../../utils";
 import type { Context } from "../context";
 import type {
+	Campaign,
 	CampaignMutationResolvers,
 	CampaignResolvers,
 	CooldownType,
@@ -13,7 +13,6 @@ import type {
 
 export interface CampaignModel {
 	id: string;
-	userId: string;
 	name: string;
 	gmInspiration: boolean;
 	cooldownType: CooldownType;
@@ -32,9 +31,7 @@ interface Resolvers {
 const resolvers: Resolvers = {
 	Query: {
 		async campaigns(_parent, _args, ctx) {
-			const userId = await checkAuth(ctx);
-			if (!userId) return [];
-			return ctx.Campaign.list(userId);
+			return ctx.Campaign.list();
 		},
 		async campaign(_parent, args, ctx) {
 			return ctx.Campaign.get(args.id ?? undefined);
@@ -42,8 +39,6 @@ const resolvers: Resolvers = {
 	},
 	Mutation: {
 		async campaign(_parent, args, ctx) {
-			const userId = await checkAuth(ctx, args.id);
-			if (!userId) return {} as CampaignModel;
 			const campaign = args.id ? await ctx.Campaign.get(args.id) : undefined;
 			return (campaign ?? {}) as CampaignModel;
 		},
@@ -52,13 +47,18 @@ const resolvers: Resolvers = {
 		campaign: {
 			// @ts-expect-error graphql-subscriptions types are incorrect, but this 100% works
 			subscribe: withFilter(
-				(_parent: null, args: { id: string }, ctx: Context) => {
+				// @ts-expect-error These aren't actually optional
+				(
+					_parent: { campaign: Campaign },
+					args: { id: string },
+					ctx: Context,
+				) => {
 					setImmediate(() => ctx.Campaign.publishSubscription(args.id));
-					return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
+					return ctx.pubsub.asyncIterableIterator("CAMPAIGN_UPDATED");
 				},
 				(payload, variables) => {
-					return payload.campaign.id === variables.id;
-				}
+					return payload?.campaign.id === variables?.id;
+				},
 			),
 		},
 	},
@@ -80,11 +80,9 @@ const resolvers: Resolvers = {
 	},
 	CampaignMutation: {
 		async save(parent, { input }, ctx) {
-			const userId = await checkAuth(ctx);
-			if (!userId) return undefined;
 			const result = parent.id
 				? await ctx.Campaign.update(parent, input)
-				: await ctx.Campaign.create(input, userId);
+				: await ctx.Campaign.create(input);
 			if (result) {
 				ctx.Campaign.publishSubscription(result.id);
 			}

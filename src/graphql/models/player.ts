@@ -1,105 +1,143 @@
+import { DatabaseSync } from "node:sqlite";
+import { createId } from "@paralleldrive/cuid2";
 import { formatDate } from "../../utils";
-import type { PlayerInput } from "../server-types";
+import Model from "./_model";
 import type { PlayerModel as Player } from "../resolvers/player";
-import type Model from "./_model";
-import type { Sql } from "postgres";
-import type { CombatantModel as Combatant } from "../resolvers/initiative";
+import type { PlayerInput } from "../server-types";
 
-export default class PlayerModel implements Model<Player, PlayerInput> {
-	private sql: Sql;
-
-	constructor(sql: Sql) {
-		this.sql = sql;
+export default class PlayerModel extends Model<Player, PlayerInput> {
+	constructor(private sql: DatabaseSync) {
+		super();
 	}
 
-	async get(id: string): Promise<Player | undefined> {
-		const results = await this.sql<Player[]>`
+	get(id: string): Player | undefined {
+		return id
+			? (this.sql
+					.prepare(
+						`
 			SELECT *
 			FROM "Player"
-			WHERE "id" = ${id}
-		`;
-		return results[0];
+			WHERE "id" = ?
+		`,
+					)
+					.get(id) as unknown as Player)
+			: undefined;
 	}
 
-	async list(campaignId: string): Promise<Player[]> {
-		const results = await this.sql<Player[]>`
-			SELECT *
-			FROM "Player"
-			WHERE "campaignId" = ${campaignId}
-			ORDER BY "isGM" DESC, "playerName", "characterName"
-		`;
+	list(campaignId: string): Player[] {
+		const results = this.sql
+			.prepare(
+				`
+					SELECT *
+					FROM "Player"
+					WHERE "campaignId" = ?
+					ORDER BY "isGM" DESC, "playerName", "characterName"
+				`,
+			)
+			.all(campaignId) as unknown as Player[];
 		return results?.length ? results : [];
 	}
 
-	async create(input: PlayerInput): Promise<Player> {
+	create(input: PlayerInput): Player {
 		if (!input.campaignId) {
 			throw new Error("Campaign ID is required to create a player");
 		}
-		const results = await this.sql<Player[]>`
+		const id = createId();
+		this.sql
+			.prepare(
+				`
 			INSERT INTO "Player" (
+				"id",
 				"campaignId",
 				"playerName",
 				"characterName",
 				"isGM",
 				"inspiration"
 			) VALUES (
-				${input.campaignId},
-				${input.playerName ?? null},
-				${input.characterName ?? null},
-				${input.isGM ?? false},
-				${input.inspiration ?? 0}
-			) RETURNING *
-		`;
-		return results[0];
+			  ?,
+				?,
+				?,
+				?,
+				?,
+				?
+			)
+		`,
+			)
+			.run(
+				id,
+				input.campaignId,
+				input.playerName ?? null,
+				input.characterName ?? null,
+				this.boolean(input.isGM ?? false),
+				input.inspiration ?? 0,
+			);
+		return this.get(id) as Player;
 	}
 
-	async update(player: Player, input: PlayerInput): Promise<Player> {
-		const result = await this.sql.begin(async (sql) => {
-			const results = await sql<Player[]>`
+	update(player: Player, input: PlayerInput): Player {
+		this.sql
+			.prepare(
+				`
 				UPDATE "Player"
 				SET
-					"campaignId" = ${input.campaignId ?? player.campaignId},
-					"playerName" = ${input.playerName ?? player.playerName},
-					"characterName" = ${input.characterName ?? player.characterName ?? null},
-					"isGM" = ${input.isGM ?? player.isGM ?? false},
-					"inspiration" = ${input.inspiration ?? player.inspiration ?? 0},
-					"lastInspirationUsed" = ${
-						typeof input.inspiration === "number" &&
-						input.inspiration < player.inspiration
-							? formatDate(new Date())
-							: player.lastInspirationUsed ?? null
-					}
-				WHERE "id" = ${player.id}
+					"campaignId" = ?,
+					"playerName" = ?,
+					"characterName" = ?,
+					"isGM" = ?,
+					"inspiration" = ?,
+					"lastInspirationUsed" = ?
+				WHERE "id" = ?
 				RETURNING *
-			`;
-			if (input.characterName && player.characterName !== input.characterName) {
-				await sql<Combatant[]>`
-					UPDATE "Combatant"
-					SET "name" = ${input.characterName}
-					WHERE
-						"campaignId" = ${input.campaignId ?? player.campaignId} AND
-						"playerId" = ${player.id}
-				`;
-			}
-			return results?.[0];
-		});
-		return result;
+			`,
+			)
+			.run(
+				input.campaignId ?? player.campaignId,
+				input.playerName ?? player.playerName,
+				input.characterName ?? player.characterName ?? null,
+				this.boolean(input.isGM ?? player.isGM ?? false),
+				input.inspiration ?? player.inspiration ?? 0,
+				typeof input.inspiration === "number" &&
+					input.inspiration < player.inspiration
+					? formatDate(new Date())
+					: (player.lastInspirationUsed ?? null),
+				player.id,
+			);
+		if (input.characterName && player.characterName !== input.characterName) {
+			this.sql
+				.prepare(
+					`
+						UPDATE "Combatant"
+						SET "name" = ?
+						WHERE
+							"campaignId" = ? AND
+							"playerId" = ?
+					`,
+				)
+				.run(
+					input.characterName,
+					input.campaignId ?? player.campaignId,
+					player.id,
+				);
+		}
+		return this.get(player.id) as Player;
 	}
 
-	async delete(id: string): Promise<boolean> {
-		await this.sql.begin(async (sql) => {
-			await sql`DELETE FROM "Combatant" WHERE "playerId" = ${id}`;
-			await sql`DELETE FROM "Player" WHERE "id" = ${id}`;
-		});
+	delete(id: string): boolean {
+		this.sql.prepare(`DELETE FROM "Combatant" WHERE "playerId" = ?`).run(id);
+		this.sql.prepare(`DELETE FROM "Player" WHERE "id" = ?`).run(id);
 		return true;
 	}
 
-	async resetCooldown(id: string): Promise<boolean> {
-		await this.sql`
-			UPDATE "Player"
-			SET "lastInspirationUsed" = NULL
-			WHERE "id" = ${id}
-		`;
+	resetCooldown(id: string): boolean {
+		this.sql
+			.prepare(
+				`
+					UPDATE "Player"
+					SET "lastInspirationUsed" = NULL
+					WHERE "id" = ?
+				`,
+			)
+			.run(id);
 		return true;
 	}
 }

@@ -37,7 +37,7 @@ export default function InspirationOverlay() {
 							player={player}
 							campaign={data.campaign as CampaignFragment}
 						/>
-					) : null
+					) : null,
 				)}
 			</Box>
 		</>

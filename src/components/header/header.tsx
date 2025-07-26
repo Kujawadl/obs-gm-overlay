@@ -1,22 +1,18 @@
-import { useMemo, useState, Fragment, useEffect } from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { Container } from "@mui/system";
+import { Home as HomeIcon } from "@mui/icons-material";
 import {
 	AppBar,
 	Box,
-	Toolbar,
-	Button,
-	Link as MUILink,
-	Menu,
-	MenuItem,
 	Breadcrumbs,
-	useMediaQuery,
+	Link as MUILink,
+	Toolbar,
 	Typography,
+	useMediaQuery,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-import { AccountCircle, Home as HomeIcon } from "@mui/icons-material";
+import { Container } from "@mui/system";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useEffect, useMemo } from "react";
 import {
 	useCampaignNameQuery,
 	useEncounterNameQuery,
@@ -35,18 +31,8 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 
 export default function Header() {
 	const router = useRouter();
-	const { data: session, status } = useSession();
 	const theme = useTheme();
 	const isSmallView = useMediaQuery(theme.breakpoints.down("md"));
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-	const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
 
 	const { campaignId, encounterId } = router.query;
 
@@ -140,38 +126,9 @@ export default function Header() {
 									<Typography key={href || "active"} noWrap>
 										{title}
 									</Typography>
-								)
+								),
 							)}
 						</Breadcrumbs>
-						{status === "unauthenticated" ? (
-							<Button color="inherit" onClick={() => signIn()}>
-								Login
-							</Button>
-						) : (
-							<>
-								<Button
-									aria-label="current user"
-									aria-controls="menu-appbar"
-									aria-haspopup="true"
-									onClick={handleOpen}
-									color="inherit"
-								>
-									<AccountCircle sx={{ mr: 0.5 }} />
-									{session?.user?.name && (
-										<div>Hi, {session.user.name.split(" ")[0]}!</div>
-									)}
-								</Button>
-								<Menu
-									id="menu-appbar"
-									anchorEl={anchorEl}
-									keepMounted
-									open={!!anchorEl}
-									onClose={handleClose}
-								>
-									<MenuItem onClick={() => signOut()}>Sign Out</MenuItem>
-								</Menu>
-							</>
-						)}
 					</Toolbar>
 				</Container>
 			</StyledAppBar>

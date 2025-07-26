@@ -73,7 +73,7 @@ export default function PlayerReadView({
 				},
 			});
 		},
-		[player.id, setInspiration]
+		[player.id, setInspiration],
 	);
 
 	const onIncrement = useCallback(() => {
@@ -97,7 +97,7 @@ export default function PlayerReadView({
 	return (
 		<>
 			<Grid container alignItems="center">
-				<Grid item xs={8}>
+				<Grid size={{ xs: 8 }}>
 					<Box component="span" sx={{ fontWeight: "bold", paddingRight: 1 }}>
 						{player.playerName}
 					</Box>
@@ -108,8 +108,7 @@ export default function PlayerReadView({
 					)}
 				</Grid>
 				<Grid
-					item
-					xs={4}
+					size={{ xs: 4 }}
 					sx={{
 						display: "flex",
 						justifyContent: "flex-end",

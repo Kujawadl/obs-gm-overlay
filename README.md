@@ -6,28 +6,9 @@ generates some simple OBS overlays to impose over your Discord camera.
 Designed to help GMs present information to the players to avoid the inevitable
 questions of "when is my turn" or "do I have inspiration?"
 
-## Running the local database
+## Database
 
-For local development you must spin up a local PostgreSQL instance. The easiest
-way to achieve this is using Docker:
-
-```sh
-# To install the postgres image
-docker pull postgres
-
-# Spins up a postgres container, persisting data to the local-db folder in this
-# repository. Remember to change the password on first login!
-npm run db-up
-
-# To tear down the local instance (does not delete the data)
-npm run db-down
-
-# To delete the data and start fresh (permanent!)
-rm -rf ./local-db
-
-# To run DB migrations (requires .env.local file to be configured)
-npm run migrate
-```
+The app has been refactored to prepare it to run as a local executable using Node's [Single Executable Applications](https://nodejs.org/api/single-executable-applications.html) feature. To that end, the entire database has been replaced with a sqlite file located in the user's app data directory. The Node 24 integrated sqlite client was used to avoid any dependency issues with an additional sqlite needing to be installed.
 
 ## Database Schema ER Diagram
 
@@ -130,13 +111,6 @@ erDiagram
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
   - [ ] Add optional alternative (MCDM) inspiration mode (teams go together and decide order on each turn)
-- [ ] Authentication
-  - [x] Add user accounts (SSO, don't want to deal with auth)
-  - [x] Restrict account creation to unique invite links (fewer users = more likely to stay in free tiers)
-  - [x] Link campaigns to users so each user gets their own private campaigns list
-  - [x] Secure all edit access to the user who owns that campaign
-  - [x] Overlays are readonly and always public
-  - [ ] UI improvements to error pages
 - [x] Production
   - [x] Host DB on AWS RDS (free tier)
   - [x] Host app on AWS EC2 (free tier)
@@ -154,4 +128,13 @@ erDiagram
     - [x] Fix hot-reloading of server modules
   - [x] Switch to another DB implementation (sqlite is not cutting it, migrations are a nightmare)
     - [x] Change all IDs to no longer be incremental (e.g. GUIDs generated at resource creation)
-  - [ ] Security audit/refactor auth flow
+    - [x] REVERTED: Switched back to sqlite to prepare the app to be run as a local application (no more server hosting fees or user auth!)
+  - [ ] Single Executable Application
+    - [ ] Upgrade all package dependencies
+    - [ ] Update to Node 24+
+    - [ ] Gut postgres/migrations in favor of a single SQL database with a simpler schema
+    - [ ] Hardening pass on database clients (first pass was quick but shoddy)
+    - [ ] Fix broken styles brought about by the MUI update
+    - [ ] Remove unused packages/general treeshaking to get overall bundle size down
+    - [ ] Figure out a way to bundle Next.js build output to a single .js file
+    - [ ] First .exe build

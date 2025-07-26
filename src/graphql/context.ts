@@ -1,4 +1,6 @@
-import postgres, { Sql } from "postgres";
+import { DatabaseSync } from "node:sqlite";
+import fs from "node:fs";
+import path from "node:path";
 import { PubSub } from "graphql-subscriptions";
 import {
 	CampaignModel,
@@ -6,10 +8,11 @@ import {
 	EncounterModel,
 	PlayerModel,
 } from "./models";
+import { schema } from "./models/sql-schema";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export interface Context {
-	sql: Sql;
+	sql: DatabaseSync;
 	pubsub: PubSub;
 	req: NextApiRequest;
 	res: NextApiResponse;
@@ -20,13 +23,28 @@ export interface Context {
 }
 
 export function setupContext(): Omit<Context, "req" | "res"> {
-	const sql = postgres({
-		host: process.env.DB_HOST,
-		username: process.env.DB_USER,
-		password: process.env.DB_PASSWORD,
-		database: process.env.DB_NAME,
-		port: parseInt(process.env.DB_PORT || "") || 5432,
+	const userDataPath =
+		process.env.APPDATA ||
+		(process.platform == "darwin"
+			? process.env.HOME + "/Library/Preferences"
+			: process.env.HOME + "/.local/share");
+	const obsGmOverlayPath = path.join(userDataPath, "obs-gm-overlay");
+	if (!fs.existsSync(obsGmOverlayPath)) {
+		fs.mkdirSync(obsGmOverlayPath, { recursive: true });
+	}
+	const dbPath = path.join(userDataPath, "obs-gm-overlay", "database.sqlite");
+	let newDb = false;
+	if (!fs.existsSync(dbPath)) {
+		fs.closeSync(fs.openSync(dbPath, "w"));
+		newDb = true;
+	}
+	const sql = new DatabaseSync(dbPath, {
+		open: true,
 	});
+	if (newDb) {
+		console.log("Creating new database at", dbPath);
+		sql.exec(schema);
+	}
 	const pubsub = new PubSub();
 	return {
 		sql,

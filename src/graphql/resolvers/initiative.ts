@@ -1,5 +1,4 @@
 import uniq from "lodash/uniq";
-import checkAuth from "../checkAuth";
 import { formatDate } from "../../utils";
 import type {
 	CampaignMutationResolvers,
@@ -62,8 +61,6 @@ const resolvers: Resolvers = {
 		async encounter(_parent, args, ctx) {
 			if (args.id) {
 				const encounter = await ctx.Encounter.get(args.id);
-				const userId = await checkAuth(ctx, encounter?.campaignId);
-				if (!userId) return {} as EncounterModel;
 				return encounter;
 			} else {
 				return {} as EncounterModel;
@@ -106,7 +103,7 @@ const resolvers: Resolvers = {
 			const campaign = await ctx.Campaign.get(parent.campaignId);
 			if (!campaign) {
 				throw new Error(
-					`Invalid campaign ID ${parent.campaignId} for encounter ${parent.id}`
+					`Invalid campaign ID ${parent.campaignId} for encounter ${parent.id}`,
 				);
 			}
 			if (args.active) {
@@ -125,7 +122,7 @@ const resolvers: Resolvers = {
 			const [nextTurn, nextRound] = await ctx.Encounter.findNextTurn(
 				parent.id,
 				parent.turn,
-				parent.round
+				parent.round,
 			);
 			// @ts-ignore
 			await ctx.Encounter.update(parent, {
@@ -143,7 +140,7 @@ const resolvers: Resolvers = {
 			const [prevTurn, prevRound] = await ctx.Encounter.findPrevTurn(
 				parent.id,
 				parent.turn,
-				parent.round
+				parent.round,
 			);
 			// @ts-ignore
 			await ctx.Encounter.update(parent, {
@@ -160,11 +157,6 @@ const resolvers: Resolvers = {
 		async combatant(_parent, args, ctx) {
 			if (args.id) {
 				const combatant = await ctx.Combatant.get(args.id);
-				const encounter =
-					_parent ??
-					(combatant && (await ctx.Encounter.get(combatant?.encounterId)));
-				const userId = await checkAuth(ctx, encounter?.campaignId);
-				if (!userId) return {} as CombatantModel;
 				return combatant;
 			} else {
 				return {} as CombatantModel;

@@ -1,12 +1,15 @@
-/* eslint-disable unused-imports/no-unused-vars */
-export default interface Model<Type, Input> {
-	get(...ids: string[]): Promise<Type | undefined>;
+export default abstract class Model<Type, Input> {
+	protected boolean(value: boolean): 0 | 1 {
+		return value ? 1 : 0;
+	}
 
-	list(...args: any[]): Promise<Type[]>;
+	abstract get(...ids: string[]): Type | undefined;
 
-	create(input: Input, userId?: string): Promise<Type>;
+	abstract list(...args: any[]): Type[];
 
-	update(value: Type, input: Input): Promise<Type>;
+	abstract create(input: Input): Type;
 
-	delete(...ids: string[]): Promise<boolean>;
+	abstract update(value: Type, input: Input): Type;
+
+	abstract delete(...ids: string[]): boolean;
 }

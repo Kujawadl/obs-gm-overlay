@@ -1,15 +1,13 @@
 import {
 	ApolloClient,
+	from,
 	HttpLink,
 	InMemoryCache,
 	split,
-	from,
 } from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { onError } from "@apollo/client/link/error";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
-import { signIn } from "next-auth/react";
 
 export default function useApolloClient() {
 	const host = (protocol: "http" | "ws") =>
@@ -44,18 +42,8 @@ export default function useApolloClient() {
 			)
 		: httpLink;
 
-	const errorLink = onError(({ graphQLErrors }) => {
-		if (
-			graphQLErrors?.some(
-				(error) => error?.extensions?.code === "UNAUTHENTICATED",
-			)
-		) {
-			signIn();
-		}
-	});
-
 	return new ApolloClient({
-		link: from([errorLink, splitLink]),
+		link: from([splitLink]),
 		cache: new InMemoryCache({
 			typePolicies: {
 				Campaign: {

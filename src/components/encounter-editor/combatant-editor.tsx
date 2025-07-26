@@ -107,7 +107,7 @@ export default function CombatantEditor({
 						/>
 					</Box>
 					<Grid container spacing={2} alignItems="center" ml={2} pr={6} mb={-1}>
-						<Grid item xs={12} md={5}>
+						<Grid size={{ xs: 12, md: 5 }}>
 							<Field name={`combatants[${index}].name`}>
 								{({
 									field,
@@ -146,7 +146,7 @@ export default function CombatantEditor({
 								}}
 							</Field>
 						</Grid>
-						<Grid item xs={8} md={5}>
+						<Grid size={{ xs: 8, md: 5 }}>
 							<Field name={`combatants[${index}].playerId`}>
 								{({
 									field,
@@ -227,9 +227,7 @@ export default function CombatantEditor({
 							</Field>
 						</Grid>
 						<Grid
-							item
-							xs={2}
-							md={1}
+							size={{ xs: 2, md: 1 }}
 							sx={{ display: "flex", justifyContent: "center" }}
 						>
 							<Field name={`combatants[${index}].public`}>
@@ -276,9 +274,7 @@ export default function CombatantEditor({
 							</Field>
 						</Grid>
 						<Grid
-							item
-							xs={2}
-							md={1}
+							size={{ xs: 2, md: 1 }}
 							sx={{ display: "flex", justifyContent: "flex-end" }}
 						>
 							<IconButton onClick={() => setDeleting(true)}>

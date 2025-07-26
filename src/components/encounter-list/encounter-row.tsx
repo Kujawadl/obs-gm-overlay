@@ -104,7 +104,7 @@ export default function EncounterRow({
 						}}
 					>
 						<Link href={`/${campaign.id}/encounter/${encounter.id}/edit`}>
-							<Button component="a">
+							<Button component="span">
 								<EditIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Edit
 							</Button>

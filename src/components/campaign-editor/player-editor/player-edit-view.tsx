@@ -44,7 +44,7 @@ export default function PlayerEditView({
 			characterName: player?.characterName || "",
 			isGM: player?.isGM || false,
 		}),
-		[player?.playerName, player?.characterName, player?.isGM]
+		[player?.playerName, player?.characterName, player?.isGM],
 	);
 
 	const onUpdatePlayer = useCallback(
@@ -64,7 +64,7 @@ export default function PlayerEditView({
 				setEditing(false);
 			});
 		},
-		[player, campaignId, updatePlayer, onCancelAdd, setEditing]
+		[player, campaignId, updatePlayer, onCancelAdd, setEditing],
 	);
 
 	return (
@@ -76,7 +76,7 @@ export default function PlayerEditView({
 			{({ values, isValid }) => (
 				<Form style={{ flexBasis: "100%" }}>
 					<Grid container spacing={2} alignItems="center" mr={-2}>
-						<Grid item xs={8} md={3}>
+						<Grid size={{ xs: 8, md: 3 }}>
 							<Field name="playerName">
 								{({ field, meta }: FieldProps<string>) => (
 									<TextField
@@ -93,9 +93,7 @@ export default function PlayerEditView({
 							</Field>
 						</Grid>
 						<Grid
-							item
-							xs={4}
-							md={3}
+							size={{ xs: 4, md: 3 }}
 							sx={{ display: "flex", justifyContent: "center" }}
 						>
 							<Field name="isGM">
@@ -115,7 +113,7 @@ export default function PlayerEditView({
 								)}
 							</Field>
 						</Grid>
-						<Grid item xs={8} md={3}>
+						<Grid size={{ xs: 8, md: 3 }}>
 							<Field name="characterName">
 								{({ field }: FieldProps<string>) => (
 									<TextField
@@ -130,9 +128,7 @@ export default function PlayerEditView({
 							</Field>
 						</Grid>
 						<Grid
-							item
-							xs={4}
-							md={3}
+							size={{ xs: 4, md: 3 }}
 							sx={{ display: "flex", justifyContent: "flex-end" }}
 						>
 							<ResponsiveButton

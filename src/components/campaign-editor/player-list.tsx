@@ -15,7 +15,7 @@ export default function PlayerList({ campaign }: PlayerListProps) {
 			addingPlayer
 				? (campaign.players as (PlayerFragment | undefined)[]).concat(undefined)
 				: campaign.players,
-		[addingPlayer, campaign.players]
+		[addingPlayer, campaign.players],
 	);
 
 	return (

@@ -154,6 +154,7 @@ export default function InitiativeList({
 									switch (hideMonsterNames) {
 										case HideMonsterNames.Always:
 											if (!combatant.public) return "???";
+											break;
 										case HideMonsterNames.UntilTurn:
 											if (
 												!combatant.public &&
@@ -161,6 +162,7 @@ export default function InitiativeList({
 												round <= 1
 											)
 												return "???";
+											break;
 										default:
 											return combatant.name;
 									}

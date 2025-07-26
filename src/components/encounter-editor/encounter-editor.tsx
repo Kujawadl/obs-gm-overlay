@@ -39,7 +39,7 @@ export default function EncounterEditor({
 			name: encounter.name,
 			hideMonsterNames: encounter.hideMonsterNames,
 		}),
-		[encounter.name, encounter.hideMonsterNames]
+		[encounter.name, encounter.hideMonsterNames],
 	);
 
 	const onUpdateCampaign = useCallback(
@@ -55,7 +55,7 @@ export default function EncounterEditor({
 				},
 			});
 		},
-		[encounter.id, campaign.id, updateEncounter]
+		[encounter.id, campaign.id, updateEncounter],
 	);
 
 	return (
@@ -70,7 +70,7 @@ export default function EncounterEditor({
 				{({ handleReset, isValid, dirty }) => (
 					<Form>
 						<Grid container spacing={2} my={2}>
-							<Grid item xs={12} sm={8}>
+							<Grid size={{ xs: 12, sm: 8 }}>
 								<Field name="name">
 									{({ field, meta }: FieldProps<string>) => (
 										<TextField
@@ -86,7 +86,7 @@ export default function EncounterEditor({
 								</Field>
 							</Grid>
 
-							<Grid item xs={12} sm={4}>
+							<Grid size={{ xs: 12, sm: 4 }}>
 								<Field name="hideMonsterNames">
 									{({ field }: FieldProps<HideMonsterNames>) => (
 										<FormControl fullWidth>
@@ -114,7 +114,7 @@ export default function EncounterEditor({
 								</Field>
 							</Grid>
 							{dirty && (
-								<Grid item xs={12} sx={{ textAlign: "right", order: "2" }}>
+								<Grid size={{ xs: 12 }} sx={{ textAlign: "right", order: "2" }}>
 									<Button
 										variant="contained"
 										color="secondary"

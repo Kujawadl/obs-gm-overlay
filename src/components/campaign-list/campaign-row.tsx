@@ -13,17 +13,17 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	Link as MUILink,
 	ListItem,
 	ListItemText,
 	Menu,
 	MenuItem,
+	Link as MUILink,
 	Typography,
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
 	CampaignFragment,
 	useDeleteCampaignMutation,
@@ -83,7 +83,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 						}}
 					>
 						<Link href={`/${campaign.id}/edit`}>
-							<Button component="a">
+							<Button component="span">
 								<EditIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Edit
 							</Button>
@@ -96,7 +96,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 						}}
 					>
 						<Link href={`/${campaign.id}/encounter`}>
-							<Button component="a">
+							<Button component="span">
 								<ListIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Encounters
 							</Button>

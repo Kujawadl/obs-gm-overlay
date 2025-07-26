@@ -16,52 +16,61 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
 	[SubKey in K]: Maybe<T[SubKey]>;
 };
+export type MakeEmpty<
+	T extends { [key: string]: unknown },
+	K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+	| T
+	| {
+			[P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
+	  };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-	ID: string;
-	String: string;
-	Boolean: boolean;
-	Int: number;
-	Float: number;
-	Date: any;
+	ID: { input: string; output: string };
+	String: { input: string; output: string };
+	Boolean: { input: boolean; output: boolean };
+	Int: { input: number; output: number };
+	Float: { input: number; output: number };
+	Date: { input: any; output: any };
 };
 
 export type Campaign = {
 	__typename?: "Campaign";
 	activeEncounter?: Maybe<Encounter>;
-	cooldownTime: Scalars["Int"];
+	cooldownTime: Scalars["Int"]["output"];
 	cooldownType: CooldownType;
 	encounter?: Maybe<Encounter>;
 	encounters: Array<Encounter>;
-	gmInspiration: Scalars["Boolean"];
-	id: Scalars["ID"];
-	lastInspirationUsed?: Maybe<Scalars["Date"]>;
-	name: Scalars["String"];
+	gmInspiration: Scalars["Boolean"]["output"];
+	id: Scalars["ID"]["output"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]["output"]>;
+	name: Scalars["String"]["output"];
 	players: Array<Player>;
 };
 
 export type CampaignEncounterArgs = {
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 };
 
 export type CampaignInput = {
-	activeEncounter?: InputMaybe<Scalars["ID"]>;
-	cooldownTime?: InputMaybe<Scalars["Int"]>;
+	activeEncounter?: InputMaybe<Scalars["ID"]["input"]>;
+	cooldownTime?: InputMaybe<Scalars["Int"]["input"]>;
 	cooldownType?: InputMaybe<CooldownType>;
-	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
-	name: Scalars["String"];
+	gmInspiration?: InputMaybe<Scalars["Boolean"]["input"]>;
+	name: Scalars["String"]["input"];
 };
 
 export type CampaignMutation = {
 	__typename?: "CampaignMutation";
-	delete: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
 	encounter?: Maybe<EncounterMutation>;
 	save: Campaign;
 };
 
 export type CampaignMutationEncounterArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type CampaignMutationSaveArgs = {
@@ -72,26 +81,26 @@ export type Combatant = {
 	__typename?: "Combatant";
 	campaign: Campaign;
 	encounter: Encounter;
-	id: Scalars["ID"];
-	name: Scalars["String"];
+	id: Scalars["ID"]["output"];
+	name: Scalars["String"]["output"];
 	player?: Maybe<Player>;
-	public: Scalars["Boolean"];
-	turnOrder: Scalars["Int"];
+	public: Scalars["Boolean"]["output"];
+	turnOrder: Scalars["Int"]["output"];
 };
 
 export type CombatantInput = {
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
-	id?: InputMaybe<Scalars["ID"]>;
-	name: Scalars["String"];
-	playerId?: InputMaybe<Scalars["ID"]>;
-	public?: InputMaybe<Scalars["Boolean"]>;
-	turnOrder: Scalars["Int"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
+	id?: InputMaybe<Scalars["ID"]["input"]>;
+	name: Scalars["String"]["input"];
+	playerId?: InputMaybe<Scalars["ID"]["input"]>;
+	public?: InputMaybe<Scalars["Boolean"]["input"]>;
+	turnOrder: Scalars["Int"]["input"];
 };
 
 export type CombatantMutation = {
 	__typename?: "CombatantMutation";
-	delete: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
 	save: Combatant;
 };
 
@@ -109,36 +118,36 @@ export type Encounter = {
 	__typename?: "Encounter";
 	combatants: Array<Combatant>;
 	hideMonsterNames: HideMonsterNames;
-	id: Scalars["ID"];
-	name: Scalars["String"];
-	round: Scalars["Int"];
-	turn: Scalars["Int"];
-	turnStart?: Maybe<Scalars["Date"]>;
+	id: Scalars["ID"]["output"];
+	name: Scalars["String"]["output"];
+	round: Scalars["Int"]["output"];
+	turn: Scalars["Int"]["output"];
+	turnStart?: Maybe<Scalars["Date"]["output"]>;
 };
 
 export type EncounterInput = {
-	campaignId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
 	hideMonsterNames?: InputMaybe<HideMonsterNames>;
-	id?: InputMaybe<Scalars["ID"]>;
-	name: Scalars["String"];
-	round?: InputMaybe<Scalars["Int"]>;
-	turn?: InputMaybe<Scalars["Int"]>;
-	turnStart?: InputMaybe<Scalars["Date"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
+	name: Scalars["String"]["input"];
+	round?: InputMaybe<Scalars["Int"]["input"]>;
+	turn?: InputMaybe<Scalars["Int"]["input"]>;
+	turnStart?: InputMaybe<Scalars["Date"]["input"]>;
 };
 
 export type EncounterMutation = {
 	__typename?: "EncounterMutation";
 	combatant: CombatantMutation;
-	delete: Scalars["Boolean"];
-	next?: Maybe<Scalars["Boolean"]>;
-	prev?: Maybe<Scalars["Boolean"]>;
+	delete: Scalars["Boolean"]["output"];
+	next?: Maybe<Scalars["Boolean"]["output"]>;
+	prev?: Maybe<Scalars["Boolean"]["output"]>;
 	save: Encounter;
 	saveCombatants: Array<Combatant>;
-	setActive: Scalars["Boolean"];
+	setActive: Scalars["Boolean"]["output"];
 };
 
 export type EncounterMutationCombatantArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type EncounterMutationSaveArgs = {
@@ -150,7 +159,7 @@ export type EncounterMutationSaveCombatantsArgs = {
 };
 
 export type EncounterMutationSetActiveArgs = {
-	active?: InputMaybe<Scalars["Boolean"]>;
+	active?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export enum HideMonsterNames {
@@ -166,36 +175,36 @@ export type Mutation = {
 };
 
 export type MutationCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type MutationPlayerArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type Player = {
 	__typename?: "Player";
 	campaign: Campaign;
-	characterName?: Maybe<Scalars["String"]>;
-	id: Scalars["ID"];
-	inspiration: Scalars["Int"];
-	isGM: Scalars["Boolean"];
-	lastInspirationUsed?: Maybe<Scalars["Date"]>;
-	playerName: Scalars["String"];
+	characterName?: Maybe<Scalars["String"]["output"]>;
+	id: Scalars["ID"]["output"];
+	inspiration: Scalars["Int"]["output"];
+	isGM: Scalars["Boolean"]["output"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]["output"]>;
+	playerName: Scalars["String"]["output"];
 };
 
 export type PlayerInput = {
-	campaignId?: InputMaybe<Scalars["ID"]>;
-	characterName?: InputMaybe<Scalars["String"]>;
-	inspiration?: InputMaybe<Scalars["Int"]>;
-	isGM?: InputMaybe<Scalars["Boolean"]>;
-	playerName?: InputMaybe<Scalars["String"]>;
+	campaignId?: InputMaybe<Scalars["ID"]["input"]>;
+	characterName?: InputMaybe<Scalars["String"]["input"]>;
+	inspiration?: InputMaybe<Scalars["Int"]["input"]>;
+	isGM?: InputMaybe<Scalars["Boolean"]["input"]>;
+	playerName?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type PlayerMutation = {
 	__typename?: "PlayerMutation";
-	delete: Scalars["Boolean"];
-	resetCooldown: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
+	resetCooldown: Scalars["Boolean"]["output"];
 	save: Player;
 };
 
@@ -211,11 +220,11 @@ export type Query = {
 };
 
 export type QueryCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryPlayerArgs = {
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 };
 
 export type Subscription = {
@@ -224,7 +233,7 @@ export type Subscription = {
 };
 
 export type SubscriptionCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type CampaignFragment = {
@@ -301,9 +310,9 @@ export type PlayerFragment = {
 };
 
 export type AdvanceInitiativeMutationVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
-	forward?: InputMaybe<Scalars["Boolean"]>;
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
+	forward?: InputMaybe<Scalars["Boolean"]["input"]>;
 }>;
 
 export type AdvanceInitiativeMutation = {
@@ -319,7 +328,7 @@ export type AdvanceInitiativeMutation = {
 };
 
 export type DeleteCampaignMutationVariables = Exact<{
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 }>;
 
 export type DeleteCampaignMutation = {
@@ -328,7 +337,7 @@ export type DeleteCampaignMutation = {
 };
 
 export type DeleteCombatantMutationVariables = Exact<{
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 }>;
 
 export type DeleteCombatantMutation = {
@@ -343,8 +352,8 @@ export type DeleteCombatantMutation = {
 };
 
 export type DeleteEncounterMutationVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
 }>;
 
 export type DeleteEncounterMutation = {
@@ -356,7 +365,7 @@ export type DeleteEncounterMutation = {
 };
 
 export type DeletePlayerMutationVariables = Exact<{
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 }>;
 
 export type DeletePlayerMutation = {
@@ -365,7 +374,7 @@ export type DeletePlayerMutation = {
 };
 
 export type ResetPlayerCooldownMutationVariables = Exact<{
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 }>;
 
 export type ResetPlayerCooldownMutation = {
@@ -374,7 +383,7 @@ export type ResetPlayerCooldownMutation = {
 };
 
 export type SaveCampaignMutationVariables = Exact<{
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 	input: CampaignInput;
 }>;
 
@@ -515,7 +524,7 @@ export type SaveEncounterMutation = {
 };
 
 export type SavePlayerMutationVariables = Exact<{
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 	input: PlayerInput;
 }>;
 
@@ -536,8 +545,8 @@ export type SavePlayerMutation = {
 };
 
 export type SetActiveEncounterMutationVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
 }>;
 
 export type SetActiveEncounterMutation = {
@@ -549,8 +558,8 @@ export type SetActiveEncounterMutation = {
 };
 
 export type SetPlayerInspirationMutationVariables = Exact<{
-	id: Scalars["ID"];
-	inspiration: Scalars["Int"];
+	id: Scalars["ID"]["input"];
+	inspiration: Scalars["Int"]["input"];
 }>;
 
 export type SetPlayerInspirationMutation = {
@@ -570,7 +579,7 @@ export type SetPlayerInspirationMutation = {
 };
 
 export type CampaignNameQueryVariables = Exact<{
-	campaignId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
 }>;
 
 export type CampaignNameQuery = {
@@ -583,8 +592,8 @@ export type CampaignNameQuery = {
 };
 
 export type EncounterDetailQueryVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
 }>;
 
 export type EncounterDetailQuery = {
@@ -616,8 +625,8 @@ export type EncounterDetailQuery = {
 };
 
 export type EncounterNameQueryVariables = Exact<{
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
 }>;
 
 export type EncounterNameQuery = {
@@ -674,7 +683,7 @@ export type ListCampaignsQuery = {
 };
 
 export type ListEncountersQueryVariables = Exact<{
-	campaignId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
 }>;
 
 export type ListEncountersQuery = {
@@ -706,7 +715,7 @@ export type ListEncountersQuery = {
 };
 
 export type CampaignSubscriptionVariables = Exact<{
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 }>;
 
 export type CampaignSubscription = {
@@ -848,7 +857,7 @@ export function useAdvanceInitiativeMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		AdvanceInitiativeMutation,
 		AdvanceInitiativeMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -898,7 +907,7 @@ export function useDeleteCampaignMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		DeleteCampaignMutation,
 		DeleteCampaignMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -952,7 +961,7 @@ export function useDeleteCombatantMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		DeleteCombatantMutation,
 		DeleteCombatantMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1005,7 +1014,7 @@ export function useDeleteEncounterMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		DeleteEncounterMutation,
 		DeleteEncounterMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1055,7 +1064,7 @@ export function useDeletePlayerMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		DeletePlayerMutation,
 		DeletePlayerMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1105,7 +1114,7 @@ export function useResetPlayerCooldownMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		ResetPlayerCooldownMutation,
 		ResetPlayerCooldownMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1159,7 +1168,7 @@ export function useSaveCampaignMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SaveCampaignMutation,
 		SaveCampaignMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1216,7 +1225,7 @@ export function useSaveCombatantMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SaveCombatantMutation,
 		SaveCombatantMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1271,7 +1280,7 @@ export function useSaveCombatantsMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SaveCombatantsMutation,
 		SaveCombatantsMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1326,7 +1335,7 @@ export function useSaveEncounterMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SaveEncounterMutation,
 		SaveEncounterMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1380,12 +1389,12 @@ export function useSavePlayerMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SavePlayerMutation,
 		SavePlayerMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<SavePlayerMutation, SavePlayerMutationVariables>(
 		SavePlayerDocument,
-		options
+		options,
 	);
 }
 export type SavePlayerMutationHookResult = ReturnType<
@@ -1433,7 +1442,7 @@ export function useSetActiveEncounterMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SetActiveEncounterMutation,
 		SetActiveEncounterMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1487,7 +1496,7 @@ export function useSetPlayerInspirationMutation(
 	baseOptions?: Apollo.MutationHookOptions<
 		SetPlayerInspirationMutation,
 		SetPlayerInspirationMutationVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useMutation<
@@ -1535,24 +1544,45 @@ export function useCampaignNameQuery(
 	baseOptions: Apollo.QueryHookOptions<
 		CampaignNameQuery,
 		CampaignNameQueryVariables
-	>
+	> &
+		(
+			| { variables: CampaignNameQueryVariables; skip?: boolean }
+			| { skip: boolean }
+		),
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<CampaignNameQuery, CampaignNameQueryVariables>(
 		CampaignNameDocument,
-		options
+		options,
 	);
 }
 export function useCampaignNameLazyQuery(
 	baseOptions?: Apollo.LazyQueryHookOptions<
 		CampaignNameQuery,
 		CampaignNameQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useLazyQuery<CampaignNameQuery, CampaignNameQueryVariables>(
 		CampaignNameDocument,
-		options
+		options,
+	);
+}
+export function useCampaignNameSuspenseQuery(
+	baseOptions?:
+		| Apollo.SkipToken
+		| Apollo.SuspenseQueryHookOptions<
+				CampaignNameQuery,
+				CampaignNameQueryVariables
+		  >,
+) {
+	const options =
+		baseOptions === Apollo.skipToken
+			? baseOptions
+			: { ...defaultOptions, ...baseOptions };
+	return Apollo.useSuspenseQuery<CampaignNameQuery, CampaignNameQueryVariables>(
+		CampaignNameDocument,
+		options,
 	);
 }
 export type CampaignNameQueryHookResult = ReturnType<
@@ -1560,6 +1590,9 @@ export type CampaignNameQueryHookResult = ReturnType<
 >;
 export type CampaignNameLazyQueryHookResult = ReturnType<
 	typeof useCampaignNameLazyQuery
+>;
+export type CampaignNameSuspenseQueryHookResult = ReturnType<
+	typeof useCampaignNameSuspenseQuery
 >;
 export type CampaignNameQueryResult = Apollo.QueryResult<
 	CampaignNameQuery,
@@ -1597,22 +1630,43 @@ export function useEncounterDetailQuery(
 	baseOptions: Apollo.QueryHookOptions<
 		EncounterDetailQuery,
 		EncounterDetailQueryVariables
-	>
+	> &
+		(
+			| { variables: EncounterDetailQueryVariables; skip?: boolean }
+			| { skip: boolean }
+		),
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<EncounterDetailQuery, EncounterDetailQueryVariables>(
 		EncounterDetailDocument,
-		options
+		options,
 	);
 }
 export function useEncounterDetailLazyQuery(
 	baseOptions?: Apollo.LazyQueryHookOptions<
 		EncounterDetailQuery,
 		EncounterDetailQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useLazyQuery<
+		EncounterDetailQuery,
+		EncounterDetailQueryVariables
+	>(EncounterDetailDocument, options);
+}
+export function useEncounterDetailSuspenseQuery(
+	baseOptions?:
+		| Apollo.SkipToken
+		| Apollo.SuspenseQueryHookOptions<
+				EncounterDetailQuery,
+				EncounterDetailQueryVariables
+		  >,
+) {
+	const options =
+		baseOptions === Apollo.skipToken
+			? baseOptions
+			: { ...defaultOptions, ...baseOptions };
+	return Apollo.useSuspenseQuery<
 		EncounterDetailQuery,
 		EncounterDetailQueryVariables
 	>(EncounterDetailDocument, options);
@@ -1622,6 +1676,9 @@ export type EncounterDetailQueryHookResult = ReturnType<
 >;
 export type EncounterDetailLazyQueryHookResult = ReturnType<
 	typeof useEncounterDetailLazyQuery
+>;
+export type EncounterDetailSuspenseQueryHookResult = ReturnType<
+	typeof useEncounterDetailSuspenseQuery
 >;
 export type EncounterDetailQueryResult = Apollo.QueryResult<
 	EncounterDetailQuery,
@@ -1658,31 +1715,55 @@ export function useEncounterNameQuery(
 	baseOptions: Apollo.QueryHookOptions<
 		EncounterNameQuery,
 		EncounterNameQueryVariables
-	>
+	> &
+		(
+			| { variables: EncounterNameQueryVariables; skip?: boolean }
+			| { skip: boolean }
+		),
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<EncounterNameQuery, EncounterNameQueryVariables>(
 		EncounterNameDocument,
-		options
+		options,
 	);
 }
 export function useEncounterNameLazyQuery(
 	baseOptions?: Apollo.LazyQueryHookOptions<
 		EncounterNameQuery,
 		EncounterNameQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useLazyQuery<EncounterNameQuery, EncounterNameQueryVariables>(
 		EncounterNameDocument,
-		options
+		options,
 	);
+}
+export function useEncounterNameSuspenseQuery(
+	baseOptions?:
+		| Apollo.SkipToken
+		| Apollo.SuspenseQueryHookOptions<
+				EncounterNameQuery,
+				EncounterNameQueryVariables
+		  >,
+) {
+	const options =
+		baseOptions === Apollo.skipToken
+			? baseOptions
+			: { ...defaultOptions, ...baseOptions };
+	return Apollo.useSuspenseQuery<
+		EncounterNameQuery,
+		EncounterNameQueryVariables
+	>(EncounterNameDocument, options);
 }
 export type EncounterNameQueryHookResult = ReturnType<
 	typeof useEncounterNameQuery
 >;
 export type EncounterNameLazyQueryHookResult = ReturnType<
 	typeof useEncounterNameLazyQuery
+>;
+export type EncounterNameSuspenseQueryHookResult = ReturnType<
+	typeof useEncounterNameSuspenseQuery
 >;
 export type EncounterNameQueryResult = Apollo.QueryResult<
 	EncounterNameQuery,
@@ -1716,31 +1797,51 @@ export function useListCampaignsQuery(
 	baseOptions?: Apollo.QueryHookOptions<
 		ListCampaignsQuery,
 		ListCampaignsQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<ListCampaignsQuery, ListCampaignsQueryVariables>(
 		ListCampaignsDocument,
-		options
+		options,
 	);
 }
 export function useListCampaignsLazyQuery(
 	baseOptions?: Apollo.LazyQueryHookOptions<
 		ListCampaignsQuery,
 		ListCampaignsQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useLazyQuery<ListCampaignsQuery, ListCampaignsQueryVariables>(
 		ListCampaignsDocument,
-		options
+		options,
 	);
+}
+export function useListCampaignsSuspenseQuery(
+	baseOptions?:
+		| Apollo.SkipToken
+		| Apollo.SuspenseQueryHookOptions<
+				ListCampaignsQuery,
+				ListCampaignsQueryVariables
+		  >,
+) {
+	const options =
+		baseOptions === Apollo.skipToken
+			? baseOptions
+			: { ...defaultOptions, ...baseOptions };
+	return Apollo.useSuspenseQuery<
+		ListCampaignsQuery,
+		ListCampaignsQueryVariables
+	>(ListCampaignsDocument, options);
 }
 export type ListCampaignsQueryHookResult = ReturnType<
 	typeof useListCampaignsQuery
 >;
 export type ListCampaignsLazyQueryHookResult = ReturnType<
 	typeof useListCampaignsLazyQuery
+>;
+export type ListCampaignsSuspenseQueryHookResult = ReturnType<
+	typeof useListCampaignsSuspenseQuery
 >;
 export type ListCampaignsQueryResult = Apollo.QueryResult<
 	ListCampaignsQuery,
@@ -1777,31 +1878,55 @@ export function useListEncountersQuery(
 	baseOptions: Apollo.QueryHookOptions<
 		ListEncountersQuery,
 		ListEncountersQueryVariables
-	>
+	> &
+		(
+			| { variables: ListEncountersQueryVariables; skip?: boolean }
+			| { skip: boolean }
+		),
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<ListEncountersQuery, ListEncountersQueryVariables>(
 		ListEncountersDocument,
-		options
+		options,
 	);
 }
 export function useListEncountersLazyQuery(
 	baseOptions?: Apollo.LazyQueryHookOptions<
 		ListEncountersQuery,
 		ListEncountersQueryVariables
-	>
+	>,
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useLazyQuery<ListEncountersQuery, ListEncountersQueryVariables>(
 		ListEncountersDocument,
-		options
+		options,
 	);
+}
+export function useListEncountersSuspenseQuery(
+	baseOptions?:
+		| Apollo.SkipToken
+		| Apollo.SuspenseQueryHookOptions<
+				ListEncountersQuery,
+				ListEncountersQueryVariables
+		  >,
+) {
+	const options =
+		baseOptions === Apollo.skipToken
+			? baseOptions
+			: { ...defaultOptions, ...baseOptions };
+	return Apollo.useSuspenseQuery<
+		ListEncountersQuery,
+		ListEncountersQueryVariables
+	>(ListEncountersDocument, options);
 }
 export type ListEncountersQueryHookResult = ReturnType<
 	typeof useListEncountersQuery
 >;
 export type ListEncountersLazyQueryHookResult = ReturnType<
 	typeof useListEncountersLazyQuery
+>;
+export type ListEncountersSuspenseQueryHookResult = ReturnType<
+	typeof useListEncountersSuspenseQuery
 >;
 export type ListEncountersQueryResult = Apollo.QueryResult<
 	ListEncountersQuery,
@@ -1836,7 +1961,11 @@ export function useCampaignSubscription(
 	baseOptions: Apollo.SubscriptionHookOptions<
 		CampaignSubscription,
 		CampaignSubscriptionVariables
-	>
+	> &
+		(
+			| { variables: CampaignSubscriptionVariables; skip?: boolean }
+			| { skip: boolean }
+		),
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useSubscription<

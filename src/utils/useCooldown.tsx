@@ -27,11 +27,11 @@ function calculateCooldown({ player, campaign }: UseCooldownProps): number {
 	const lastInspirationUsed = parseDate(
 		campaign.cooldownType === "player"
 			? player.lastInspirationUsed
-			: campaign.lastInspirationUsed
+			: campaign.lastInspirationUsed,
 	);
 	const cooldownExpiration = addMinutes(
 		lastInspirationUsed,
-		campaign.cooldownTime
+		campaign.cooldownTime,
 	);
 	const onCooldown = cooldownExpiration > new Date();
 	const timeRemaining = onCooldown
@@ -45,7 +45,7 @@ export function useCooldown({
 	campaign,
 }: UseCooldownProps): UseCooldownResult {
 	const [cooldownTimeRemaining, setCooldownTimeRemaining] = useState(
-		calculateCooldown({ player, campaign })
+		calculateCooldown({ player, campaign }),
 	);
 
 	useEffect(() => {
@@ -56,13 +56,13 @@ export function useCooldown({
 		() => {
 			setCooldownTimeRemaining(calculateCooldown({ player, campaign }));
 		},
-		!campaign || campaign.cooldownType !== "none" ? 1000 : null
+		!campaign || campaign.cooldownType !== "none" ? 1000 : null,
 	);
 
 	return {
 		cooldownTimeRemaining,
 		percentComplete: Math.round(
-			(cooldownTimeRemaining / ((campaign?.cooldownTime ?? 0) * 60)) * 100
+			(cooldownTimeRemaining / ((campaign?.cooldownTime ?? 0) * 60)) * 100,
 		),
 		formattedDuration: formatDuration(
 			{
@@ -70,7 +70,7 @@ export function useCooldown({
 				minutes: Math.trunc((cooldownTimeRemaining / 60) % 60),
 				seconds: Math.trunc(cooldownTimeRemaining % 60),
 			},
-			{ format: ["hours", "minutes", "seconds"] }
+			{ format: ["hours", "minutes", "seconds"] },
 		),
 	};
 }

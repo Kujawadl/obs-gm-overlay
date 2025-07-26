@@ -23,54 +23,63 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
 	[SubKey in K]: Maybe<T[SubKey]>;
 };
+export type MakeEmpty<
+	T extends { [key: string]: unknown },
+	K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+	| T
+	| {
+			[P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
+	  };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
 	[P in K]-?: NonNullable<T[P]>;
 };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-	ID: string;
-	String: string;
-	Boolean: boolean;
-	Int: number;
-	Float: number;
-	Date: any;
+	ID: { input: string; output: string };
+	String: { input: string; output: string };
+	Boolean: { input: boolean; output: boolean };
+	Int: { input: number; output: number };
+	Float: { input: number; output: number };
+	Date: { input: any; output: any };
 };
 
 export type Campaign = {
 	__typename?: "Campaign";
 	activeEncounter?: Maybe<Encounter>;
-	cooldownTime: Scalars["Int"];
+	cooldownTime: Scalars["Int"]["output"];
 	cooldownType: CooldownType;
 	encounter?: Maybe<Encounter>;
 	encounters: Array<Encounter>;
-	gmInspiration: Scalars["Boolean"];
-	id: Scalars["ID"];
-	lastInspirationUsed?: Maybe<Scalars["Date"]>;
-	name: Scalars["String"];
+	gmInspiration: Scalars["Boolean"]["output"];
+	id: Scalars["ID"]["output"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]["output"]>;
+	name: Scalars["String"]["output"];
 	players: Array<Player>;
 };
 
 export type CampaignEncounterArgs = {
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 };
 
 export type CampaignInput = {
-	activeEncounter?: InputMaybe<Scalars["ID"]>;
-	cooldownTime?: InputMaybe<Scalars["Int"]>;
+	activeEncounter?: InputMaybe<Scalars["ID"]["input"]>;
+	cooldownTime?: InputMaybe<Scalars["Int"]["input"]>;
 	cooldownType?: InputMaybe<CooldownType>;
-	gmInspiration?: InputMaybe<Scalars["Boolean"]>;
-	name: Scalars["String"];
+	gmInspiration?: InputMaybe<Scalars["Boolean"]["input"]>;
+	name: Scalars["String"]["input"];
 };
 
 export type CampaignMutation = {
 	__typename?: "CampaignMutation";
-	delete: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
 	encounter?: Maybe<EncounterMutation>;
 	save: Campaign;
 };
 
 export type CampaignMutationEncounterArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type CampaignMutationSaveArgs = {
@@ -81,26 +90,26 @@ export type Combatant = {
 	__typename?: "Combatant";
 	campaign: Campaign;
 	encounter: Encounter;
-	id: Scalars["ID"];
-	name: Scalars["String"];
+	id: Scalars["ID"]["output"];
+	name: Scalars["String"]["output"];
 	player?: Maybe<Player>;
-	public: Scalars["Boolean"];
-	turnOrder: Scalars["Int"];
+	public: Scalars["Boolean"]["output"];
+	turnOrder: Scalars["Int"]["output"];
 };
 
 export type CombatantInput = {
-	campaignId: Scalars["ID"];
-	encounterId: Scalars["ID"];
-	id?: InputMaybe<Scalars["ID"]>;
-	name: Scalars["String"];
-	playerId?: InputMaybe<Scalars["ID"]>;
-	public?: InputMaybe<Scalars["Boolean"]>;
-	turnOrder: Scalars["Int"];
+	campaignId: Scalars["ID"]["input"];
+	encounterId: Scalars["ID"]["input"];
+	id?: InputMaybe<Scalars["ID"]["input"]>;
+	name: Scalars["String"]["input"];
+	playerId?: InputMaybe<Scalars["ID"]["input"]>;
+	public?: InputMaybe<Scalars["Boolean"]["input"]>;
+	turnOrder: Scalars["Int"]["input"];
 };
 
 export type CombatantMutation = {
 	__typename?: "CombatantMutation";
-	delete: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
 	save: Combatant;
 };
 
@@ -118,36 +127,36 @@ export type Encounter = {
 	__typename?: "Encounter";
 	combatants: Array<Combatant>;
 	hideMonsterNames: HideMonsterNames;
-	id: Scalars["ID"];
-	name: Scalars["String"];
-	round: Scalars["Int"];
-	turn: Scalars["Int"];
-	turnStart?: Maybe<Scalars["Date"]>;
+	id: Scalars["ID"]["output"];
+	name: Scalars["String"]["output"];
+	round: Scalars["Int"]["output"];
+	turn: Scalars["Int"]["output"];
+	turnStart?: Maybe<Scalars["Date"]["output"]>;
 };
 
 export type EncounterInput = {
-	campaignId: Scalars["ID"];
+	campaignId: Scalars["ID"]["input"];
 	hideMonsterNames?: InputMaybe<HideMonsterNames>;
-	id?: InputMaybe<Scalars["ID"]>;
-	name: Scalars["String"];
-	round?: InputMaybe<Scalars["Int"]>;
-	turn?: InputMaybe<Scalars["Int"]>;
-	turnStart?: InputMaybe<Scalars["Date"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
+	name: Scalars["String"]["input"];
+	round?: InputMaybe<Scalars["Int"]["input"]>;
+	turn?: InputMaybe<Scalars["Int"]["input"]>;
+	turnStart?: InputMaybe<Scalars["Date"]["input"]>;
 };
 
 export type EncounterMutation = {
 	__typename?: "EncounterMutation";
 	combatant: CombatantMutation;
-	delete: Scalars["Boolean"];
-	next?: Maybe<Scalars["Boolean"]>;
-	prev?: Maybe<Scalars["Boolean"]>;
+	delete: Scalars["Boolean"]["output"];
+	next?: Maybe<Scalars["Boolean"]["output"]>;
+	prev?: Maybe<Scalars["Boolean"]["output"]>;
 	save: Encounter;
 	saveCombatants: Array<Combatant>;
-	setActive: Scalars["Boolean"];
+	setActive: Scalars["Boolean"]["output"];
 };
 
 export type EncounterMutationCombatantArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type EncounterMutationSaveArgs = {
@@ -159,7 +168,7 @@ export type EncounterMutationSaveCombatantsArgs = {
 };
 
 export type EncounterMutationSetActiveArgs = {
-	active?: InputMaybe<Scalars["Boolean"]>;
+	active?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export enum HideMonsterNames {
@@ -175,36 +184,36 @@ export type Mutation = {
 };
 
 export type MutationCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type MutationPlayerArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type Player = {
 	__typename?: "Player";
 	campaign: Campaign;
-	characterName?: Maybe<Scalars["String"]>;
-	id: Scalars["ID"];
-	inspiration: Scalars["Int"];
-	isGM: Scalars["Boolean"];
-	lastInspirationUsed?: Maybe<Scalars["Date"]>;
-	playerName: Scalars["String"];
+	characterName?: Maybe<Scalars["String"]["output"]>;
+	id: Scalars["ID"]["output"];
+	inspiration: Scalars["Int"]["output"];
+	isGM: Scalars["Boolean"]["output"];
+	lastInspirationUsed?: Maybe<Scalars["Date"]["output"]>;
+	playerName: Scalars["String"]["output"];
 };
 
 export type PlayerInput = {
-	campaignId?: InputMaybe<Scalars["ID"]>;
-	characterName?: InputMaybe<Scalars["String"]>;
-	inspiration?: InputMaybe<Scalars["Int"]>;
-	isGM?: InputMaybe<Scalars["Boolean"]>;
-	playerName?: InputMaybe<Scalars["String"]>;
+	campaignId?: InputMaybe<Scalars["ID"]["input"]>;
+	characterName?: InputMaybe<Scalars["String"]["input"]>;
+	inspiration?: InputMaybe<Scalars["Int"]["input"]>;
+	isGM?: InputMaybe<Scalars["Boolean"]["input"]>;
+	playerName?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type PlayerMutation = {
 	__typename?: "PlayerMutation";
-	delete: Scalars["Boolean"];
-	resetCooldown: Scalars["Boolean"];
+	delete: Scalars["Boolean"]["output"];
+	resetCooldown: Scalars["Boolean"]["output"];
 	save: Player;
 };
 
@@ -220,11 +229,11 @@ export type Query = {
 };
 
 export type QueryCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryPlayerArgs = {
-	id: Scalars["ID"];
+	id: Scalars["ID"]["input"];
 };
 
 export type Subscription = {
@@ -233,7 +242,7 @@ export type Subscription = {
 };
 
 export type SubscriptionCampaignArgs = {
-	id?: InputMaybe<Scalars["ID"]>;
+	id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ResolverTypeWrapper<T> =
@@ -253,21 +262,21 @@ export type ResolverFn<TResult, TParent, TContext, TArgs> = (
 	parent: TParent,
 	args: TArgs,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => Promise<TResult> | TResult;
 
 export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
 	parent: TParent,
 	args: TArgs,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
 
 export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
 	parent: TParent,
 	args: TArgs,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
 export interface SubscriptionSubscriberObject<
@@ -275,7 +284,7 @@ export interface SubscriptionSubscriberObject<
 	TKey extends string,
 	TParent,
 	TContext,
-	TArgs
+	TArgs,
 > {
 	subscribe: SubscriptionSubscribeFn<
 		{ [key in TKey]: TResult },
@@ -301,7 +310,7 @@ export type SubscriptionObject<
 	TKey extends string,
 	TParent,
 	TContext,
-	TArgs
+	TArgs,
 > =
 	| SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
 	| SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
@@ -311,7 +320,7 @@ export type SubscriptionResolver<
 	TKey extends string,
 	TParent = {},
 	TContext = {},
-	TArgs = {}
+	TArgs = {},
 > =
 	| ((
 			...args: any[]
@@ -321,13 +330,13 @@ export type SubscriptionResolver<
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
 	parent: TParent,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
 export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
 	obj: T,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
@@ -336,18 +345,18 @@ export type DirectiveResolverFn<
 	TResult = {},
 	TParent = {},
 	TContext = {},
-	TArgs = {}
+	TArgs = {},
 > = (
 	next: NextResolverFn<TResult>,
 	parent: TParent,
 	args: TArgs,
 	context: TContext,
-	info: GraphQLResolveInfo
+	info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-	Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
 	Campaign: ResolverTypeWrapper<CampaignModel>;
 	CampaignInput: CampaignInput;
 	CampaignMutation: ResolverTypeWrapper<CampaignModel>;
@@ -355,49 +364,50 @@ export type ResolversTypes = {
 	CombatantInput: CombatantInput;
 	CombatantMutation: ResolverTypeWrapper<CombatantModel>;
 	CooldownType: CooldownType;
-	Date: ResolverTypeWrapper<Scalars["Date"]>;
+	Date: ResolverTypeWrapper<Scalars["Date"]["output"]>;
 	Encounter: ResolverTypeWrapper<EncounterModel>;
 	EncounterInput: EncounterInput;
 	EncounterMutation: ResolverTypeWrapper<EncounterModel>;
 	HideMonsterNames: HideMonsterNames;
-	ID: ResolverTypeWrapper<Scalars["ID"]>;
-	Int: ResolverTypeWrapper<Scalars["Int"]>;
+	ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
+	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
 	Mutation: ResolverTypeWrapper<{}>;
 	Player: ResolverTypeWrapper<PlayerModel>;
 	PlayerInput: PlayerInput;
 	PlayerMutation: ResolverTypeWrapper<PlayerModel>;
 	Query: ResolverTypeWrapper<{}>;
-	String: ResolverTypeWrapper<Scalars["String"]>;
+	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
 	Subscription: ResolverTypeWrapper<{}>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-	Boolean: Scalars["Boolean"];
+	Boolean: Scalars["Boolean"]["output"];
 	Campaign: CampaignModel;
 	CampaignInput: CampaignInput;
 	CampaignMutation: CampaignModel;
 	Combatant: CombatantModel;
 	CombatantInput: CombatantInput;
 	CombatantMutation: CombatantModel;
-	Date: Scalars["Date"];
+	Date: Scalars["Date"]["output"];
 	Encounter: EncounterModel;
 	EncounterInput: EncounterInput;
 	EncounterMutation: EncounterModel;
-	ID: Scalars["ID"];
-	Int: Scalars["Int"];
+	ID: Scalars["ID"]["output"];
+	Int: Scalars["Int"]["output"];
 	Mutation: {};
 	Player: PlayerModel;
 	PlayerInput: PlayerInput;
 	PlayerMutation: PlayerModel;
 	Query: {};
-	String: Scalars["String"];
+	String: Scalars["String"]["output"];
 	Subscription: {};
 };
 
 export type CampaignResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Campaign"] = ResolversParentTypes["Campaign"]
+	ParentType extends
+		ResolversParentTypes["Campaign"] = ResolversParentTypes["Campaign"],
 > = {
 	activeEncounter?: Resolver<
 		Maybe<ResolversTypes["Encounter"]>,
@@ -435,7 +445,8 @@ export type CampaignResolvers<
 
 export type CampaignMutationResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["CampaignMutation"] = ResolversParentTypes["CampaignMutation"]
+	ParentType extends
+		ResolversParentTypes["CampaignMutation"] = ResolversParentTypes["CampaignMutation"],
 > = {
 	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	encounter?: Resolver<
@@ -455,7 +466,8 @@ export type CampaignMutationResolvers<
 
 export type CombatantResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Combatant"] = ResolversParentTypes["Combatant"]
+	ParentType extends
+		ResolversParentTypes["Combatant"] = ResolversParentTypes["Combatant"],
 > = {
 	campaign?: Resolver<ResolversTypes["Campaign"], ParentType, ContextType>;
 	encounter?: Resolver<ResolversTypes["Encounter"], ParentType, ContextType>;
@@ -469,7 +481,8 @@ export type CombatantResolvers<
 
 export type CombatantMutationResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["CombatantMutation"] = ResolversParentTypes["CombatantMutation"]
+	ParentType extends
+		ResolversParentTypes["CombatantMutation"] = ResolversParentTypes["CombatantMutation"],
 > = {
 	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	save?: Resolver<
@@ -488,7 +501,8 @@ export interface DateScalarConfig
 
 export type EncounterResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Encounter"] = ResolversParentTypes["Encounter"]
+	ParentType extends
+		ResolversParentTypes["Encounter"] = ResolversParentTypes["Encounter"],
 > = {
 	combatants?: Resolver<
 		Array<ResolversTypes["Combatant"]>,
@@ -510,7 +524,8 @@ export type EncounterResolvers<
 
 export type EncounterMutationResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["EncounterMutation"] = ResolversParentTypes["EncounterMutation"]
+	ParentType extends
+		ResolversParentTypes["EncounterMutation"] = ResolversParentTypes["EncounterMutation"],
 > = {
 	combatant?: Resolver<
 		ResolversTypes["CombatantMutation"],
@@ -544,7 +559,8 @@ export type EncounterMutationResolvers<
 
 export type MutationResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
+	ParentType extends
+		ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"],
 > = {
 	campaign?: Resolver<
 		Maybe<ResolversTypes["CampaignMutation"]>,
@@ -562,7 +578,8 @@ export type MutationResolvers<
 
 export type PlayerResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Player"] = ResolversParentTypes["Player"]
+	ParentType extends
+		ResolversParentTypes["Player"] = ResolversParentTypes["Player"],
 > = {
 	campaign?: Resolver<ResolversTypes["Campaign"], ParentType, ContextType>;
 	characterName?: Resolver<
@@ -584,7 +601,8 @@ export type PlayerResolvers<
 
 export type PlayerMutationResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["PlayerMutation"] = ResolversParentTypes["PlayerMutation"]
+	ParentType extends
+		ResolversParentTypes["PlayerMutation"] = ResolversParentTypes["PlayerMutation"],
 > = {
 	delete?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 	resetCooldown?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
@@ -599,7 +617,8 @@ export type PlayerMutationResolvers<
 
 export type QueryResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
+	ParentType extends
+		ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
 > = {
 	campaign?: Resolver<
 		Maybe<ResolversTypes["Campaign"]>,
@@ -622,7 +641,8 @@ export type QueryResolvers<
 
 export type SubscriptionResolvers<
 	ContextType = Context,
-	ParentType extends ResolversParentTypes["Subscription"] = ResolversParentTypes["Subscription"]
+	ParentType extends
+		ResolversParentTypes["Subscription"] = ResolversParentTypes["Subscription"],
 > = {
 	campaign?: SubscriptionResolver<
 		Maybe<ResolversTypes["Campaign"]>,

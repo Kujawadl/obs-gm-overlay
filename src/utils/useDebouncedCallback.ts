@@ -6,14 +6,13 @@ import { useRef, useCallback } from "react";
  * @param wait Wait period after function hasn't been called for
  * @returns A memoized function that is debounced
  */
-// eslint-disable-next-line unused-imports/no-unused-vars
 export function useDebouncedCallback<T extends (...args: any[]) => any>(
 	func: T,
-	wait: number
+	wait: number,
 ) {
 	// Use a ref to store the timeout between renders
 	// and prevent changes to it from causing re-renders
-	const timeout = useRef<number>();
+	const timeout = useRef<number | undefined>(undefined);
 
 	return useCallback(
 		(...args: Parameters<T>) => {
@@ -25,7 +24,6 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
 			clearTimeout(timeout.current);
 			timeout.current = window.setTimeout(later, wait);
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[func, wait]
+		[func, wait],
 	);
 }

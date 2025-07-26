@@ -142,7 +142,9 @@ export default function CombatantList({
 			enableReinitialize
 		>
 			{(form) => {
-				const ids = form.values.combatants.map((combatant) => combatant.id);
+				const ids = form.values.combatants.map(
+					(combatant) => combatant.id as string,
+				);
 				const onReorder = (ids: string[]) => {
 					form.setValues({
 						combatants: ids.map((id, i) => {

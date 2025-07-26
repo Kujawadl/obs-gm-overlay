@@ -1,11 +1,12 @@
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { GraphQLFormattedError } from "graphql";
+import { useServer } from "graphql-ws/use/ws";
 import { WebSocketServer } from "ws";
-import { useServer } from "graphql-ws/lib/use/ws";
 
-import typeDefs from "./types";
 import resolvers from "./resolvers";
+import typeDefs from "./types";
 
 import type { Server } from "http";
 import type { Context } from "./context";
@@ -30,15 +31,18 @@ function setupApolloServer(
 					return {
 						async drainServer() {
 							await serverCleanup.dispose();
-							await context.sql.end();
+							context.sql.close();
 						},
 					};
 				},
 			},
 		],
-		formatError: (err) => {
-			console.error(err);
-			return err;
+		formatError: (formattedError: GraphQLFormattedError, err: unknown) => {
+			console.error(formattedError ?? err);
+			return {
+				message: formattedError?.message ?? "Internal server error",
+				extensions: formattedError?.extensions ?? {},
+			};
 		},
 	});
 }

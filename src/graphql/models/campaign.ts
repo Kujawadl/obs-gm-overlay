@@ -1,89 +1,111 @@
+import { createId } from "@paralleldrive/cuid2";
 import { PubSub } from "graphql-subscriptions";
-import { CampaignInput } from "../server-types";
 import { CampaignModel as Campaign } from "../resolvers/campaign";
-import type { Sql } from "postgres";
-import type Model from "./_model";
+import { CampaignInput } from "../server-types";
+import Model from "./_model";
+import type { DatabaseSync } from "node:sqlite";
 
-export default class CampaignModel implements Model<Campaign, CampaignInput> {
-	private sql: Sql;
-	private pubsub: PubSub;
-
-	constructor(sql: Sql, pubsub: PubSub) {
-		this.sql = sql;
-		this.pubsub = pubsub;
+export default class CampaignModel extends Model<Campaign, CampaignInput> {
+	constructor(
+		private sql: DatabaseSync,
+		private pubsub: PubSub,
+	) {
+		super();
 	}
 
-	async get(id?: string): Promise<Campaign | undefined> {
-		if (!id) {
-			return Promise.resolve(undefined);
-		}
-		const results = await this.sql<
-			Campaign[]
-		>`SELECT * FROM "Campaign" WHERE "id" = ${id}`;
-		return results[0];
+	get(id?: string): Campaign | undefined {
+		return id
+			? (this.sql
+					.prepare(`SELECT * FROM "Campaign" WHERE "id" = ?`)
+					.get(id) as unknown as Campaign)
+			: undefined;
 	}
 
-	async list(userId: string): Promise<Campaign[]> {
-		const results = await this.sql<Campaign[]>`
-			SELECT *
-			FROM "Campaign"
-			WHERE "userId" = ${userId}
-			ORDER BY "name"
-		`;
+	list(): Campaign[] {
+		const results = this.sql
+			.prepare(
+				`
+					SELECT *
+					FROM "Campaign"
+					ORDER BY "name"
+				`,
+			)
+			.all() as unknown as Campaign[];
 		return results.length ? results : [];
 	}
 
-	async create(input: CampaignInput, userId: string): Promise<Campaign> {
-		const results = await this.sql<Campaign[]>`
-        INSERT INTO "Campaign" (
-					"userId",
-          "name",
-          "gmInspiration",
-					"cooldownType",
-					"cooldownTime",
-					"activeEncounter"
-        ) VALUES (
-					${userId},
-					${input.name}, 
-					${input.gmInspiration ?? false},
-					${input.cooldownType ?? "none"},
-					${input.cooldownTime ?? 0},
-					${input.activeEncounter ?? null}
-				) RETURNING *
-      `;
-		return results[0];
+	create(input: CampaignInput): Campaign {
+		const id = createId();
+		this.sql
+			.prepare(
+				`
+					INSERT INTO "Campaign" (
+					  "id",
+						"name",
+						"gmInspiration",
+						"cooldownType",
+						"cooldownTime",
+						"activeEncounter"
+					) VALUES (
+					  ?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+				`,
+			)
+			.run(
+				id,
+				input.name,
+				this.boolean(input.gmInspiration ?? false),
+				(input.cooldownType as string) ?? "none",
+				input.cooldownTime ?? 0,
+				input.activeEncounter ?? null,
+			);
+		return this.get(id) as Campaign;
 	}
 
-	async update(campaign: Campaign, input: CampaignInput): Promise<Campaign> {
-		const results = await this.sql<Campaign[]>`
+	update(campaign: Campaign, input: CampaignInput): Campaign {
+		this.sql
+			.prepare(
+				`
         UPDATE "Campaign"
         SET
-          "name" = ${input.name ?? campaign.name},
-          "gmInspiration" = ${
-						input.gmInspiration ?? campaign.gmInspiration ?? false
-					},
-					"cooldownType" = ${input.cooldownType ?? campaign.cooldownType ?? "none"},
-					"cooldownTime" = ${input.cooldownTime ?? campaign.cooldownTime ?? 0},
-					"activeEncounter" = ${input.activeEncounter ?? null}
-        WHERE "id" = ${campaign.id}
+          "name" = ?,
+          "gmInspiration" = ?,
+					"cooldownType" = ?,
+					"cooldownTime" = ?,
+					"activeEncounter" = ?
+        WHERE "id" = ?
 				RETURNING *
-      `;
+      `,
+			)
+			.run(
+				input.name ?? campaign.name,
+				this.boolean(input.gmInspiration ?? campaign.gmInspiration ?? false),
+				input.cooldownType ?? campaign.cooldownType ?? "none",
+				input.cooldownTime ?? campaign.cooldownTime ?? 0,
+				input.activeEncounter ?? null,
+				campaign.id,
+			);
+		const results = this.sql
+			.prepare(`SELECT * FROM "Campaign" WHERE "id" = ?`)
+			.all(campaign.id) as unknown as Campaign[];
 		return results[0];
 	}
 
-	async delete(id: string): Promise<boolean> {
-		// TODO: Verify cascade
-		await this.sql.begin(async (sql) => {
-			await sql`DELETE FROM "Combatant" WHERE "campaignId" = ${id}`;
-			await sql`DELETE FROM "Encounter" WHERE "campaignId" = ${id}`;
-			await sql`DELETE FROM "Player" WHERE "campaignId" = ${id}`;
-			await sql`DELETE FROM "Campaign" WHERE "id" = ${id}`;
-		});
+	delete(id: string): boolean {
+		this.sql.prepare(`DELETE FROM "Combatant" WHERE "campaignId" = ?`).run(id);
+		this.sql.prepare(`DELETE FROM "Encounter" WHERE "campaignId" = ?`).run(id);
+		this.sql.prepare(`DELETE FROM "Player" WHERE "campaignId" = ?`).run(id);
+		this.sql.prepare(`DELETE FROM "Campaign" WHERE "id" = ?`).run(id);
 		return true;
 	}
 
 	async publishSubscription(id: string) {
-		const campaign = await this.get(id);
+		const campaign = this.get(id);
 		this.pubsub.publish("CAMPAIGN_UPDATED", { campaign });
 	}
 }

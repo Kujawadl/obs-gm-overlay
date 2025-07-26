@@ -41,7 +41,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 			cooldownType: campaign.cooldownType,
 			cooldownTime: campaign.cooldownTime?.toString(),
 		}),
-		[campaign]
+		[campaign],
 	);
 
 	const onUpdateCampaign = useCallback(
@@ -58,7 +58,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 				},
 			});
 		},
-		[campaign.id, updateCampaign]
+		[campaign.id, updateCampaign],
 	);
 
 	return (
@@ -73,7 +73,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 				{({ handleReset, isValid, dirty }) => (
 					<Form>
 						<Grid container spacing={2} my={2}>
-							<Grid item xs={12} sm={8}>
+							<Grid size={{ xs: 12, sm: 8 }}>
 								<Field name="name">
 									{({ field, meta }: FieldProps<string>) => (
 										<TextField
@@ -89,9 +89,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 								</Field>
 							</Grid>
 							<Grid
-								item
-								xs={12}
-								sm={4}
+								size={{ xs: 12, sm: 4 }}
 								sx={{
 									textAlign: "right",
 									mt: 1,
@@ -116,7 +114,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 									)}
 								</Field>
 							</Grid>
-							<Grid item xs={12} sm={6}>
+							<Grid size={{ xs: 12, sm: 6 }}>
 								<Field name="cooldownType">
 									{({ field }: FieldProps<boolean>) => (
 										<FormControl fullWidth>
@@ -137,7 +135,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 									)}
 								</Field>
 							</Grid>
-							<Grid item xs={12} sm={6}>
+							<Grid size={{ xs: 12, sm: 6 }}>
 								<Field name="cooldownTime">
 									{({ field }: FieldProps<boolean>) => (
 										<TextField
@@ -160,7 +158,7 @@ export default function CampaignEditor({ campaign }: CampaignEditorProps) {
 								</Field>
 							</Grid>
 							{dirty && (
-								<Grid item xs={12} sx={{ textAlign: "right", order: "2" }}>
+								<Grid size={{ xs: 12 }} sx={{ textAlign: "right", order: "2" }}>
 									<Button
 										variant="contained"
 										color="secondary"

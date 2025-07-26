@@ -16,14 +16,14 @@ jobs:
       NEXT_PUBLIC_HTTPS: ${{ vars.NEXT_PUBLIC_HTTPS }}
       NEXT_PUBLIC_HOST: ${{ vars.NEXT_PUBLIC_HOST }}
     steps:
-      - name: Git clone repository 
+      - name: Git clone repository
         uses: actions/checkout@v4
 
       - name: Git config
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@users.noreply.github.com"
-      
+
       - name: Configure tools
         uses: asdf-vm/actions/install@v2
 
@@ -32,7 +32,7 @@ jobs:
 
       - name: Increment version
         run: npm version patch --commit-hooks=false
-      
+
       - name: Create .env
         run: |
           echo "NEXT_PUBLIC_HTTPS=$NEXT_PUBLIC_HTTPS" >> .env.production

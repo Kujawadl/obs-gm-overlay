@@ -51,7 +51,7 @@ export default function RunInitiative() {
 					forward: true,
 				},
 			}),
-		[advanceInitiative, campaign]
+		[advanceInitiative, campaign],
 	);
 	const prev = useCallback(
 		() =>
@@ -62,7 +62,7 @@ export default function RunInitiative() {
 					forward: false,
 				},
 			}),
-		[advanceInitiative, campaign]
+		[advanceInitiative, campaign],
 	);
 
 	return (
