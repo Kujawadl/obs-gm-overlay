@@ -4,8 +4,9 @@
 	"private": true,
 	"scripts": {
 		"dev": "nodemon --exec \"next dev\" --ext ts --watch \"./src/graphql/*\" --watch \"./src/pages/api/*\"",
-		"build": "next build",
-		"start": "next start",
+		"build": "vite build",
+		"preview": "vite preview",
+		"start": "vite preview",
 		"lint": "run-s eslint prettier",
 		"lint:fix": "run-s eslint:fix prettier:fix",
 		"eslint": "eslint --cache .",
@@ -46,6 +47,7 @@
 		"postgres": "^3.4.7",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
+		"react-router-dom": "^7.7.1",
 		"react-use": "^17.6.0",
 		"sequelize": "^6.37.7",
 		"sharp": "^0.34.3",
@@ -70,6 +72,7 @@
 		"@types/react-dom": "^19.1.6",
 		"@types/ws": "^8.18.1",
 		"@typescript-eslint/parser": "^8.38.0",
+		"@vitejs/plugin-react": "^4.7.0",
 		"eslint": "^9.32.0",
 		"eslint-config-next": "^15.4.4",
 		"eslint-config-prettier": "^10.1.8",
@@ -84,7 +87,10 @@
 		"postgres-migrations": "^5.3.0",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"vite": "^7.0.6",
+		"vite-plugin-checker": "^0.10.1",
+		"vite-tsconfig-paths": "^5.1.4"
 	},
 	"lint-staged": {
 		"*.{ts,tsx,js,jsx,json}": "eslint --cache --fix",
