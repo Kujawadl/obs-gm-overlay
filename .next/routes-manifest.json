@@ -1,1 +1,103 @@
-{"version":3,"pages404":true,"basePath":"","redirects":[{"source":"/:path+/","destination":"/:path+","internal":true,"statusCode":308,"regex":"^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"}],"headers":[],"dynamicRoutes":[{"page":"/api/auth/[...nextauth]","regex":"^/api/auth/(.+?)(?:/)?$","routeKeys":{"nextauth":"nextauth"},"namedRegex":"^/api/auth/(?<nextauth>.+?)(?:/)?$"},{"page":"/[campaignId]/edit","regex":"^/([^/]+?)/edit(?:/)?$","routeKeys":{"campaignId":"campaignId"},"namedRegex":"^/(?<campaignId>[^/]+?)/edit(?:/)?$"},{"page":"/[campaignId]/encounter","regex":"^/([^/]+?)/encounter(?:/)?$","routeKeys":{"campaignId":"campaignId"},"namedRegex":"^/(?<campaignId>[^/]+?)/encounter(?:/)?$"},{"page":"/[campaignId]/encounter/run","regex":"^/([^/]+?)/encounter/run(?:/)?$","routeKeys":{"campaignId":"campaignId"},"namedRegex":"^/(?<campaignId>[^/]+?)/encounter/run(?:/)?$"},{"page":"/[campaignId]/encounter/[encounterId]/edit","regex":"^/([^/]+?)/encounter/([^/]+?)/edit(?:/)?$","routeKeys":{"campaignId":"campaignId","encounterId":"encounterId"},"namedRegex":"^/(?<campaignId>[^/]+?)/encounter/(?<encounterId>[^/]+?)/edit(?:/)?$"},{"page":"/[campaignId]/overlay/initiative","regex":"^/([^/]+?)/overlay/initiative(?:/)?$","routeKeys":{"campaignId":"campaignId"},"namedRegex":"^/(?<campaignId>[^/]+?)/overlay/initiative(?:/)?$"},{"page":"/[campaignId]/overlay/inspiration","regex":"^/([^/]+?)/overlay/inspiration(?:/)?$","routeKeys":{"campaignId":"campaignId"},"namedRegex":"^/(?<campaignId>[^/]+?)/overlay/inspiration(?:/)?$"}],"staticRoutes":[{"page":"/","regex":"^/(?:/)?$","routeKeys":{},"namedRegex":"^/(?:/)?$"},{"page":"/invite-only","regex":"^/invite\\-only(?:/)?$","routeKeys":{},"namedRegex":"^/invite\\-only(?:/)?$"}],"dataRoutes":[],"rsc":{"header":"RSC","varyHeader":"RSC, Next-Router-State-Tree, Next-Router-Prefetch"},"rewrites":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/[campaignId]/edit",
+      "regex": "^/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/[campaignId]/encounter",
+      "regex": "^/([^/]+?)/encounter(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/encounter(?:/)?$"
+    },
+    {
+      "page": "/[campaignId]/encounter/run",
+      "regex": "^/([^/]+?)/encounter/run(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/encounter/run(?:/)?$"
+    },
+    {
+      "page": "/[campaignId]/encounter/[encounterId]/edit",
+      "regex": "^/([^/]+?)/encounter/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId",
+        "nxtPencounterId": "nxtPencounterId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/encounter/(?<nxtPencounterId>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/[campaignId]/overlay/initiative",
+      "regex": "^/([^/]+?)/overlay/initiative(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/overlay/initiative(?:/)?$"
+    },
+    {
+      "page": "/[campaignId]/overlay/inspiration",
+      "regex": "^/([^/]+?)/overlay/inspiration(?:/)?$",
+      "routeKeys": {
+        "nxtPcampaignId": "nxtPcampaignId"
+      },
+      "namedRegex": "^/(?<nxtPcampaignId>[^/]+?)/overlay/inspiration(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/invite-only",
+      "regex": "^/invite\\-only(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/invite\\-only(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "RSC",
+    "varyHeader": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch",
+    "prefetchHeader": "Next-Router-Prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "Next-Router-Segment-Prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

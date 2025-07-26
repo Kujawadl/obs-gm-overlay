@@ -1,614 +1,246 @@
-"use strict";
-(() => {
-var exports = {};
-exports.id = 702;
-exports.ids = [702];
-exports.modules = {
-
-/***/ 8083:
-/***/ ((module) => {
-
-module.exports = require("@apollo/server");
-
-/***/ }),
-
-/***/ 1283:
-/***/ ((module) => {
-
-module.exports = require("graphql-subscriptions");
-
-/***/ }),
-
-/***/ 8086:
-/***/ ((module) => {
-
-module.exports = require("lodash/merge");
-
-/***/ }),
-
-/***/ 8459:
-/***/ ((module) => {
-
-module.exports = require("lodash/uniq");
-
-/***/ }),
-
-/***/ 6689:
-/***/ ((module) => {
-
-module.exports = require("react");
-
-/***/ }),
-
-/***/ 9755:
-/***/ ((module) => {
-
-module.exports = require("react-use");
-
-/***/ }),
-
-/***/ 4349:
-/***/ ((module) => {
-
-module.exports = import("@apollo/server");;
-
-/***/ }),
-
-/***/ 8786:
-/***/ ((module) => {
-
-module.exports = import("@apollo/server/plugin/drainHttpServer");;
-
-/***/ }),
-
-/***/ 6550:
-/***/ ((module) => {
-
-module.exports = import("@graphql-tools/schema");;
-
-/***/ }),
-
-/***/ 8248:
-/***/ ((module) => {
-
-module.exports = import("date-fns");;
-
-/***/ }),
-
-/***/ 9647:
-/***/ ((module) => {
-
-module.exports = import("graphql-ws/lib/use/ws");;
-
-/***/ }),
-
-/***/ 6235:
-/***/ ((module) => {
-
-module.exports = import("postgres");;
-
-/***/ }),
-
-/***/ 9814:
-/***/ ((module) => {
-
-module.exports = import("ws");;
-
-/***/ }),
-
-/***/ 7310:
-/***/ ((module) => {
-
-module.exports = require("url");
-
-/***/ }),
-
-/***/ 1648:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ checkAuth)
-});
-
-;// CONCATENATED MODULE: external "graphql"
-const external_graphql_namespaceObject = require("graphql");
-;// CONCATENATED MODULE: external "next-auth/jwt"
-const jwt_namespaceObject = require("next-auth/jwt");
-;// CONCATENATED MODULE: ./src/graphql/checkAuth.ts
-
-
-async function checkAuth(context, campaignId) {
-    const token = await (0,jwt_namespaceObject.getToken)({
-        req: context.req,
-        secret: process.env.NEXTAUTH_SECRET,
-        secureCookie: "true" === "true"
-    });
-    if (token?.sub) {
-        if (campaignId) {
-            const userId = await token.sub;
-            const campaign = await context.Campaign.get(campaignId);
-            if (campaign?.userId !== userId) {
-                return undefined;
-            }
-        }
-        return token.sub;
-    }
-    throw new external_graphql_namespaceObject.GraphQLError("You must be logged in to view this resource", {
-        extensions: {
-            code: "UNAUTHENTICATED"
-        }
-    });
-}
-
-
-/***/ }),
-
-/***/ 9044:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "H": () => (/* binding */ setupContext)
-/* harmony export */ });
-/* harmony import */ var postgres__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6235);
-/* harmony import */ var graphql_subscriptions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1283);
-/* harmony import */ var graphql_subscriptions__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(graphql_subscriptions__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _models__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5798);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([postgres__WEBPACK_IMPORTED_MODULE_0__, _models__WEBPACK_IMPORTED_MODULE_2__]);
-([postgres__WEBPACK_IMPORTED_MODULE_0__, _models__WEBPACK_IMPORTED_MODULE_2__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
-
-
-
-function setupContext() {
-    const sql = (0,postgres__WEBPACK_IMPORTED_MODULE_0__["default"])({
-        host: process.env.DB_HOST,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        port: parseInt(process.env.DB_PORT || "") || 5432
-    });
-    const pubsub = new graphql_subscriptions__WEBPACK_IMPORTED_MODULE_1__.PubSub();
-    return {
-        sql,
-        pubsub,
-        Campaign: new _models__WEBPACK_IMPORTED_MODULE_2__/* .CampaignModel */ .Z4(sql, pubsub),
-        Combatant: new _models__WEBPACK_IMPORTED_MODULE_2__/* .CombatantModel */ .wc(sql),
-        Encounter: new _models__WEBPACK_IMPORTED_MODULE_2__/* .EncounterModel */ .ZR(sql),
-        Player: new _models__WEBPACK_IMPORTED_MODULE_2__/* .PlayerModel */ .Sg(sql)
-    };
-}
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 6796:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var graphql_subscriptions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1283);
-/* harmony import */ var graphql_subscriptions__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(graphql_subscriptions__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _checkAuth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1648);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9660);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_utils__WEBPACK_IMPORTED_MODULE_2__]);
-_utils__WEBPACK_IMPORTED_MODULE_2__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
-
-
-
-const resolvers = {
-    Query: {
-        async campaigns (_parent, _args, ctx) {
-            const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ctx);
-            if (!userId) return [];
-            return ctx.Campaign.list(userId);
-        },
-        async campaign (_parent, args, ctx) {
-            return ctx.Campaign.get(args.id ?? undefined);
-        }
-    },
-    Mutation: {
-        async campaign (_parent, args, ctx) {
-            const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ctx, args.id);
-            if (!userId) return {};
-            const campaign = args.id ? await ctx.Campaign.get(args.id) : undefined;
-            return campaign ?? {};
-        }
-    },
-    Subscription: {
-        campaign: {
-            // @ts-expect-error graphql-subscriptions types are incorrect, but this 100% works
-            subscribe: (0,graphql_subscriptions__WEBPACK_IMPORTED_MODULE_0__.withFilter)((_parent, args, ctx)=>{
-                setImmediate(()=>ctx.Campaign.publishSubscription(args.id));
-                return ctx.pubsub.asyncIterator("CAMPAIGN_UPDATED");
-            }, (payload, variables)=>{
-                return payload.campaign.id === variables.id;
-            })
-        }
-    },
-    Campaign: {
-        players (parent, _args, ctx) {
-            return ctx.Player.list(parent.id);
-        },
-        async lastInspirationUsed (parent, _args, ctx) {
-            const players = await ctx.Player.list(parent.id);
-            const maxTimeValue = players.reduce((max, player)=>{
-                const lastInspirationUsed = (parent.gmInspiration || !player.isGM) && player.lastInspirationUsed ? (0,_utils__WEBPACK_IMPORTED_MODULE_2__/* .parseDate */ .sG)(player.lastInspirationUsed).getTime() : -1;
-                return Math.max(lastInspirationUsed, max);
-            }, -1);
-            return maxTimeValue >= 0 ? (0,_utils__WEBPACK_IMPORTED_MODULE_2__/* .formatDate */ .p6)(new Date(maxTimeValue)) : undefined;
-        }
-    },
-    CampaignMutation: {
-        async save (parent, { input  }, ctx) {
-            const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ctx);
-            if (!userId) return undefined;
-            const result = parent.id ? await ctx.Campaign.update(parent, input) : await ctx.Campaign.create(input, userId);
-            if (result) {
-                ctx.Campaign.publishSubscription(result.id);
-            }
-            return result;
-        },
-        async delete (parent, _, { Campaign  }) {
-            const result = parent.id ? await Campaign.delete(parent.id) : false;
-            if (result) {
-                Campaign.publishSubscription(parent.id);
-            }
-            return result;
-        }
-    }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (resolvers);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 2139:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var lodash_merge__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8086);
-/* harmony import */ var lodash_merge__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_merge__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _campaign__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6796);
-/* harmony import */ var _initiative__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6420);
-/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9065);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_campaign__WEBPACK_IMPORTED_MODULE_1__, _initiative__WEBPACK_IMPORTED_MODULE_2__]);
-([_campaign__WEBPACK_IMPORTED_MODULE_1__, _initiative__WEBPACK_IMPORTED_MODULE_2__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
-
-
-
-
-const resolvers = lodash_merge__WEBPACK_IMPORTED_MODULE_0___default()(_campaign__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z, _initiative__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z, _player__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (resolvers);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 6420:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var lodash_uniq__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8459);
-/* harmony import */ var lodash_uniq__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_uniq__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _checkAuth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1648);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9660);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_utils__WEBPACK_IMPORTED_MODULE_2__]);
-_utils__WEBPACK_IMPORTED_MODULE_2__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
-
-
-
-const resolvers = {
-    Campaign: {
-        async activeEncounter (parent, _args, ctx) {
-            const encounter = parent.activeEncounter ? await ctx.Encounter.get(parent.activeEncounter) : undefined;
-            return encounter;
-        },
-        async encounter (_parent, args, ctx) {
-            const encounter = await ctx.Encounter.get(args.id);
-            return encounter;
-        },
-        async encounters (parent, _args, ctx) {
-            return ctx.Encounter.list(parent.id);
-        }
-    },
-    CampaignMutation: {
-        async encounter (_parent, args, ctx) {
-            if (args.id) {
-                const encounter = await ctx.Encounter.get(args.id);
-                const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ctx, encounter?.campaignId);
-                if (!userId) return {};
-                return encounter;
-            } else {
-                return {};
-            }
-        }
-    },
-    Encounter: {
-        async combatants (parent, _args, ctx) {
-            const combatants = await ctx.Combatant.list(parent.id);
-            return combatants ?? [];
-        }
-    },
-    EncounterMutation: {
-        async save (parent, args, ctx) {
-            if (!parent.id && args.input.id) {
-                parent = await ctx.Encounter.get(args.input.id) ?? parent;
-            }
-            const result = parent.id ? await ctx.Encounter.update(parent, args.input) : await ctx.Encounter.create(args.input);
-            const campaign = await ctx.Campaign.get(result.campaignId);
-            if (campaign?.activeEncounter === result.id) {
-                await ctx.Campaign.publishSubscription(campaign.id);
-            }
-            return result;
-        },
-        async delete (parent, _args, ctx) {
-            if (!parent.id) return false;
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            if (campaign?.activeEncounter === parent.id) {
-                await ctx.Campaign.update(campaign, {
-                    activeEncounter: null
-                });
-                await ctx.Campaign.publishSubscription(parent.id);
-            }
-            const result = await ctx.Encounter.delete(parent.id);
-            return result;
-        },
-        async setActive (parent, args, ctx) {
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            if (!campaign) {
-                throw new Error(`Invalid campaign ID ${parent.campaignId} for encounter ${parent.id}`);
-            }
-            if (args.active) {
-                await ctx.Campaign.update(campaign, {
-                    activeEncounter: parent.id
-                });
-            } else if (campaign.activeEncounter === parent.id) {
-                await ctx.Campaign.update(campaign, {
-                    activeEncounter: null
-                });
-            }
-            await ctx.Campaign.publishSubscription(campaign.id);
-            return true;
-        },
-        async next (parent, _, ctx) {
-            const [nextTurn, nextRound] = await ctx.Encounter.findNextTurn(parent.id, parent.turn, parent.round);
-            // @ts-ignore
-            await ctx.Encounter.update(parent, {
-                turn: nextTurn,
-                round: nextRound,
-                turnStart: (0,_utils__WEBPACK_IMPORTED_MODULE_2__/* .formatDate */ .p6)(new Date())
-            });
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            if (campaign?.activeEncounter === parent.id) {
-                await ctx.Campaign.publishSubscription(campaign.id);
-            }
-            return true;
-        },
-        async prev (parent, _, ctx) {
-            const [prevTurn, prevRound] = await ctx.Encounter.findPrevTurn(parent.id, parent.turn, parent.round);
-            // @ts-ignore
-            await ctx.Encounter.update(parent, {
-                turn: prevTurn,
-                round: prevRound,
-                turnStart: (0,_utils__WEBPACK_IMPORTED_MODULE_2__/* .formatDate */ .p6)(new Date())
-            });
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            if (campaign?.activeEncounter === parent.id) {
-                await ctx.Campaign.publishSubscription(campaign.id);
-            }
-            return true;
-        },
-        async combatant (_parent, args, ctx) {
-            if (args.id) {
-                const combatant = await ctx.Combatant.get(args.id);
-                const encounter = _parent ?? (combatant && await ctx.Encounter.get(combatant?.encounterId));
-                const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ctx, encounter?.campaignId);
-                if (!userId) return {};
-                return combatant;
-            } else {
-                return {};
-            }
-        },
-        async saveCombatants (_parent, args, ctx) {
-            const result = await ctx.Combatant.bulkUpdate(args.input);
-            const campaignIds = lodash_uniq__WEBPACK_IMPORTED_MODULE_0___default()(args.input.map((c)=>c.campaignId));
-            for (let campaignId of campaignIds){
-                await ctx.Campaign.publishSubscription(campaignId);
-            }
-            return result;
-        }
-    },
-    Combatant: {
-        async campaign (parent, _args, ctx) {
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            return campaign ?? {};
-        },
-        async player (parent, _args, ctx) {
-            return parent.playerId ? ctx.Player.get(parent.playerId) : undefined;
-        }
-    },
-    CombatantMutation: {
-        async save (parent, args, ctx) {
-            if (!parent.id && args.input.id) {
-                parent = await ctx.Combatant.get(args.input.id) ?? parent;
-            }
-            const result = parent.id ? await ctx.Combatant.update(parent, args.input) : await ctx.Combatant.create(args.input);
-            const campaign = await ctx.Campaign.get(result.campaignId);
-            if (campaign?.activeEncounter === result.encounterId) {
-                await ctx.Campaign.publishSubscription(campaign.id);
-            }
-            return result;
-        },
-        async delete (parent, _args, ctx) {
-            if (!parent.id) return false;
-            const result = await ctx.Combatant.delete(parent.id);
-            const campaign = await ctx.Campaign.get(parent.campaignId);
-            if (campaign?.activeEncounter === parent.encounterId) {
-                await ctx.Campaign.publishSubscription(campaign.id);
-            }
-            return result;
-        }
-    }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (resolvers);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 9065:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _checkAuth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1648);
-
-const resolvers = {
-    Query: {
-        async player (_parent, args, ctx) {
-            const player = await ctx.Player.get(args.id);
-            const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(ctx, player?.campaignId);
-            if (!userId) return await undefined;
-            return player;
-        }
-    },
-    Mutation: {
-        async player (_parent, args, ctx) {
-            const player = args.id ? await ctx.Player.get(args.id) : undefined;
-            const userId = await (0,_checkAuth__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(ctx, player?.campaignId);
-            if (!userId) return {};
-            return player ?? {};
-        }
-    },
-    Player: {
-        campaign (parent, _args, { Campaign  }) {
-            return Campaign.get(parent.campaignId);
-        }
-    },
-    PlayerMutation: {
-        async save (parent, { input  }, { Player , Campaign  }) {
-            const result = parent.id ? await Player.update(parent, input) : await Player.create(input);
-            if (result) {
-                Campaign.publishSubscription(result.campaignId);
-            }
-            return result;
-        },
-        async delete (parent, _, { Player , Campaign  }) {
-            const player = parent.id ? await Player.get(parent.id) : undefined;
-            const result = parent.id ? await Player.delete(parent.id) : false;
-            if (player && result) {
-                Campaign.publishSubscription(player.campaignId);
-            }
-            return result;
-        },
-        async resetCooldown (parent, _args, { Player , Campaign  }) {
-            const player = parent.id ? await Player.get(parent.id) : undefined;
-            const result = await Player.resetCooldown(parent.id);
-            if (player && result) {
-                Campaign.publishSubscription(player.campaignId);
-            }
-            return result;
-        }
-    }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (resolvers);
-
-
-/***/ }),
-
-/***/ 6330:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _apollo_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4349);
-/* harmony import */ var _apollo_server_plugin_drainHttpServer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8786);
-/* harmony import */ var _graphql_tools_schema__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6550);
-/* harmony import */ var graphql_ws_lib_use_ws__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9647);
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7895);
-/* harmony import */ var _resolvers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2139);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_apollo_server__WEBPACK_IMPORTED_MODULE_0__, _apollo_server_plugin_drainHttpServer__WEBPACK_IMPORTED_MODULE_1__, _graphql_tools_schema__WEBPACK_IMPORTED_MODULE_2__, graphql_ws_lib_use_ws__WEBPACK_IMPORTED_MODULE_3__, _resolvers__WEBPACK_IMPORTED_MODULE_5__]);
-([_apollo_server__WEBPACK_IMPORTED_MODULE_0__, _apollo_server_plugin_drainHttpServer__WEBPACK_IMPORTED_MODULE_1__, _graphql_tools_schema__WEBPACK_IMPORTED_MODULE_2__, graphql_ws_lib_use_ws__WEBPACK_IMPORTED_MODULE_3__, _resolvers__WEBPACK_IMPORTED_MODULE_5__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
-
-
-
-
-
-
-function setupApolloServer(httpServer, wsServer, context) {
-    const schema = (0,_graphql_tools_schema__WEBPACK_IMPORTED_MODULE_2__.makeExecutableSchema)({
-        typeDefs: _types__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z,
-        resolvers: _resolvers__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z
-    });
-    const serverCleanup = (0,graphql_ws_lib_use_ws__WEBPACK_IMPORTED_MODULE_3__.useServer)({
-        schema,
-        context
-    }, wsServer);
-    return new _apollo_server__WEBPACK_IMPORTED_MODULE_0__.ApolloServer({
-        schema,
-        csrfPrevention: true,
-        cache: "bounded",
-        plugins: [
-            (0,_apollo_server_plugin_drainHttpServer__WEBPACK_IMPORTED_MODULE_1__.ApolloServerPluginDrainHttpServer)({
-                httpServer
-            }),
-            {
-                async serverWillStart () {
-                    return {
-                        async drainServer () {
-                            await serverCleanup.dispose();
-                            await context.sql.end();
-                        }
-                    };
-                }
-            }
-        ],
-        formatError: (err)=>{
-            console.error(err);
-            return err;
-        }
-    });
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (setupApolloServer);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 7895:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ types)
-});
-
-;// CONCATENATED MODULE: external "graphql-tag"
-const external_graphql_tag_namespaceObject = require("graphql-tag");
-;// CONCATENATED MODULE: ./src/graphql/types/campaign.ts
-
-const typeDefs = external_graphql_tag_namespaceObject.gql`
+(()=>{var a={};a.id=662,a.ids=[662],a.modules={1763:(a,b,c)=>{"use strict";c.a(a,async(a,d)=>{try{c.r(b),c.d(b,{default:()=>k});var e=c(79551),f=c(56220),g=c(23388),h=c(59217),i=c(17666),j=a([f,h]);[f,h]=j.then?(await j)():j;let k=async(a,b)=>{try{let c=a.socket.server;return c.apolloHandler||(c.apolloHandler=new Promise(a=>{console.log("Initializing Apollo Next.JS API handler");let b=new f.WebSocketServer({noServer:!0});c.on("upgrade",async function(a,c,d){let{pathname:f}=(0,e.parse)(a.url,!0);"/api/subscriptions"!==f||c.websocket||b.handleUpgrade(a,c,d,function(c){b.emit("connection",c,a)})});let d=(0,i.N)(),j=(0,h.A)(c,b,d),k=(0,g.startServerAndCreateNextHandler)(j,{context:async(a,b)=>Promise.resolve({...d,req:a,res:b})});a(k)})),(await c.apolloHandler)(a,b)}catch(a){b.status(500).json({ok:!1,error:a})}};d()}catch(a){d(a)}})},1922:(a,b)=>{"use strict";Object.defineProperty(b,"__esModule",{value:!0}),!function(a,b){for(var c in b)Object.defineProperty(a,c,{enumerable:!0,get:b[c]})}(b,{ACTION_SUFFIX:function(){return l},APP_DIR_ALIAS:function(){return F},CACHE_ONE_YEAR:function(){return x},DOT_NEXT_ALIAS:function(){return D},ESLINT_DEFAULT_DIRS:function(){return Z},GSP_NO_RETURNED_VALUE:function(){return T},GSSP_COMPONENT_MEMBER_ERROR:function(){return W},GSSP_NO_RETURNED_VALUE:function(){return U},INFINITE_CACHE:function(){return y},INSTRUMENTATION_HOOK_FILENAME:function(){return B},MATCHED_PATH_HEADER:function(){return e},MIDDLEWARE_FILENAME:function(){return z},MIDDLEWARE_LOCATION_REGEXP:function(){return A},NEXT_BODY_SUFFIX:function(){return o},NEXT_CACHE_IMPLICIT_TAG_ID:function(){return w},NEXT_CACHE_REVALIDATED_TAGS_HEADER:function(){return q},NEXT_CACHE_REVALIDATE_TAG_TOKEN_HEADER:function(){return r},NEXT_CACHE_SOFT_TAG_MAX_LENGTH:function(){return v},NEXT_CACHE_TAGS_HEADER:function(){return p},NEXT_CACHE_TAG_MAX_ITEMS:function(){return t},NEXT_CACHE_TAG_MAX_LENGTH:function(){return u},NEXT_DATA_SUFFIX:function(){return m},NEXT_INTERCEPTION_MARKER_PREFIX:function(){return d},NEXT_META_SUFFIX:function(){return n},NEXT_QUERY_PARAM_PREFIX:function(){return c},NEXT_RESUME_HEADER:function(){return s},NON_STANDARD_NODE_ENV:function(){return X},PAGES_DIR_ALIAS:function(){return C},PRERENDER_REVALIDATE_HEADER:function(){return f},PRERENDER_REVALIDATE_ONLY_GENERATED_HEADER:function(){return g},PUBLIC_DIR_MIDDLEWARE_CONFLICT:function(){return N},ROOT_DIR_ALIAS:function(){return E},RSC_ACTION_CLIENT_WRAPPER_ALIAS:function(){return M},RSC_ACTION_ENCRYPTION_ALIAS:function(){return L},RSC_ACTION_PROXY_ALIAS:function(){return I},RSC_ACTION_VALIDATE_ALIAS:function(){return H},RSC_CACHE_WRAPPER_ALIAS:function(){return J},RSC_DYNAMIC_IMPORT_WRAPPER_ALIAS:function(){return K},RSC_MOD_REF_PROXY_ALIAS:function(){return G},RSC_PREFETCH_SUFFIX:function(){return h},RSC_SEGMENTS_DIR_SUFFIX:function(){return i},RSC_SEGMENT_SUFFIX:function(){return j},RSC_SUFFIX:function(){return k},SERVER_PROPS_EXPORT_ERROR:function(){return S},SERVER_PROPS_GET_INIT_PROPS_CONFLICT:function(){return P},SERVER_PROPS_SSG_CONFLICT:function(){return Q},SERVER_RUNTIME:function(){return $},SSG_FALLBACK_EXPORT_ERROR:function(){return Y},SSG_GET_INITIAL_PROPS_CONFLICT:function(){return O},STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR:function(){return R},UNSTABLE_REVALIDATE_RENAME_ERROR:function(){return V},WEBPACK_LAYERS:function(){return aa},WEBPACK_RESOURCE_QUERIES:function(){return ab}});let c="nxtP",d="nxtI",e="x-matched-path",f="x-prerender-revalidate",g="x-prerender-revalidate-if-generated",h=".prefetch.rsc",i=".segments",j=".segment.rsc",k=".rsc",l=".action",m=".json",n=".meta",o=".body",p="x-next-cache-tags",q="x-next-revalidated-tags",r="x-next-revalidate-tag-token",s="next-resume",t=128,u=256,v=1024,w="_N_T_",x=31536e3,y=0xfffffffe,z="middleware",A=`(?:src/)?${z}`,B="instrumentation",C="private-next-pages",D="private-dot-next",E="private-next-root-dir",F="private-next-app-dir",G="private-next-rsc-mod-ref-proxy",H="private-next-rsc-action-validate",I="private-next-rsc-server-reference",J="private-next-rsc-cache-wrapper",K="private-next-rsc-track-dynamic-import",L="private-next-rsc-action-encryption",M="private-next-rsc-action-client-wrapper",N="You can not have a '_next' folder inside of your public folder. This conflicts with the internal '/_next' route. https://nextjs.org/docs/messages/public-next-folder-conflict",O="You can not use getInitialProps with getStaticProps. To use SSG, please remove your getInitialProps",P="You can not use getInitialProps with getServerSideProps. Please remove getInitialProps.",Q="You can not use getStaticProps or getStaticPaths with getServerSideProps. To use SSG, please remove getServerSideProps",R="can not have getInitialProps/getServerSideProps, https://nextjs.org/docs/messages/404-get-initial-props",S="pages with `getServerSideProps` can not be exported. See more info here: https://nextjs.org/docs/messages/gssp-export",T="Your `getStaticProps` function did not return an object. Did you forget to add a `return`?",U="Your `getServerSideProps` function did not return an object. Did you forget to add a `return`?",V="The `unstable_revalidate` property is available for general use.\nPlease use `revalidate` instead.",W="can not be attached to a page's component and must be exported from the page. See more info here: https://nextjs.org/docs/messages/gssp-component-member",X='You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env',Y="Pages with `fallback` enabled in `getStaticPaths` can not be exported. See more info here: https://nextjs.org/docs/messages/ssg-fallback-true-export",Z=["app","pages","components","lib","src"],$={edge:"edge",experimentalEdge:"experimental-edge",nodejs:"nodejs"},_={shared:"shared",reactServerComponents:"rsc",serverSideRendering:"ssr",actionBrowser:"action-browser",apiNode:"api-node",apiEdge:"api-edge",middleware:"middleware",instrument:"instrument",edgeAsset:"edge-asset",appPagesBrowser:"app-pages-browser",pagesDirBrowser:"pages-dir-browser",pagesDirEdge:"pages-dir-edge",pagesDirNode:"pages-dir-node"},aa={..._,GROUP:{builtinReact:[_.reactServerComponents,_.actionBrowser],serverOnly:[_.reactServerComponents,_.actionBrowser,_.instrument,_.middleware],neutralTarget:[_.apiNode,_.apiEdge],clientOnly:[_.serverSideRendering,_.appPagesBrowser],bundled:[_.reactServerComponents,_.actionBrowser,_.serverSideRendering,_.appPagesBrowser,_.shared,_.instrument,_.middleware],appPages:[_.reactServerComponents,_.serverSideRendering,_.appPagesBrowser,_.actionBrowser]}},ab={edgeSSREntry:"__next_edge_ssr_entry__",metadata:"__next_metadata__",metadataRoute:"__next_metadata_route__",metadataImageMeta:"__next_metadata_image_meta__"}},8667:(a,b)=>{"use strict";Object.defineProperty(b,"A",{enumerable:!0,get:function(){return c}});var c=function(a){return a.PAGES="PAGES",a.PAGES_API="PAGES_API",a.APP_PAGE="APP_PAGE",a.APP_ROUTE="APP_ROUTE",a.IMAGE="IMAGE",a}({})},10957:a=>{"use strict";a.exports=import("@graphql-tools/schema")},17666:(a,b,c)=>{"use strict";c.d(b,{N:()=>r});let d=require("node:sqlite"),e=require("node:fs");var f=c.n(e);let g=require("node:path");var h=c.n(g),i=c(73946);let j=require("@paralleldrive/cuid2");class k{boolean(a){return+!!a}}class l extends k{constructor(a,b){super(),this.sql=a,this.pubsub=b}get(a){return a?this.sql.prepare('SELECT * FROM "Campaign" WHERE "id" = ?').get(a):void 0}list(){let a=this.sql.prepare(`
+					SELECT *
+					FROM "Campaign"
+					ORDER BY "name"
+				`).all();return a.length?a:[]}create(a){let b=(0,j.createId)();return this.sql.prepare(`
+					INSERT INTO "Campaign" (
+					  "id",
+						"name",
+						"gmInspiration",
+						"cooldownType",
+						"cooldownTime",
+						"activeEncounter"
+					) VALUES (
+					  ?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+				`).run(b,a.name,this.boolean(a.gmInspiration??!1),a.cooldownType??"none",a.cooldownTime??0,a.activeEncounter??null),this.get(b)}update(a,b){return this.sql.prepare(`
+        UPDATE "Campaign"
+        SET
+          "name" = ?,
+          "gmInspiration" = ?,
+					"cooldownType" = ?,
+					"cooldownTime" = ?,
+					"activeEncounter" = ?
+        WHERE "id" = ?
+				RETURNING *
+      `).run(b.name??a.name,this.boolean(b.gmInspiration??a.gmInspiration??!1),b.cooldownType??a.cooldownType??"none",b.cooldownTime??a.cooldownTime??0,b.activeEncounter??null,a.id),this.sql.prepare('SELECT * FROM "Campaign" WHERE "id" = ?').all(a.id)[0]}delete(a){return this.sql.prepare('DELETE FROM "Combatant" WHERE "campaignId" = ?').run(a),this.sql.prepare('DELETE FROM "Encounter" WHERE "campaignId" = ?').run(a),this.sql.prepare('DELETE FROM "Player" WHERE "campaignId" = ?').run(a),this.sql.prepare('DELETE FROM "Campaign" WHERE "id" = ?').run(a),!0}async publishSubscription(a){let b=this.get(a);this.pubsub.publish("CAMPAIGN_UPDATED",{campaign:b})}}class m extends k{constructor(a){super(),this.sql=a}get(a){return a?this.sql.prepare('SELECT * FROM "Combatant" WHERE "id" = ?').get(a):void 0}list(a){let b=this.sql.prepare(`
+					SELECT *
+					FROM "Combatant"
+					WHERE "encounterId" = ?
+					ORDER BY "turnOrder", "name"
+				`).all(a);return b?.length?b:[]}create(a){let b=(0,j.createId)();return this.sql.prepare(`
+					INSERT INTO "Combatant" (
+						"id",
+						"campaignId",
+						"encounterId",
+						"playerId",
+						"name",
+						"public",
+						"turnOrder"
+					) VALUES (
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					);
+				`).run(b,a.campaignId,a.encounterId,a.playerId??null,(a.name??"").trim(),this.boolean(a.public??!1),a.turnOrder??0),this.get(b)}update(a,b){return this.sql.prepare(`
+					UPDATE "Combatant"
+					SET
+						"campaignId" = ?,
+						"encounterId" = ?,
+						"playerId" = ?,
+						"name" = ?,
+						"public" = ?,
+						"turnOrder" = ?
+					WHERE "id" = ?
+					RETURNING *
+				`).run(b.campaignId??a.campaignId,b.encounterId??a.encounterId,b.playerId??a.playerId??null,(b.name??a.name??"").trim(),this.boolean(b.public??a.public??!1),b.turnOrder??a.turnOrder??0,a.id),this.get(a.id)}delete(a){return this.sql.prepare('DELETE FROM "Combatant" WHERE "id" = ?').run(a),!0}bulkUpdate(a){return a.map(a=>{let b=a.id;return b?this.sql.prepare(`
+							UPDATE "Combatant"
+							SET
+								"campaignId" = ?,
+								"encounterId" = ?,
+								"playerId" = ?,
+								"name" = ?,
+								"public" = ?,
+								"turnOrder" = ?
+							WHERE "id" = ?;
+						`).run(a.campaignId,a.encounterId,a.playerId??null,(a.name??"").trim(),this.boolean(a.public??!1),a.turnOrder??0,b):(b=(0,j.createId)(),this.sql.prepare(`
+					INSERT INTO "Combatant" (
+					  "id",
+						"campaignId",
+						"encounterId",
+						"playerId",
+						"name",
+						"public",
+						"turnOrder"
+					) VALUES (
+					  ?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+				`).run(b,a.campaignId,a.encounterId,a.playerId??null,(a.name??"").trim(),this.boolean(a.public??!1),a.turnOrder??0)),this.get(b)})}}class n extends k{constructor(a){super(),this.sql=a}get(a){return a?this.sql.prepare('SELECT * FROM "Encounter" WHERE "id" = ?').get(a):void 0}list(a){let b=this.sql.prepare(`
+					SELECT *
+					FROM "Encounter"
+					WHERE "campaignId" = ?
+					ORDER BY "name"
+				`).all(a);return b?.length?b:[]}create(a){let b=(0,j.createId)();return this.sql.prepare(`
+					INSERT INTO "Encounter" (
+						"id",
+						"campaignId",
+						"name",
+						"hideMonsterNames",
+						"round",
+						"turn",
+						"turnStart"
+					) VALUES (
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+				`).run(b,a.campaignId,a.name??"n/a",a.hideMonsterNames??"never",a.round??0,a.turn??0,a.turnStart??null),this.get(b)}update(a,b){return this.sql.prepare(`
+				UPDATE "Encounter"
+				SET
+					"campaignId" = ?,
+					"name" = ?,
+					"hideMonsterNames" = ?,
+					"round" = ?,
+					"turn" = ?,
+					"turnStart" = ?
+				WHERE "id" = ?
+		`).run(b.campaignId??a.campaignId,b.name??a.name??"n/a",b.hideMonsterNames??a.hideMonsterNames??"never",b.round??a.round??0,b.turn??a.turn??0,b.turnStart??a.turnStart,a.id),this.get(a.id)}delete(a){return this.sql.prepare('DELETE FROM "Encounter" WHERE "id" = ?').run(a),!0}findNextTurn(a,b,c){let d=this.sql.prepare(`
+						SELECT
+							"encounterId",
+							MIN("turnOrder") turn
+						FROM "Combatant"
+						WHERE
+							"encounterId" = ? AND
+							"turnOrder" > ?
+						GROUP BY "encounterId"
+					`).get(a,b);return d?.turn?[d.turn,Math.max(c,1)||1]:[1,c+1]}findPrevTurn(a,b,c){if(0===b&&0===c)return[b,c];let d=this.sql.prepare(`
+					SELECT
+						"encounterId",
+						MAX("turnOrder") turn
+					FROM "Combatant"
+					WHERE
+						"encounterId" = ? AND
+						"turnOrder" < ?
+					GROUP BY "encounterId"
+				`).get(a,b),e=this.sql.prepare(`
+					SELECT
+						"encounterId",
+						MAX("turnOrder") turn
+					FROM "Combatant"
+					WHERE
+						"encounterId" = ?
+					GROUP BY "encounterId"
+				`).get(a);return d?.turn?[d.turn,c]:1===c?[0,0]:[e?.turn??0,Math.max(c-1,0)]}}var o=c(23699);class p extends k{constructor(a){super(),this.sql=a}get(a){return a?this.sql.prepare(`
+			SELECT *
+			FROM "Player"
+			WHERE "id" = ?
+		`).get(a):void 0}list(a){let b=this.sql.prepare(`
+					SELECT *
+					FROM "Player"
+					WHERE "campaignId" = ?
+					ORDER BY "isGM" DESC, "playerName", "characterName"
+				`).all(a);return b?.length?b:[]}create(a){if(!a.campaignId)throw Error("Campaign ID is required to create a player");let b=(0,j.createId)();return this.sql.prepare(`
+			INSERT INTO "Player" (
+				"id",
+				"campaignId",
+				"playerName",
+				"characterName",
+				"isGM",
+				"inspiration"
+			) VALUES (
+			  ?,
+				?,
+				?,
+				?,
+				?,
+				?
+			)
+		`).run(b,a.campaignId,a.playerName??null,a.characterName??null,this.boolean(a.isGM??!1),a.inspiration??0),this.get(b)}update(a,b){return this.sql.prepare(`
+				UPDATE "Player"
+				SET
+					"campaignId" = ?,
+					"playerName" = ?,
+					"characterName" = ?,
+					"isGM" = ?,
+					"inspiration" = ?,
+					"lastInspirationUsed" = ?
+				WHERE "id" = ?
+				RETURNING *
+			`).run(b.campaignId??a.campaignId,b.playerName??a.playerName,b.characterName??a.characterName??null,this.boolean(b.isGM??a.isGM??!1),b.inspiration??a.inspiration??0,"number"==typeof b.inspiration&&b.inspiration<a.inspiration?(0,o.Yq)(new Date):a.lastInspirationUsed??null,a.id),b.characterName&&a.characterName!==b.characterName&&this.sql.prepare(`
+						UPDATE "Combatant"
+						SET "name" = ?
+						WHERE
+							"campaignId" = ? AND
+							"playerId" = ?
+					`).run(b.characterName,b.campaignId??a.campaignId,a.id),this.get(a.id)}delete(a){return this.sql.prepare('DELETE FROM "Combatant" WHERE "playerId" = ?').run(a),this.sql.prepare('DELETE FROM "Player" WHERE "id" = ?').run(a),!0}resetCooldown(a){return this.sql.prepare(`
+					UPDATE "Player"
+					SET "lastInspirationUsed" = NULL
+					WHERE "id" = ?
+				`).run(a),!0}}let q=`
+	CREATE TABLE "Campaign" (
+		"id" TEXT PRIMARY KEY,
+		"name" TEXT NOT NULL,
+		"gmInspiration" BOOLEAN NOT NULL,
+		"cooldownType" TEXT NOT NULL DEFAULT 'none',
+		"cooldownTime" INTEGER NOT NULL DEFAULT 0,
+		"activeEncounter" INTEGER DEFAULT NULL
+	);
+
+	CREATE TABLE "Player" (
+		"id" TEXT PRIMARY KEY,
+		"campaignId" TEXT NOT NULL,
+		"playerName" TEXT NOT NULL,
+		"characterName" TEXT,
+		"isGM" BOOLEAN NOT NULL DEFAULT FALSE,
+		"inspiration" INTEGER NOT NULL DEFAULT 0,
+		"lastInspirationUsed" DATETIME DEFAULT NULL,
+		CONSTRAINT Player_fk_campaignId FOREIGN KEY ("campaignId") REFERENCES "Campaign" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+	);
+
+	-- Initiative tables
+	CREATE TABLE "Encounter" (
+		"id" TEXT PRIMARY KEY,
+		"campaignId" TEXT NOT NULL,
+		"name" TEXT NOT NULL,
+		"hideMonsterNames" TEXT NOT NULL DEFAULT 'never',
+		"round" INTEGER DEFAULT 0,
+		"turn" INTEGER DEFAULT 0,
+		"turnStart" DATETIME DEFAULT NULL,
+		CONSTRAINT Encounter_fk_campaignId FOREIGN KEY ("campaignId") REFERENCES "Campaign" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+	);
+
+	CREATE TABLE "Combatant" (
+		"id" TEXT PRIMARY KEY,
+		"campaignId" TEXT NOT NULL,
+		"encounterId" TEXT NOT NULL,
+		"playerId" TEXT DEFAULT NULL,
+		"name" TEXT NOT NULL,
+		"public" BOOLEAN NOT NULL,
+		"turnOrder" INTEGER NOT NULL DEFAULT 0,
+		CONSTRAINT Combatant_fk_campaignId FOREIGN KEY ("campaignId") REFERENCES "Campaign" ("id") ON UPDATE CASCADE ON DELETE CASCADE,
+		CONSTRAINT Combatant_fk_encounterId FOREIGN KEY ("encounterId") REFERENCES "Encounter" ("id") ON UPDATE CASCADE ON DELETE CASCADE,
+		CONSTRAINT Combatant_fk_playerId FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+	);
+`;function r(){let a=process.env.APPDATA||("darwin"==process.platform?process.env.HOME+"/Library/Preferences":process.env.HOME+"/.local/share"),b=h().join(a,"obs-gm-overlay");f().existsSync(b)||f().mkdirSync(b,{recursive:!0});let c=h().join(a,"obs-gm-overlay","database.sqlite"),e=!1;f().existsSync(c)||(f().closeSync(f().openSync(c,"w")),e=!0);let g=new d.DatabaseSync(c,{open:!0});e&&(console.log("Creating new database at",c),g.exec(q));let j=new i.PubSub;return{sql:g,pubsub:j,Campaign:new l(g,j),Combatant:new m(g),Encounter:new n(g),Player:new p(g)}}},18766:(a,b)=>{"use strict";Object.defineProperty(b,"__esModule",{value:!0}),!function(a,b){for(var c in b)Object.defineProperty(a,c,{enumerable:!0,get:b[c]})}(b,{AppRenderSpan:function(){return i},AppRouteRouteHandlersSpan:function(){return l},BaseServerSpan:function(){return c},LoadComponentsSpan:function(){return d},LogSpanAllowList:function(){return p},MiddlewareSpan:function(){return n},NextNodeServerSpan:function(){return f},NextServerSpan:function(){return e},NextVanillaSpanAllowlist:function(){return o},NodeSpan:function(){return k},RenderSpan:function(){return h},ResolveMetadataSpan:function(){return m},RouterSpan:function(){return j},StartServerSpan:function(){return g}});var c=function(a){return a.handleRequest="BaseServer.handleRequest",a.run="BaseServer.run",a.pipe="BaseServer.pipe",a.getStaticHTML="BaseServer.getStaticHTML",a.render="BaseServer.render",a.renderToResponseWithComponents="BaseServer.renderToResponseWithComponents",a.renderToResponse="BaseServer.renderToResponse",a.renderToHTML="BaseServer.renderToHTML",a.renderError="BaseServer.renderError",a.renderErrorToResponse="BaseServer.renderErrorToResponse",a.renderErrorToHTML="BaseServer.renderErrorToHTML",a.render404="BaseServer.render404",a}(c||{}),d=function(a){return a.loadDefaultErrorComponents="LoadComponents.loadDefaultErrorComponents",a.loadComponents="LoadComponents.loadComponents",a}(d||{}),e=function(a){return a.getRequestHandler="NextServer.getRequestHandler",a.getServer="NextServer.getServer",a.getServerRequestHandler="NextServer.getServerRequestHandler",a.createServer="createServer.createServer",a}(e||{}),f=function(a){return a.compression="NextNodeServer.compression",a.getBuildId="NextNodeServer.getBuildId",a.createComponentTree="NextNodeServer.createComponentTree",a.clientComponentLoading="NextNodeServer.clientComponentLoading",a.getLayoutOrPageModule="NextNodeServer.getLayoutOrPageModule",a.generateStaticRoutes="NextNodeServer.generateStaticRoutes",a.generateFsStaticRoutes="NextNodeServer.generateFsStaticRoutes",a.generatePublicRoutes="NextNodeServer.generatePublicRoutes",a.generateImageRoutes="NextNodeServer.generateImageRoutes.route",a.sendRenderResult="NextNodeServer.sendRenderResult",a.proxyRequest="NextNodeServer.proxyRequest",a.runApi="NextNodeServer.runApi",a.render="NextNodeServer.render",a.renderHTML="NextNodeServer.renderHTML",a.imageOptimizer="NextNodeServer.imageOptimizer",a.getPagePath="NextNodeServer.getPagePath",a.getRoutesManifest="NextNodeServer.getRoutesManifest",a.findPageComponents="NextNodeServer.findPageComponents",a.getFontManifest="NextNodeServer.getFontManifest",a.getServerComponentManifest="NextNodeServer.getServerComponentManifest",a.getRequestHandler="NextNodeServer.getRequestHandler",a.renderToHTML="NextNodeServer.renderToHTML",a.renderError="NextNodeServer.renderError",a.renderErrorToHTML="NextNodeServer.renderErrorToHTML",a.render404="NextNodeServer.render404",a.startResponse="NextNodeServer.startResponse",a.route="route",a.onProxyReq="onProxyReq",a.apiResolver="apiResolver",a.internalFetch="internalFetch",a}(f||{}),g=function(a){return a.startServer="startServer.startServer",a}(g||{}),h=function(a){return a.getServerSideProps="Render.getServerSideProps",a.getStaticProps="Render.getStaticProps",a.renderToString="Render.renderToString",a.renderDocument="Render.renderDocument",a.createBodyResult="Render.createBodyResult",a}(h||{}),i=function(a){return a.renderToString="AppRender.renderToString",a.renderToReadableStream="AppRender.renderToReadableStream",a.getBodyResult="AppRender.getBodyResult",a.fetch="AppRender.fetch",a}(i||{}),j=function(a){return a.executeRoute="Router.executeRoute",a}(j||{}),k=function(a){return a.runHandler="Node.runHandler",a}(k||{}),l=function(a){return a.runHandler="AppRouteRouteHandlers.runHandler",a}(l||{}),m=function(a){return a.generateMetadata="ResolveMetadata.generateMetadata",a.generateViewport="ResolveMetadata.generateViewport",a}(m||{}),n=function(a){return a.execute="Middleware.execute",a}(n||{});let o=["Middleware.execute","BaseServer.handleRequest","Render.getServerSideProps","Render.getStaticProps","AppRender.fetch","AppRender.getBodyResult","Render.renderDocument","Node.runHandler","AppRouteRouteHandlers.runHandler","ResolveMetadata.generateMetadata","ResolveMetadata.generateViewport","NextNodeServer.createComponentTree","NextNodeServer.findPageComponents","NextNodeServer.getLayoutOrPageModule","NextNodeServer.startResponse","NextNodeServer.clientComponentLoading"],p=["NextNodeServer.findPageComponents","NextNodeServer.createComponentTree","NextNodeServer.clientComponentLoading"]},23176:a=>{(()=>{"use strict";var b={491:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.ContextAPI=void 0;let d=c(223),e=c(172),f=c(930),g="context",h=new d.NoopContextManager;class i{constructor(){}static getInstance(){return this._instance||(this._instance=new i),this._instance}setGlobalContextManager(a){return(0,e.registerGlobal)(g,a,f.DiagAPI.instance())}active(){return this._getContextManager().active()}with(a,b,c,...d){return this._getContextManager().with(a,b,c,...d)}bind(a,b){return this._getContextManager().bind(a,b)}_getContextManager(){return(0,e.getGlobal)(g)||h}disable(){this._getContextManager().disable(),(0,e.unregisterGlobal)(g,f.DiagAPI.instance())}}b.ContextAPI=i},930:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.DiagAPI=void 0;let d=c(56),e=c(912),f=c(957),g=c(172);class h{constructor(){function a(a){return function(...b){let c=(0,g.getGlobal)("diag");if(c)return c[a](...b)}}let b=this;b.setLogger=(a,c={logLevel:f.DiagLogLevel.INFO})=>{var d,h,i;if(a===b){let a=Error("Cannot use diag as the logger for itself. Please use a DiagLogger implementation like ConsoleDiagLogger or a custom implementation");return b.error(null!=(d=a.stack)?d:a.message),!1}"number"==typeof c&&(c={logLevel:c});let j=(0,g.getGlobal)("diag"),k=(0,e.createLogLevelDiagLogger)(null!=(h=c.logLevel)?h:f.DiagLogLevel.INFO,a);if(j&&!c.suppressOverrideMessage){let a=null!=(i=Error().stack)?i:"<failed to generate stacktrace>";j.warn(`Current logger will be overwritten from ${a}`),k.warn(`Current logger will overwrite one already registered from ${a}`)}return(0,g.registerGlobal)("diag",k,b,!0)},b.disable=()=>{(0,g.unregisterGlobal)("diag",b)},b.createComponentLogger=a=>new d.DiagComponentLogger(a),b.verbose=a("verbose"),b.debug=a("debug"),b.info=a("info"),b.warn=a("warn"),b.error=a("error")}static instance(){return this._instance||(this._instance=new h),this._instance}}b.DiagAPI=h},653:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.MetricsAPI=void 0;let d=c(660),e=c(172),f=c(930),g="metrics";class h{constructor(){}static getInstance(){return this._instance||(this._instance=new h),this._instance}setGlobalMeterProvider(a){return(0,e.registerGlobal)(g,a,f.DiagAPI.instance())}getMeterProvider(){return(0,e.getGlobal)(g)||d.NOOP_METER_PROVIDER}getMeter(a,b,c){return this.getMeterProvider().getMeter(a,b,c)}disable(){(0,e.unregisterGlobal)(g,f.DiagAPI.instance())}}b.MetricsAPI=h},181:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.PropagationAPI=void 0;let d=c(172),e=c(874),f=c(194),g=c(277),h=c(369),i=c(930),j="propagation",k=new e.NoopTextMapPropagator;class l{constructor(){this.createBaggage=h.createBaggage,this.getBaggage=g.getBaggage,this.getActiveBaggage=g.getActiveBaggage,this.setBaggage=g.setBaggage,this.deleteBaggage=g.deleteBaggage}static getInstance(){return this._instance||(this._instance=new l),this._instance}setGlobalPropagator(a){return(0,d.registerGlobal)(j,a,i.DiagAPI.instance())}inject(a,b,c=f.defaultTextMapSetter){return this._getGlobalPropagator().inject(a,b,c)}extract(a,b,c=f.defaultTextMapGetter){return this._getGlobalPropagator().extract(a,b,c)}fields(){return this._getGlobalPropagator().fields()}disable(){(0,d.unregisterGlobal)(j,i.DiagAPI.instance())}_getGlobalPropagator(){return(0,d.getGlobal)(j)||k}}b.PropagationAPI=l},997:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.TraceAPI=void 0;let d=c(172),e=c(846),f=c(139),g=c(607),h=c(930),i="trace";class j{constructor(){this._proxyTracerProvider=new e.ProxyTracerProvider,this.wrapSpanContext=f.wrapSpanContext,this.isSpanContextValid=f.isSpanContextValid,this.deleteSpan=g.deleteSpan,this.getSpan=g.getSpan,this.getActiveSpan=g.getActiveSpan,this.getSpanContext=g.getSpanContext,this.setSpan=g.setSpan,this.setSpanContext=g.setSpanContext}static getInstance(){return this._instance||(this._instance=new j),this._instance}setGlobalTracerProvider(a){let b=(0,d.registerGlobal)(i,this._proxyTracerProvider,h.DiagAPI.instance());return b&&this._proxyTracerProvider.setDelegate(a),b}getTracerProvider(){return(0,d.getGlobal)(i)||this._proxyTracerProvider}getTracer(a,b){return this.getTracerProvider().getTracer(a,b)}disable(){(0,d.unregisterGlobal)(i,h.DiagAPI.instance()),this._proxyTracerProvider=new e.ProxyTracerProvider}}b.TraceAPI=j},277:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.deleteBaggage=b.setBaggage=b.getActiveBaggage=b.getBaggage=void 0;let d=c(491),e=(0,c(780).createContextKey)("OpenTelemetry Baggage Key");function f(a){return a.getValue(e)||void 0}b.getBaggage=f,b.getActiveBaggage=function(){return f(d.ContextAPI.getInstance().active())},b.setBaggage=function(a,b){return a.setValue(e,b)},b.deleteBaggage=function(a){return a.deleteValue(e)}},993:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.BaggageImpl=void 0;class c{constructor(a){this._entries=a?new Map(a):new Map}getEntry(a){let b=this._entries.get(a);if(b)return Object.assign({},b)}getAllEntries(){return Array.from(this._entries.entries()).map(([a,b])=>[a,b])}setEntry(a,b){let d=new c(this._entries);return d._entries.set(a,b),d}removeEntry(a){let b=new c(this._entries);return b._entries.delete(a),b}removeEntries(...a){let b=new c(this._entries);for(let c of a)b._entries.delete(c);return b}clear(){return new c}}b.BaggageImpl=c},830:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.baggageEntryMetadataSymbol=void 0,b.baggageEntryMetadataSymbol=Symbol("BaggageEntryMetadata")},369:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.baggageEntryMetadataFromString=b.createBaggage=void 0;let d=c(930),e=c(993),f=c(830),g=d.DiagAPI.instance();b.createBaggage=function(a={}){return new e.BaggageImpl(new Map(Object.entries(a)))},b.baggageEntryMetadataFromString=function(a){return"string"!=typeof a&&(g.error(`Cannot create baggage metadata from unknown type: ${typeof a}`),a=""),{__TYPE__:f.baggageEntryMetadataSymbol,toString:()=>a}}},67:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.context=void 0,b.context=c(491).ContextAPI.getInstance()},223:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NoopContextManager=void 0;let d=c(780);class e{active(){return d.ROOT_CONTEXT}with(a,b,c,...d){return b.call(c,...d)}bind(a,b){return b}enable(){return this}disable(){return this}}b.NoopContextManager=e},780:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.ROOT_CONTEXT=b.createContextKey=void 0,b.createContextKey=function(a){return Symbol.for(a)};class c{constructor(a){let b=this;b._currentContext=a?new Map(a):new Map,b.getValue=a=>b._currentContext.get(a),b.setValue=(a,d)=>{let e=new c(b._currentContext);return e._currentContext.set(a,d),e},b.deleteValue=a=>{let d=new c(b._currentContext);return d._currentContext.delete(a),d}}}b.ROOT_CONTEXT=new c},506:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.diag=void 0,b.diag=c(930).DiagAPI.instance()},56:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.DiagComponentLogger=void 0;let d=c(172);class e{constructor(a){this._namespace=a.namespace||"DiagComponentLogger"}debug(...a){return f("debug",this._namespace,a)}error(...a){return f("error",this._namespace,a)}info(...a){return f("info",this._namespace,a)}warn(...a){return f("warn",this._namespace,a)}verbose(...a){return f("verbose",this._namespace,a)}}function f(a,b,c){let e=(0,d.getGlobal)("diag");if(e)return c.unshift(b),e[a](...c)}b.DiagComponentLogger=e},972:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.DiagConsoleLogger=void 0;let c=[{n:"error",c:"error"},{n:"warn",c:"warn"},{n:"info",c:"info"},{n:"debug",c:"debug"},{n:"verbose",c:"trace"}];class d{constructor(){for(let a=0;a<c.length;a++)this[c[a].n]=function(a){return function(...b){if(console){let c=console[a];if("function"!=typeof c&&(c=console.log),"function"==typeof c)return c.apply(console,b)}}}(c[a].c)}}b.DiagConsoleLogger=d},912:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.createLogLevelDiagLogger=void 0;let d=c(957);b.createLogLevelDiagLogger=function(a,b){function c(c,d){let e=b[c];return"function"==typeof e&&a>=d?e.bind(b):function(){}}return a<d.DiagLogLevel.NONE?a=d.DiagLogLevel.NONE:a>d.DiagLogLevel.ALL&&(a=d.DiagLogLevel.ALL),b=b||{},{error:c("error",d.DiagLogLevel.ERROR),warn:c("warn",d.DiagLogLevel.WARN),info:c("info",d.DiagLogLevel.INFO),debug:c("debug",d.DiagLogLevel.DEBUG),verbose:c("verbose",d.DiagLogLevel.VERBOSE)}}},957:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.DiagLogLevel=void 0,function(a){a[a.NONE=0]="NONE",a[a.ERROR=30]="ERROR",a[a.WARN=50]="WARN",a[a.INFO=60]="INFO",a[a.DEBUG=70]="DEBUG",a[a.VERBOSE=80]="VERBOSE",a[a.ALL=9999]="ALL"}(b.DiagLogLevel||(b.DiagLogLevel={}))},172:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.unregisterGlobal=b.getGlobal=b.registerGlobal=void 0;let d=c(200),e=c(521),f=c(130),g=e.VERSION.split(".")[0],h=Symbol.for(`opentelemetry.js.api.${g}`),i=d._globalThis;b.registerGlobal=function(a,b,c,d=!1){var f;let g=i[h]=null!=(f=i[h])?f:{version:e.VERSION};if(!d&&g[a]){let b=Error(`@opentelemetry/api: Attempted duplicate registration of API: ${a}`);return c.error(b.stack||b.message),!1}if(g.version!==e.VERSION){let b=Error(`@opentelemetry/api: Registration of version v${g.version} for ${a} does not match previously registered API v${e.VERSION}`);return c.error(b.stack||b.message),!1}return g[a]=b,c.debug(`@opentelemetry/api: Registered a global for ${a} v${e.VERSION}.`),!0},b.getGlobal=function(a){var b,c;let d=null==(b=i[h])?void 0:b.version;if(d&&(0,f.isCompatible)(d))return null==(c=i[h])?void 0:c[a]},b.unregisterGlobal=function(a,b){b.debug(`@opentelemetry/api: Unregistering a global for ${a} v${e.VERSION}.`);let c=i[h];c&&delete c[a]}},130:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.isCompatible=b._makeCompatibilityCheck=void 0;let d=c(521),e=/^(\d+)\.(\d+)\.(\d+)(-(.+))?$/;function f(a){let b=new Set([a]),c=new Set,d=a.match(e);if(!d)return()=>!1;let f={major:+d[1],minor:+d[2],patch:+d[3],prerelease:d[4]};if(null!=f.prerelease)return function(b){return b===a};function g(a){return c.add(a),!1}return function(a){if(b.has(a))return!0;if(c.has(a))return!1;let d=a.match(e);if(!d)return g(a);let h={major:+d[1],minor:+d[2],patch:+d[3],prerelease:d[4]};if(null!=h.prerelease||f.major!==h.major)return g(a);if(0===f.major)return f.minor===h.minor&&f.patch<=h.patch?(b.add(a),!0):g(a);return f.minor<=h.minor?(b.add(a),!0):g(a)}}b._makeCompatibilityCheck=f,b.isCompatible=f(d.VERSION)},886:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.metrics=void 0,b.metrics=c(653).MetricsAPI.getInstance()},901:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.ValueType=void 0,function(a){a[a.INT=0]="INT",a[a.DOUBLE=1]="DOUBLE"}(b.ValueType||(b.ValueType={}))},102:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.createNoopMeter=b.NOOP_OBSERVABLE_UP_DOWN_COUNTER_METRIC=b.NOOP_OBSERVABLE_GAUGE_METRIC=b.NOOP_OBSERVABLE_COUNTER_METRIC=b.NOOP_UP_DOWN_COUNTER_METRIC=b.NOOP_HISTOGRAM_METRIC=b.NOOP_COUNTER_METRIC=b.NOOP_METER=b.NoopObservableUpDownCounterMetric=b.NoopObservableGaugeMetric=b.NoopObservableCounterMetric=b.NoopObservableMetric=b.NoopHistogramMetric=b.NoopUpDownCounterMetric=b.NoopCounterMetric=b.NoopMetric=b.NoopMeter=void 0;class c{constructor(){}createHistogram(a,c){return b.NOOP_HISTOGRAM_METRIC}createCounter(a,c){return b.NOOP_COUNTER_METRIC}createUpDownCounter(a,c){return b.NOOP_UP_DOWN_COUNTER_METRIC}createObservableGauge(a,c){return b.NOOP_OBSERVABLE_GAUGE_METRIC}createObservableCounter(a,c){return b.NOOP_OBSERVABLE_COUNTER_METRIC}createObservableUpDownCounter(a,c){return b.NOOP_OBSERVABLE_UP_DOWN_COUNTER_METRIC}addBatchObservableCallback(a,b){}removeBatchObservableCallback(a){}}b.NoopMeter=c;class d{}b.NoopMetric=d;class e extends d{add(a,b){}}b.NoopCounterMetric=e;class f extends d{add(a,b){}}b.NoopUpDownCounterMetric=f;class g extends d{record(a,b){}}b.NoopHistogramMetric=g;class h{addCallback(a){}removeCallback(a){}}b.NoopObservableMetric=h;class i extends h{}b.NoopObservableCounterMetric=i;class j extends h{}b.NoopObservableGaugeMetric=j;class k extends h{}b.NoopObservableUpDownCounterMetric=k,b.NOOP_METER=new c,b.NOOP_COUNTER_METRIC=new e,b.NOOP_HISTOGRAM_METRIC=new g,b.NOOP_UP_DOWN_COUNTER_METRIC=new f,b.NOOP_OBSERVABLE_COUNTER_METRIC=new i,b.NOOP_OBSERVABLE_GAUGE_METRIC=new j,b.NOOP_OBSERVABLE_UP_DOWN_COUNTER_METRIC=new k,b.createNoopMeter=function(){return b.NOOP_METER}},660:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NOOP_METER_PROVIDER=b.NoopMeterProvider=void 0;let d=c(102);class e{getMeter(a,b,c){return d.NOOP_METER}}b.NoopMeterProvider=e,b.NOOP_METER_PROVIDER=new e},200:function(a,b,c){var d=this&&this.__createBinding||(Object.create?function(a,b,c,d){void 0===d&&(d=c),Object.defineProperty(a,d,{enumerable:!0,get:function(){return b[c]}})}:function(a,b,c,d){void 0===d&&(d=c),a[d]=b[c]}),e=this&&this.__exportStar||function(a,b){for(var c in a)"default"===c||Object.prototype.hasOwnProperty.call(b,c)||d(b,a,c)};Object.defineProperty(b,"__esModule",{value:!0}),e(c(46),b)},651:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b._globalThis=void 0,b._globalThis="object"==typeof globalThis?globalThis:global},46:function(a,b,c){var d=this&&this.__createBinding||(Object.create?function(a,b,c,d){void 0===d&&(d=c),Object.defineProperty(a,d,{enumerable:!0,get:function(){return b[c]}})}:function(a,b,c,d){void 0===d&&(d=c),a[d]=b[c]}),e=this&&this.__exportStar||function(a,b){for(var c in a)"default"===c||Object.prototype.hasOwnProperty.call(b,c)||d(b,a,c)};Object.defineProperty(b,"__esModule",{value:!0}),e(c(651),b)},939:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.propagation=void 0,b.propagation=c(181).PropagationAPI.getInstance()},874:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NoopTextMapPropagator=void 0;class c{inject(a,b){}extract(a,b){return a}fields(){return[]}}b.NoopTextMapPropagator=c},194:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.defaultTextMapSetter=b.defaultTextMapGetter=void 0,b.defaultTextMapGetter={get(a,b){if(null!=a)return a[b]},keys:a=>null==a?[]:Object.keys(a)},b.defaultTextMapSetter={set(a,b,c){null!=a&&(a[b]=c)}}},845:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.trace=void 0,b.trace=c(997).TraceAPI.getInstance()},403:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NonRecordingSpan=void 0;let d=c(476);class e{constructor(a=d.INVALID_SPAN_CONTEXT){this._spanContext=a}spanContext(){return this._spanContext}setAttribute(a,b){return this}setAttributes(a){return this}addEvent(a,b){return this}setStatus(a){return this}updateName(a){return this}end(a){}isRecording(){return!1}recordException(a,b){}}b.NonRecordingSpan=e},614:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NoopTracer=void 0;let d=c(491),e=c(607),f=c(403),g=c(139),h=d.ContextAPI.getInstance();class i{startSpan(a,b,c=h.active()){var d;if(null==b?void 0:b.root)return new f.NonRecordingSpan;let i=c&&(0,e.getSpanContext)(c);return"object"==typeof(d=i)&&"string"==typeof d.spanId&&"string"==typeof d.traceId&&"number"==typeof d.traceFlags&&(0,g.isSpanContextValid)(i)?new f.NonRecordingSpan(i):new f.NonRecordingSpan}startActiveSpan(a,b,c,d){let f,g,i;if(arguments.length<2)return;2==arguments.length?i=b:3==arguments.length?(f=b,i=c):(f=b,g=c,i=d);let j=null!=g?g:h.active(),k=this.startSpan(a,f,j),l=(0,e.setSpan)(j,k);return h.with(l,i,void 0,k)}}b.NoopTracer=i},124:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.NoopTracerProvider=void 0;let d=c(614);class e{getTracer(a,b,c){return new d.NoopTracer}}b.NoopTracerProvider=e},125:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.ProxyTracer=void 0;let d=new(c(614)).NoopTracer;class e{constructor(a,b,c,d){this._provider=a,this.name=b,this.version=c,this.options=d}startSpan(a,b,c){return this._getTracer().startSpan(a,b,c)}startActiveSpan(a,b,c,d){let e=this._getTracer();return Reflect.apply(e.startActiveSpan,e,arguments)}_getTracer(){if(this._delegate)return this._delegate;let a=this._provider.getDelegateTracer(this.name,this.version,this.options);return a?(this._delegate=a,this._delegate):d}}b.ProxyTracer=e},846:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.ProxyTracerProvider=void 0;let d=c(125),e=new(c(124)).NoopTracerProvider;class f{getTracer(a,b,c){var e;return null!=(e=this.getDelegateTracer(a,b,c))?e:new d.ProxyTracer(this,a,b,c)}getDelegate(){var a;return null!=(a=this._delegate)?a:e}setDelegate(a){this._delegate=a}getDelegateTracer(a,b,c){var d;return null==(d=this._delegate)?void 0:d.getTracer(a,b,c)}}b.ProxyTracerProvider=f},996:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.SamplingDecision=void 0,function(a){a[a.NOT_RECORD=0]="NOT_RECORD",a[a.RECORD=1]="RECORD",a[a.RECORD_AND_SAMPLED=2]="RECORD_AND_SAMPLED"}(b.SamplingDecision||(b.SamplingDecision={}))},607:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.getSpanContext=b.setSpanContext=b.deleteSpan=b.setSpan=b.getActiveSpan=b.getSpan=void 0;let d=c(780),e=c(403),f=c(491),g=(0,d.createContextKey)("OpenTelemetry Context Key SPAN");function h(a){return a.getValue(g)||void 0}function i(a,b){return a.setValue(g,b)}b.getSpan=h,b.getActiveSpan=function(){return h(f.ContextAPI.getInstance().active())},b.setSpan=i,b.deleteSpan=function(a){return a.deleteValue(g)},b.setSpanContext=function(a,b){return i(a,new e.NonRecordingSpan(b))},b.getSpanContext=function(a){var b;return null==(b=h(a))?void 0:b.spanContext()}},325:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.TraceStateImpl=void 0;let d=c(564);class e{constructor(a){this._internalState=new Map,a&&this._parse(a)}set(a,b){let c=this._clone();return c._internalState.has(a)&&c._internalState.delete(a),c._internalState.set(a,b),c}unset(a){let b=this._clone();return b._internalState.delete(a),b}get(a){return this._internalState.get(a)}serialize(){return this._keys().reduce((a,b)=>(a.push(b+"="+this.get(b)),a),[]).join(",")}_parse(a){!(a.length>512)&&(this._internalState=a.split(",").reverse().reduce((a,b)=>{let c=b.trim(),e=c.indexOf("=");if(-1!==e){let f=c.slice(0,e),g=c.slice(e+1,b.length);(0,d.validateKey)(f)&&(0,d.validateValue)(g)&&a.set(f,g)}return a},new Map),this._internalState.size>32&&(this._internalState=new Map(Array.from(this._internalState.entries()).reverse().slice(0,32))))}_keys(){return Array.from(this._internalState.keys()).reverse()}_clone(){let a=new e;return a._internalState=new Map(this._internalState),a}}b.TraceStateImpl=e},564:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.validateValue=b.validateKey=void 0;let c="[_0-9a-z-*/]",d=`[a-z]${c}{0,255}`,e=`[a-z0-9]${c}{0,240}@[a-z]${c}{0,13}`,f=RegExp(`^(?:${d}|${e})$`),g=/^[ -~]{0,255}[!-~]$/,h=/,|=/;b.validateKey=function(a){return f.test(a)},b.validateValue=function(a){return g.test(a)&&!h.test(a)}},98:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.createTraceState=void 0;let d=c(325);b.createTraceState=function(a){return new d.TraceStateImpl(a)}},476:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.INVALID_SPAN_CONTEXT=b.INVALID_TRACEID=b.INVALID_SPANID=void 0;let d=c(475);b.INVALID_SPANID="0000000000000000",b.INVALID_TRACEID="00000000000000000000000000000000",b.INVALID_SPAN_CONTEXT={traceId:b.INVALID_TRACEID,spanId:b.INVALID_SPANID,traceFlags:d.TraceFlags.NONE}},357:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.SpanKind=void 0,function(a){a[a.INTERNAL=0]="INTERNAL",a[a.SERVER=1]="SERVER",a[a.CLIENT=2]="CLIENT",a[a.PRODUCER=3]="PRODUCER",a[a.CONSUMER=4]="CONSUMER"}(b.SpanKind||(b.SpanKind={}))},139:(a,b,c)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.wrapSpanContext=b.isSpanContextValid=b.isValidSpanId=b.isValidTraceId=void 0;let d=c(476),e=c(403),f=/^([0-9a-f]{32})$/i,g=/^[0-9a-f]{16}$/i;function h(a){return f.test(a)&&a!==d.INVALID_TRACEID}function i(a){return g.test(a)&&a!==d.INVALID_SPANID}b.isValidTraceId=h,b.isValidSpanId=i,b.isSpanContextValid=function(a){return h(a.traceId)&&i(a.spanId)},b.wrapSpanContext=function(a){return new e.NonRecordingSpan(a)}},847:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.SpanStatusCode=void 0,function(a){a[a.UNSET=0]="UNSET",a[a.OK=1]="OK",a[a.ERROR=2]="ERROR"}(b.SpanStatusCode||(b.SpanStatusCode={}))},475:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.TraceFlags=void 0,function(a){a[a.NONE=0]="NONE",a[a.SAMPLED=1]="SAMPLED"}(b.TraceFlags||(b.TraceFlags={}))},521:(a,b)=>{Object.defineProperty(b,"__esModule",{value:!0}),b.VERSION=void 0,b.VERSION="1.6.0"}},c={};function d(a){var e=c[a];if(void 0!==e)return e.exports;var f=c[a]={exports:{}},g=!0;try{b[a].call(f.exports,f,f.exports,d),g=!1}finally{g&&delete c[a]}return f.exports}d.ab=__dirname+"/";var e={};(()=>{Object.defineProperty(e,"__esModule",{value:!0}),e.trace=e.propagation=e.metrics=e.diag=e.context=e.INVALID_SPAN_CONTEXT=e.INVALID_TRACEID=e.INVALID_SPANID=e.isValidSpanId=e.isValidTraceId=e.isSpanContextValid=e.createTraceState=e.TraceFlags=e.SpanStatusCode=e.SpanKind=e.SamplingDecision=e.ProxyTracerProvider=e.ProxyTracer=e.defaultTextMapSetter=e.defaultTextMapGetter=e.ValueType=e.createNoopMeter=e.DiagLogLevel=e.DiagConsoleLogger=e.ROOT_CONTEXT=e.createContextKey=e.baggageEntryMetadataFromString=void 0;var a=d(369);Object.defineProperty(e,"baggageEntryMetadataFromString",{enumerable:!0,get:function(){return a.baggageEntryMetadataFromString}});var b=d(780);Object.defineProperty(e,"createContextKey",{enumerable:!0,get:function(){return b.createContextKey}}),Object.defineProperty(e,"ROOT_CONTEXT",{enumerable:!0,get:function(){return b.ROOT_CONTEXT}});var c=d(972);Object.defineProperty(e,"DiagConsoleLogger",{enumerable:!0,get:function(){return c.DiagConsoleLogger}});var f=d(957);Object.defineProperty(e,"DiagLogLevel",{enumerable:!0,get:function(){return f.DiagLogLevel}});var g=d(102);Object.defineProperty(e,"createNoopMeter",{enumerable:!0,get:function(){return g.createNoopMeter}});var h=d(901);Object.defineProperty(e,"ValueType",{enumerable:!0,get:function(){return h.ValueType}});var i=d(194);Object.defineProperty(e,"defaultTextMapGetter",{enumerable:!0,get:function(){return i.defaultTextMapGetter}}),Object.defineProperty(e,"defaultTextMapSetter",{enumerable:!0,get:function(){return i.defaultTextMapSetter}});var j=d(125);Object.defineProperty(e,"ProxyTracer",{enumerable:!0,get:function(){return j.ProxyTracer}});var k=d(846);Object.defineProperty(e,"ProxyTracerProvider",{enumerable:!0,get:function(){return k.ProxyTracerProvider}});var l=d(996);Object.defineProperty(e,"SamplingDecision",{enumerable:!0,get:function(){return l.SamplingDecision}});var m=d(357);Object.defineProperty(e,"SpanKind",{enumerable:!0,get:function(){return m.SpanKind}});var n=d(847);Object.defineProperty(e,"SpanStatusCode",{enumerable:!0,get:function(){return n.SpanStatusCode}});var o=d(475);Object.defineProperty(e,"TraceFlags",{enumerable:!0,get:function(){return o.TraceFlags}});var p=d(98);Object.defineProperty(e,"createTraceState",{enumerable:!0,get:function(){return p.createTraceState}});var q=d(139);Object.defineProperty(e,"isSpanContextValid",{enumerable:!0,get:function(){return q.isSpanContextValid}}),Object.defineProperty(e,"isValidTraceId",{enumerable:!0,get:function(){return q.isValidTraceId}}),Object.defineProperty(e,"isValidSpanId",{enumerable:!0,get:function(){return q.isValidSpanId}});var r=d(476);Object.defineProperty(e,"INVALID_SPANID",{enumerable:!0,get:function(){return r.INVALID_SPANID}}),Object.defineProperty(e,"INVALID_TRACEID",{enumerable:!0,get:function(){return r.INVALID_TRACEID}}),Object.defineProperty(e,"INVALID_SPAN_CONTEXT",{enumerable:!0,get:function(){return r.INVALID_SPAN_CONTEXT}});let s=d(67);Object.defineProperty(e,"context",{enumerable:!0,get:function(){return s.context}});let t=d(506);Object.defineProperty(e,"diag",{enumerable:!0,get:function(){return t.diag}});let u=d(886);Object.defineProperty(e,"metrics",{enumerable:!0,get:function(){return u.metrics}});let v=d(939);Object.defineProperty(e,"propagation",{enumerable:!0,get:function(){return v.propagation}});let w=d(845);Object.defineProperty(e,"trace",{enumerable:!0,get:function(){return w.trace}}),e.default={context:s.context,diag:t.diag,metrics:u.metrics,propagation:v.propagation,trace:w.trace}})(),a.exports=e})()},23388:a=>{"use strict";a.exports=require("@as-integrations/next")},23699:(a,b,c)=>{"use strict";function d(a,b){let c=Math.abs(a).toString().padStart(b,"0");return(a<0?"-":"")+c}c.d(b,{Yq:()=>o,_U:()=>p});let e=Symbol.for("constructDateFrom");function f(a,b){return"function"==typeof a?a(b):a&&"object"==typeof a&&e in a?a[e](b):a instanceof Date?new a.constructor(b):new Date(b)}let g={dateTimeDelimiter:/[T ]/,timeZoneDelimiter:/[Z ]/i,timezone:/([Z+-].*)$/},h=/^-?(?:(\d{3})|(\d{2})(?:-?(\d{2}))?|W(\d{2})(?:-?(\d{1}))?|)$/,i=/^(\d{2}(?:[.,]\d*)?)(?::?(\d{2}(?:[.,]\d*)?))?(?::?(\d{2}(?:[.,]\d*)?))?$/,j=/^([+-])(\d{2})(?::?(\d{2}))?$/;function k(a){return a?parseInt(a):1}function l(a){return a&&parseFloat(a.replace(",","."))||0}let m=[31,null,31,30,31,30,31,31,30,31,30,31];function n(a){return a%400==0||a%4==0&&a%100!=0}function o(a){return a?"string"==typeof a&&(a=new Date(a)):a=new Date,function(a,b){let c=f(a,a);if(isNaN(+c))throw RangeError("Invalid time value");let e=(void 0)??"extended",g=b?.representation??"complete",h="",i="",j="extended"===e?"-":"";if("time"!==g){let a=d(c.getDate(),2),b=d(c.getMonth()+1,2),e=d(c.getFullYear(),4);h=`${e}${j}${b}${j}${a}`}if("date"!==g){let a=c.getTimezoneOffset();if(0!==a){let b=Math.abs(a),c=d(Math.trunc(b/60),2),e=d(b%60,2);i=`${a<0?"+":"-"}${c}:${e}`}else i="Z";let b=d(c.getHours(),2),f=d(c.getMinutes(),2),g=d(c.getSeconds(),2),j=""===h?"":"T",k=[b,f,g].join("extended"===e?":":"");h=`${h}${j}${k}${i}`}return h}(a)}function p(a){return a instanceof Date?a:a?function(a,b){var c;let d,e,o=()=>f(void 0,NaN),p=(void 0)??2,q=function(a){let b,c={},d=a.split(g.dateTimeDelimiter);if(d.length>2)return c;if(/:/.test(d[0])?b=d[0]:(c.date=d[0],b=d[1],g.timeZoneDelimiter.test(c.date)&&(c.date=a.split(g.timeZoneDelimiter)[0],b=a.substr(c.date.length,a.length))),b){let a=g.timezone.exec(b);a?(c.time=b.replace(a[1],""),c.timezone=a[1]):c.time=b}return c}(a);if(q.date){let a=function(a,b){let c=RegExp("^(?:(\\d{4}|[+-]\\d{"+(4+b)+"})|(\\d{2}|[+-]\\d{"+(2+b)+"})$)"),d=a.match(c);if(!d)return{year:NaN,restDateString:""};let e=d[1]?parseInt(d[1]):null,f=d[2]?parseInt(d[2]):null;return{year:null===f?e:100*f,restDateString:a.slice((d[1]||d[2]).length)}}(q.date,p);d=function(a,b){var c,d,e,f,g,i,j;if(null===b)return new Date(NaN);let l=a.match(h);if(!l)return new Date(NaN);let o=!!l[4],p=k(l[1]),q=k(l[2])-1,r=k(l[3]),s=k(l[4]),t=k(l[5])-1;if(o){return(c=s,d=t,c>=1&&c<=53&&d>=0&&d<=6)?function(a,b,c){let d=new Date(0);d.setUTCFullYear(a,0,4);let e=d.getUTCDay()||7;return d.setUTCDate(d.getUTCDate()+((b-1)*7+c+1-e)),d}(b,s,t):new Date(NaN)}{let a=new Date(0);return(e=b,f=q,g=r,f>=0&&f<=11&&g>=1&&g<=(m[f]||(n(e)?29:28))&&(i=b,(j=p)>=1&&j<=(n(i)?366:365)))?(a.setUTCFullYear(b,q,Math.max(p,r)),a):new Date(NaN)}}(a.restDateString,a.year)}if(!d||isNaN(+d))return o();let r=+d,s=0;if(q.time&&isNaN(s=function(a){var b,c,d;let e=a.match(i);if(!e)return NaN;let f=l(e[1]),g=l(e[2]),h=l(e[3]);return(b=f,c=g,d=h,24===b?0===c&&0===d:d>=0&&d<60&&c>=0&&c<60&&b>=0&&b<25)?36e5*f+6e4*g+1e3*h:NaN}(q.time)))return o();if(q.timezone){if(isNaN(e=function(a){var b;if("Z"===a)return 0;let c=a.match(j);if(!c)return 0;let d="+"===c[1]?-1:1,e=parseInt(c[2]),f=c[3]&&parseInt(c[3])||0;return(b=f)>=0&&b<=59?d*(36e5*e+6e4*f):NaN}(q.timezone)))return o()}else{let a=new Date(r+s),c=f(b?.in||0,0);return c.setFullYear(a.getUTCFullYear(),a.getUTCMonth(),a.getUTCDate()),c.setHours(a.getUTCHours(),a.getUTCMinutes(),a.getUTCSeconds(),a.getUTCMilliseconds()),c}return c=r+s+e,f(b?.in||c,c)}(a):void 0}require("react")},24110:(a,b,c)=>{"use strict";c.d(b,{A:()=>i});let d=require("graphql-tag"),e=(0,d.gql)`
 	extend type Query {
 		campaigns: [Campaign!]!
 		campaign(id: ID): Campaign
@@ -649,12 +281,7 @@ const typeDefs = external_graphql_tag_namespaceObject.gql`
 	extend type Mutation {
 		campaign(id: ID): CampaignMutation
 	}
-`;
-/* harmony default export */ const campaign = (typeDefs);
-
-;// CONCATENATED MODULE: ./src/graphql/types/initiative.ts
-
-const initiative_typeDefs = external_graphql_tag_namespaceObject.gql`
+`,f=(0,d.gql)`
 	enum HideMonsterNames {
 		never
 		always
@@ -729,12 +356,7 @@ const initiative_typeDefs = external_graphql_tag_namespaceObject.gql`
 		public: Boolean
 		turnOrder: Int!
 	}
-`;
-/* harmony default export */ const initiative = (initiative_typeDefs);
-
-;// CONCATENATED MODULE: ./src/graphql/types/player.ts
-
-const player_typeDefs = external_graphql_tag_namespaceObject.gql`
+`,g=(0,d.gql)`
 	extend type Query {
 		player(id: ID!): Player
 	}
@@ -766,114 +388,10 @@ const player_typeDefs = external_graphql_tag_namespaceObject.gql`
 		delete: Boolean!
 		resetCooldown: Boolean!
 	}
-`;
-/* harmony default export */ const player = (player_typeDefs);
-
-;// CONCATENATED MODULE: ./src/graphql/types/scalars.ts
-
-const scalars_typeDefs = external_graphql_tag_namespaceObject.gql`
+`,h=(0,d.gql)`
 	scalar Date
-`;
-/* harmony default export */ const scalars = (scalars_typeDefs);
-
-;// CONCATENATED MODULE: ./src/graphql/types/index.ts
-
-
-
-
-
-const Root = external_graphql_tag_namespaceObject.gql`
+`,i=[(0,d.gql)`
 	type Query
 	type Mutation
 	type Subscription
-`;
-const types_typeDefs = [
-    Root,
-    campaign,
-    initiative,
-    player,
-    scalars
-];
-/* harmony default export */ const types = (types_typeDefs);
-
-
-/***/ }),
-
-/***/ 32:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7310);
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(url__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var ws__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9814);
-/* harmony import */ var _as_integrations_next__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1456);
-/* harmony import */ var _as_integrations_next__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_as_integrations_next__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _graphql_setup_apollo_server__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6330);
-/* harmony import */ var _graphql_context__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9044);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([ws__WEBPACK_IMPORTED_MODULE_1__, _graphql_setup_apollo_server__WEBPACK_IMPORTED_MODULE_3__, _graphql_context__WEBPACK_IMPORTED_MODULE_4__]);
-([ws__WEBPACK_IMPORTED_MODULE_1__, _graphql_setup_apollo_server__WEBPACK_IMPORTED_MODULE_3__, _graphql_context__WEBPACK_IMPORTED_MODULE_4__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
-
-
-
-
-
-const handler = async (req, res)=>{
-    try {
-        const server = req.socket.server;
-        if (!server.apolloHandler) {
-            server.apolloHandler = new Promise((resolve)=>{
-                console.log("Initializing Apollo Next.JS API handler");
-                const wsServer = new ws__WEBPACK_IMPORTED_MODULE_1__.WebSocketServer({
-                    noServer: true
-                });
-                server.on("upgrade", async function connection(req, socket, head) {
-                    const { pathname  } = (0,url__WEBPACK_IMPORTED_MODULE_0__.parse)(req.url, true);
-                    if (pathname === "/api/subscriptions" && !socket.websocket) {
-                        wsServer.handleUpgrade(req, socket, head, function done(ws) {
-                            wsServer.emit("connection", ws, req);
-                        });
-                    }
-                });
-                const coreContext = (0,_graphql_context__WEBPACK_IMPORTED_MODULE_4__/* .setupContext */ .H)();
-                const baseApolloServer = (0,_graphql_setup_apollo_server__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)(server, wsServer, coreContext);
-                const apolloHandler = (0,_as_integrations_next__WEBPACK_IMPORTED_MODULE_2__.startServerAndCreateNextHandler)(baseApolloServer, {
-                    context: async (req, res)=>Promise.resolve({
-                            ...coreContext,
-                            req,
-                            res
-                        })
-                });
-                resolve(apolloHandler);
-            });
-        }
-        const apolloHandler = await server.apolloHandler;
-        return apolloHandler(req, res);
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            error
-        });
-    }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (handler);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ })
-
-};
-;
-
-// load runtime
-var __webpack_require__ = require("../../webpack-api-runtime.js");
-__webpack_require__.C(exports);
-var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [456,798], () => (__webpack_exec__(32)));
-module.exports = __webpack_exports__;
-
-})();
+`,e,f,g,h]},29046:(a,b,c)=>{"use strict";Object.defineProperty(b,"__esModule",{value:!0}),!function(a,b){for(var c in b)Object.defineProperty(a,c,{enumerable:!0,get:b[c]})}(b,{ApiError:function(){return r},COOKIE_NAME_PRERENDER_BYPASS:function(){return l},COOKIE_NAME_PRERENDER_DATA:function(){return m},RESPONSE_LIMIT_DEFAULT:function(){return n},SYMBOL_CLEARED_COOKIES:function(){return p},SYMBOL_PREVIEW_DATA:function(){return o},checkIsOnDemandRevalidate:function(){return k},clearPreviewData:function(){return q},redirect:function(){return j},sendError:function(){return s},sendStatusCode:function(){return i},setLazyProp:function(){return t},wrapApiHandler:function(){return h}});let d=c(53459),e=c(1922),f=c(58112),g=c(18766);function h(a,b){return(...c)=>((0,f.getTracer)().setRootSpanAttribute("next.route",a),(0,f.getTracer)().trace(g.NodeSpan.runHandler,{spanName:`executing api route (pages) ${a}`},()=>b(...c)))}function i(a,b){return a.statusCode=b,a}function j(a,b,c){if("string"==typeof b&&(c=b,b=307),"number"!=typeof b||"string"!=typeof c)throw Object.defineProperty(Error("Invalid redirect arguments. Please use a single argument URL, e.g. res.redirect('/destination') or use a status code and URL, e.g. res.redirect(307, '/destination')."),"__NEXT_ERROR_CODE",{value:"E389",enumerable:!1,configurable:!0});return a.writeHead(b,{Location:c}),a.write(c),a.end(),a}function k(a,b){let c=d.HeadersAdapter.from(a.headers);return{isOnDemandRevalidate:c.get(e.PRERENDER_REVALIDATE_HEADER)===b.previewModeId,revalidateOnlyGenerated:c.has(e.PRERENDER_REVALIDATE_ONLY_GENERATED_HEADER)}}let l="__prerender_bypass",m="__next_preview_data",n=4194304,o=Symbol(m),p=Symbol(l);function q(a,b={}){if(p in a)return a;let{serialize:d}=c(71254),e=a.getHeader("Set-Cookie");return a.setHeader("Set-Cookie",[..."string"==typeof e?[e]:Array.isArray(e)?e:[],d(l,"",{expires:new Date(0),httpOnly:!0,sameSite:"none",secure:!0,path:"/",...void 0!==b.path?{path:b.path}:void 0}),d(m,"",{expires:new Date(0),httpOnly:!0,sameSite:"none",secure:!0,path:"/",...void 0!==b.path?{path:b.path}:void 0})]),Object.defineProperty(a,p,{value:!0,enumerable:!1}),a}class r extends Error{constructor(a,b){super(b),this.statusCode=a}}function s(a,b,c){a.statusCode=b,a.statusMessage=c,a.end(c)}function t({req:a},b,c){let d={configurable:!0,enumerable:!0},e={...d,writable:!0};Object.defineProperty(a,b,{...d,get:()=>{let d=c();return Object.defineProperty(a,b,{...e,value:d}),d},set:c=>{Object.defineProperty(a,b,{...e,value:c})}})}},33480:(a,b,c)=>{"use strict";a.exports=c(75600)},49046:(a,b,c)=>{"use strict";c.a(a,async(a,d)=>{try{c.r(b),c.d(b,{config:()=>o,default:()=>n,handler:()=>m});var e=c(29046),f=c(8667),g=c(33480),h=c(86435),i=c(1763),j=c(58112),k=c(18766),l=a([i]);i=(l.then?(await l)():l)[0];let n=(0,h.M)(i,"default"),o=(0,h.M)(i,"config"),p=new g.PagesAPIRouteModule({definition:{kind:f.A.PAGES_API,page:"/api/graphql",pathname:"/api/graphql",bundlePath:"",filename:""},userland:i,distDir:".next",projectDir:""});async function m(a,b,c){let d=await p.prepare(a,b,{srcPage:"/api/graphql"});if(!d){b.statusCode=400,b.end("Bad Request"),null==c.waitUntil||c.waitUntil.call(c,Promise.resolve());return}let{query:f,params:g,prerenderManifest:h}=d;try{let c=a.method||"GET",d=(0,j.getTracer)(),e=d.getActiveScopeSpan(),i=p.instrumentationOnRequestError.bind(p),l=async e=>p.render(a,b,{query:{...f,...g},params:g,allowedRevalidateHeaderKeys:void 0,multiZoneDraftMode:!0,trustHostHeader:void 0,previewProps:h.preview,propagateError:!1,dev:p.isDev,page:"/api/graphql",projectDir:"",onError:(...b)=>i(a,...b)}).finally(()=>{if(!e)return;e.setAttributes({"http.status_code":b.statusCode,"next.rsc":!1});let f=d.getRootSpanAttributes();if(!f)return;if(f.get("next.span_type")!==k.BaseServerSpan.handleRequest)return void console.warn(`Unexpected root span type '${f.get("next.span_type")}'. Please report this Next.js issue https://github.com/vercel/next.js`);let g=f.get("next.route");if(g){let a=`${c} ${g}`;e.setAttributes({"next.route":g,"http.route":g,"next.span_name":a}),e.updateName(a)}else e.updateName(`${c} ${a.url}`)});e?await l(e):await d.withPropagatedContext(a.headers,()=>d.trace(k.BaseServerSpan.handleRequest,{spanName:`${c} ${a.url}`,kind:j.SpanKind.SERVER,attributes:{"http.method":c,"http.target":a.url}},l))}catch(a){if(p.isDev)throw a;(0,e.sendError)(b,500,"Internal Server Error")}finally{null==c.waitUntil||c.waitUntil.call(c,Promise.resolve())}}d()}catch(a){d(a)}})},50445:a=>{"use strict";a.exports=import("@apollo/server")},51518:(a,b)=>{"use strict";Object.defineProperty(b,"__esModule",{value:!0}),Object.defineProperty(b,"ReflectAdapter",{enumerable:!0,get:function(){return c}});class c{static get(a,b,c){let d=Reflect.get(a,b,c);return"function"==typeof d?d.bind(a):d}static set(a,b,c,d){return Reflect.set(a,b,c,d)}static has(a,b){return Reflect.has(a,b)}static deleteProperty(a,b){return Reflect.deleteProperty(a,b)}}},53459:(a,b,c)=>{"use strict";Object.defineProperty(b,"__esModule",{value:!0}),!function(a,b){for(var c in b)Object.defineProperty(a,c,{enumerable:!0,get:b[c]})}(b,{HeadersAdapter:function(){return f},ReadonlyHeadersError:function(){return e}});let d=c(51518);class e extends Error{constructor(){super("Headers cannot be modified. Read more: https://nextjs.org/docs/app/api-reference/functions/headers")}static callable(){throw new e}}class f extends Headers{constructor(a){super(),this.headers=new Proxy(a,{get(b,c,e){if("symbol"==typeof c)return d.ReflectAdapter.get(b,c,e);let f=c.toLowerCase(),g=Object.keys(a).find(a=>a.toLowerCase()===f);if(void 0!==g)return d.ReflectAdapter.get(b,g,e)},set(b,c,e,f){if("symbol"==typeof c)return d.ReflectAdapter.set(b,c,e,f);let g=c.toLowerCase(),h=Object.keys(a).find(a=>a.toLowerCase()===g);return d.ReflectAdapter.set(b,h??c,e,f)},has(b,c){if("symbol"==typeof c)return d.ReflectAdapter.has(b,c);let e=c.toLowerCase(),f=Object.keys(a).find(a=>a.toLowerCase()===e);return void 0!==f&&d.ReflectAdapter.has(b,f)},deleteProperty(b,c){if("symbol"==typeof c)return d.ReflectAdapter.deleteProperty(b,c);let e=c.toLowerCase(),f=Object.keys(a).find(a=>a.toLowerCase()===e);return void 0===f||d.ReflectAdapter.deleteProperty(b,f)}})}static seal(a){return new Proxy(a,{get(a,b,c){switch(b){case"append":case"delete":case"set":return e.callable;default:return d.ReflectAdapter.get(a,b,c)}}})}merge(a){return Array.isArray(a)?a.join(", "):a}static from(a){return a instanceof Headers?a:new f(a)}append(a,b){let c=this.headers[a];"string"==typeof c?this.headers[a]=[c,b]:Array.isArray(c)?c.push(b):this.headers[a]=b}delete(a){delete this.headers[a]}get(a){let b=this.headers[a];return void 0!==b?this.merge(b):null}has(a){return void 0!==this.headers[a]}set(a,b){this.headers[a]=b}forEach(a,b){for(let[c,d]of this.entries())a.call(b,d,c,this)}*entries(){for(let a of Object.keys(this.headers)){let b=a.toLowerCase(),c=this.get(b);yield[b,c]}}*keys(){for(let a of Object.keys(this.headers)){let b=a.toLowerCase();yield b}}*values(){for(let a of Object.keys(this.headers)){let b=this.get(a);yield b}}[Symbol.iterator](){return this.entries()}}},56220:a=>{"use strict";a.exports=import("ws")},57439:a=>{"use strict";a.exports=import("graphql-ws/use/ws")},58112:(a,b,c)=>{"use strict";let d;Object.defineProperty(b,"__esModule",{value:!0}),!function(a,b){for(var c in b)Object.defineProperty(a,c,{enumerable:!0,get:b[c]})}(b,{BubbledError:function(){return m},SpanKind:function(){return k},SpanStatusCode:function(){return j},getTracer:function(){return u},isBubbledError:function(){return n}});let e=c(18766),f=c(65183);try{d=c(23176)}catch(a){d=c(23176)}let{context:g,propagation:h,trace:i,SpanStatusCode:j,SpanKind:k,ROOT_CONTEXT:l}=d;class m extends Error{constructor(a,b){super(),this.bubble=a,this.result=b}}function n(a){return"object"==typeof a&&null!==a&&a instanceof m}let o=(a,b)=>{n(b)&&b.bubble?a.setAttribute("next.bubble",!0):(b&&a.recordException(b),a.setStatus({code:j.ERROR,message:null==b?void 0:b.message})),a.end()},p=new Map,q=d.createContextKey("next.rootSpanId"),r=0,s={set(a,b,c){a.push({key:b,value:c})}};class t{getTracerInstance(){return i.getTracer("next.js","0.0.1")}getContext(){return g}getTracePropagationData(){let a=g.active(),b=[];return h.inject(a,b,s),b}getActiveScopeSpan(){return i.getSpan(null==g?void 0:g.active())}withPropagatedContext(a,b,c){let d=g.active();if(i.getSpanContext(d))return b();let e=h.extract(d,a,c);return g.with(e,b)}trace(...a){var b;let[c,d,h]=a,{fn:j,options:k}="function"==typeof d?{fn:d,options:{}}:{fn:h,options:{...d}},m=k.spanName??c;if(!e.NextVanillaSpanAllowlist.includes(c)&&"1"!==process.env.NEXT_OTEL_VERBOSE||k.hideSpan)return j();let n=this.getSpanContext((null==k?void 0:k.parentSpan)??this.getActiveScopeSpan()),s=!1;n?(null==(b=i.getSpanContext(n))?void 0:b.isRemote)&&(s=!0):(n=(null==g?void 0:g.active())??l,s=!0);let t=r++;return k.attributes={"next.span_name":m,"next.span_type":c,...k.attributes},g.with(n.setValue(q,t),()=>this.getTracerInstance().startActiveSpan(m,k,a=>{let b="performance"in globalThis&&"measure"in performance?globalThis.performance.now():void 0,d=()=>{p.delete(t),b&&process.env.NEXT_OTEL_PERFORMANCE_PREFIX&&e.LogSpanAllowList.includes(c||"")&&performance.measure(`${process.env.NEXT_OTEL_PERFORMANCE_PREFIX}:next-${(c.split(".").pop()||"").replace(/[A-Z]/g,a=>"-"+a.toLowerCase())}`,{start:b,end:performance.now()})};s&&p.set(t,new Map(Object.entries(k.attributes??{})));try{if(j.length>1)return j(a,b=>o(a,b));let b=j(a);if((0,f.isThenable)(b))return b.then(b=>(a.end(),b)).catch(b=>{throw o(a,b),b}).finally(d);return a.end(),d(),b}catch(b){throw o(a,b),d(),b}}))}wrap(...a){let b=this,[c,d,f]=3===a.length?a:[a[0],{},a[1]];return e.NextVanillaSpanAllowlist.includes(c)||"1"===process.env.NEXT_OTEL_VERBOSE?function(){let a=d;"function"==typeof a&&"function"==typeof f&&(a=a.apply(this,arguments));let e=arguments.length-1,h=arguments[e];if("function"!=typeof h)return b.trace(c,a,()=>f.apply(this,arguments));{let d=b.getContext().bind(g.active(),h);return b.trace(c,a,(a,b)=>(arguments[e]=function(a){return null==b||b(a),d.apply(this,arguments)},f.apply(this,arguments)))}}:f}startSpan(...a){let[b,c]=a,d=this.getSpanContext((null==c?void 0:c.parentSpan)??this.getActiveScopeSpan());return this.getTracerInstance().startSpan(b,c,d)}getSpanContext(a){return a?i.setSpan(g.active(),a):void 0}getRootSpanAttributes(){let a=g.active().getValue(q);return p.get(a)}setRootSpanAttribute(a,b){let c=g.active().getValue(q),d=p.get(c);d&&d.set(a,b)}}let u=(()=>{let a=new t;return()=>a})()},59217:(a,b,c)=>{"use strict";c.a(a,async(a,d)=>{try{c.d(b,{A:()=>l});var e=c(50445),f=c(99923),g=c(10957),h=c(57439),i=c(93913),j=c(24110),k=a([e,f,g,h]);[e,f,g,h]=k.then?(await k)():k;let l=function(a,b,c){let d=(0,g.makeExecutableSchema)({typeDefs:j.A,resolvers:i.A}),k=(0,h.useServer)({schema:d,context:c},b);return new e.ApolloServer({schema:d,csrfPrevention:!0,cache:"bounded",plugins:[(0,f.ApolloServerPluginDrainHttpServer)({httpServer:a}),{serverWillStart:async()=>({async drainServer(){await k.dispose(),c.sql.close()}})}],formatError:(a,b)=>(console.error(a??b),{message:a?.message??"Internal server error",extensions:a?.extensions??{}})})};d()}catch(a){d(a)}})},65183:(a,b)=>{"use strict";function c(a){return null!==a&&"object"==typeof a&&"then"in a&&"function"==typeof a.then}Object.defineProperty(b,"__esModule",{value:!0}),Object.defineProperty(b,"isThenable",{enumerable:!0,get:function(){return c}})},71254:a=>{(()=>{"use strict";"undefined"!=typeof __nccwpck_require__&&(__nccwpck_require__.ab=__dirname+"/");var b={};(()=>{b.parse=function(b,c){if("string"!=typeof b)throw TypeError("argument str must be a string");for(var e={},f=b.split(d),g=(c||{}).decode||a,h=0;h<f.length;h++){var i=f[h],j=i.indexOf("=");if(!(j<0)){var k=i.substr(0,j).trim(),l=i.substr(++j,i.length).trim();'"'==l[0]&&(l=l.slice(1,-1)),void 0==e[k]&&(e[k]=function(a,b){try{return b(a)}catch(b){return a}}(l,g))}}return e},b.serialize=function(a,b,d){var f=d||{},g=f.encode||c;if("function"!=typeof g)throw TypeError("option encode is invalid");if(!e.test(a))throw TypeError("argument name is invalid");var h=g(b);if(h&&!e.test(h))throw TypeError("argument val is invalid");var i=a+"="+h;if(null!=f.maxAge){var j=f.maxAge-0;if(isNaN(j)||!isFinite(j))throw TypeError("option maxAge is invalid");i+="; Max-Age="+Math.floor(j)}if(f.domain){if(!e.test(f.domain))throw TypeError("option domain is invalid");i+="; Domain="+f.domain}if(f.path){if(!e.test(f.path))throw TypeError("option path is invalid");i+="; Path="+f.path}if(f.expires){if("function"!=typeof f.expires.toUTCString)throw TypeError("option expires is invalid");i+="; Expires="+f.expires.toUTCString()}if(f.httpOnly&&(i+="; HttpOnly"),f.secure&&(i+="; Secure"),f.sameSite)switch("string"==typeof f.sameSite?f.sameSite.toLowerCase():f.sameSite){case!0:case"strict":i+="; SameSite=Strict";break;case"lax":i+="; SameSite=Lax";break;case"none":i+="; SameSite=None";break;default:throw TypeError("option sameSite is invalid")}return i};var a=decodeURIComponent,c=encodeURIComponent,d=/; */,e=/^[\u0009\u0020-\u007e\u0080-\u00ff]+$/})(),a.exports=b})()},73946:a=>{"use strict";a.exports=require("graphql-subscriptions")},75600:a=>{"use strict";a.exports=require("next/dist/compiled/next-server/pages-api.runtime.prod.js")},79551:a=>{"use strict";a.exports=require("url")},86435:(a,b)=>{"use strict";Object.defineProperty(b,"M",{enumerable:!0,get:function(){return function a(b,c){return c in b?b[c]:"then"in b&&"function"==typeof b.then?b.then(b=>a(b,c)):"function"==typeof b&&"default"===c?b:void 0}}})},93913:(a,b,c)=>{"use strict";c.d(b,{A:()=>k});let d=require("lodash/merge");var e=c.n(d),f=c(73946),g=c(23699);let h={Query:{campaigns:async(a,b,c)=>c.Campaign.list(),campaign:async(a,b,c)=>c.Campaign.get(b.id??void 0)},Mutation:{campaign:async(a,b,c)=>(b.id?await c.Campaign.get(b.id):void 0)??{}},Subscription:{campaign:{subscribe:(0,f.withFilter)((a,b,c)=>(setImmediate(()=>c.Campaign.publishSubscription(b.id)),c.pubsub.asyncIterableIterator("CAMPAIGN_UPDATED")),(a,b)=>a?.campaign.id===b?.id)}},Campaign:{players:(a,b,c)=>c.Player.list(a.id),async lastInspirationUsed(a,b,c){let d=(await c.Player.list(a.id)).reduce((b,c)=>Math.max((a.gmInspiration||!c.isGM)&&c.lastInspirationUsed?(0,g._U)(c.lastInspirationUsed).getTime():-1,b),-1);return d>=0?(0,g.Yq)(new Date(d)):void 0}},CampaignMutation:{async save(a,{input:b},c){let d=a.id?await c.Campaign.update(a,b):await c.Campaign.create(b);return d&&c.Campaign.publishSubscription(d.id),d},async delete(a,b,{Campaign:c}){let d=!!a.id&&await c.delete(a.id);return d&&c.publishSubscription(a.id),d}}},i=require("lodash/uniq");var j=c.n(i);let k=e()(h,{Campaign:{activeEncounter:async(a,b,c)=>a.activeEncounter?await c.Encounter.get(a.activeEncounter):void 0,encounter:async(a,b,c)=>await c.Encounter.get(b.id),encounters:async(a,b,c)=>c.Encounter.list(a.id)},CampaignMutation:{encounter:async(a,b,c)=>b.id?await c.Encounter.get(b.id):{}},Encounter:{combatants:async(a,b,c)=>await c.Combatant.list(a.id)??[]},EncounterMutation:{async save(a,b,c){!a.id&&b.input.id&&(a=await c.Encounter.get(b.input.id)??a);let d=a.id?await c.Encounter.update(a,b.input):await c.Encounter.create(b.input),e=await c.Campaign.get(d.campaignId);return e?.activeEncounter===d.id&&await c.Campaign.publishSubscription(e.id),d},async delete(a,b,c){if(!a.id)return!1;let d=await c.Campaign.get(a.campaignId);return d?.activeEncounter===a.id&&(await c.Campaign.update(d,{activeEncounter:null}),await c.Campaign.publishSubscription(a.id)),await c.Encounter.delete(a.id)},async setActive(a,b,c){let d=await c.Campaign.get(a.campaignId);if(!d)throw Error(`Invalid campaign ID ${a.campaignId} for encounter ${a.id}`);return b.active?await c.Campaign.update(d,{activeEncounter:a.id}):d.activeEncounter===a.id&&await c.Campaign.update(d,{activeEncounter:null}),await c.Campaign.publishSubscription(d.id),!0},async next(a,b,c){let[d,e]=await c.Encounter.findNextTurn(a.id,a.turn,a.round);await c.Encounter.update(a,{turn:d,round:e,turnStart:(0,g.Yq)(new Date)});let f=await c.Campaign.get(a.campaignId);return f?.activeEncounter===a.id&&await c.Campaign.publishSubscription(f.id),!0},async prev(a,b,c){let[d,e]=await c.Encounter.findPrevTurn(a.id,a.turn,a.round);await c.Encounter.update(a,{turn:d,round:e,turnStart:(0,g.Yq)(new Date)});let f=await c.Campaign.get(a.campaignId);return f?.activeEncounter===a.id&&await c.Campaign.publishSubscription(f.id),!0},combatant:async(a,b,c)=>b.id?await c.Combatant.get(b.id):{},async saveCombatants(a,b,c){let d=await c.Combatant.bulkUpdate(b.input);for(let a of j()(b.input.map(a=>a.campaignId)))await c.Campaign.publishSubscription(a);return d}},Combatant:{campaign:async(a,b,c)=>await c.Campaign.get(a.campaignId)??{},player:async(a,b,c)=>a.playerId?c.Player.get(a.playerId):void 0},CombatantMutation:{async save(a,b,c){!a.id&&b.input.id&&(a=await c.Combatant.get(b.input.id)??a);let d=a.id?await c.Combatant.update(a,b.input):await c.Combatant.create(b.input),e=await c.Campaign.get(d.campaignId);return e?.activeEncounter===d.encounterId&&await c.Campaign.publishSubscription(e.id),d},async delete(a,b,c){if(!a.id)return!1;let d=await c.Combatant.delete(a.id),e=await c.Campaign.get(a.campaignId);return e?.activeEncounter===a.encounterId&&await c.Campaign.publishSubscription(e.id),d}}},{Query:{player:async(a,b,c)=>await c.Player.get(b.id)},Mutation:{player:async(a,b,c)=>(b.id?await c.Player.get(b.id):void 0)??{}},Player:{campaign:(a,b,{Campaign:c})=>c.get(a.campaignId)},PlayerMutation:{async save(a,{input:b},{Player:c,Campaign:d}){let e=a.id?await c.update(a,b):await c.create(b);return e&&d.publishSubscription(e.campaignId),e},async delete(a,b,{Player:c,Campaign:d}){let e=a.id?await c.get(a.id):void 0,f=!!a.id&&await c.delete(a.id);return e&&f&&d.publishSubscription(e.campaignId),f},async resetCooldown(a,b,{Player:c,Campaign:d}){let e=a.id?await c.get(a.id):void 0,f=await c.resetCooldown(a.id);return e&&f&&d.publishSubscription(e.campaignId),f}}})},99923:a=>{"use strict";a.exports=import("@apollo/server/plugin/drainHttpServer")}};var b=require("../../webpack-api-runtime.js");b.C(a);var c=b(b.s=49046);module.exports=c})();
