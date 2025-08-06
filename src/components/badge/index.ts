@@ -1,1 +1,1 @@
-export { default } from "./badge";
+export { default } from "@src/components/badge/badge";

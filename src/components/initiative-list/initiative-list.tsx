@@ -1,10 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import Head from "next/head";
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useInterval } from "react-use";
-import { CampaignFragment, HideMonsterNames } from "../../graphql/client-types";
-import { parseDate, formatTimeDuration } from "../../utils";
+import { CampaignFragment, HideMonsterNames } from "@graphql/client-types";
+import { parseDate, formatTimeDuration } from "@utils/index";
 
 interface InitiativeListProps {
 	campaign: CampaignFragment;
@@ -56,11 +54,6 @@ export default function InitiativeList({
 
 	return (
 		<>
-			<Head>
-				<title>{`${
-					campaign?.name ?? "Campaign"
-				} Initiative | OBS GM Overlay`}</title>
-			</Head>
 			<Typography
 				variant="h5"
 				sx={
@@ -138,7 +131,7 @@ export default function InitiativeList({
 						sx={{ width: 32, display: "inline-block", marginBottom: "-6px" }}
 					>
 						{combatant.turnOrder === turn && (
-							<Image src="/d20.png" alt="d20" height={32} width={32} />
+							<img src="/d20.png" alt="d20" height={32} width={32} />
 						)}
 					</Box>
 					<Box

@@ -1,10 +1,7 @@
 import { useState } from "react";
-import {
-	CampaignFragment,
-	PlayerFragment,
-} from "../../../graphql/client-types";
-import PlayerEditView from "./player-edit-view";
-import PlayerReadView from "./player-read-view";
+import PlayerEditView from "@src/components/campaign-editor/player-editor/player-edit-view";
+import PlayerReadView from "@src/components/campaign-editor/player-editor/player-read-view";
+import { CampaignFragment, PlayerFragment } from "@graphql/client-types";
 
 interface PlayerEditorProps {
 	player?: PlayerFragment;

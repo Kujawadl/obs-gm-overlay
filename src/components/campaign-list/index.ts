@@ -1,1 +1,1 @@
-export { default } from "./campaign-list";
+export { default } from "@src/components/campaign-list/campaign-list";

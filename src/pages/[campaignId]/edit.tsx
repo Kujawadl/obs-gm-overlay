@@ -1,12 +1,10 @@
 import { Container } from "@mui/material";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import CampaignEditor from "../../components/campaign-editor";
-import { useCampaignSubscription } from "../../graphql/client-types";
+import { useParams } from "react-router-dom";
+import CampaignEditor from "@src/components/campaign-editor";
+import { useCampaignSubscription } from "@graphql/client-types";
 
 export default function EditCampaign() {
-	const router = useRouter();
-	const { campaignId } = router.query;
+	const { campaignId } = useParams();
 	const { data } = useCampaignSubscription({
 		variables: {
 			id: campaignId as string,
@@ -15,16 +13,9 @@ export default function EditCampaign() {
 
 	return (
 		data?.campaign && (
-			<>
-				<Head>
-					<title>{`${
-						data?.campaign.name ?? "Campaign"
-					} Details | OBS GM Overlay`}</title>
-				</Head>
-				<Container fixed>
-					<CampaignEditor campaign={data.campaign} />
-				</Container>
-			</>
+			<Container fixed>
+				<CampaignEditor campaign={data.campaign} />
+			</Container>
 		)
 	);
 }

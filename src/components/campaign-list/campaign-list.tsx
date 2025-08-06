@@ -1,5 +1,7 @@
 import { List, ListItem, ListItemText } from "@mui/material";
-import CampaignRow, { CampaignRowProps } from "./campaign-row";
+import CampaignRow, {
+	CampaignRowProps,
+} from "@src/components/campaign-list/campaign-row";
 
 interface CampaignListProps {
 	campaigns?: CampaignRowProps["campaign"][];

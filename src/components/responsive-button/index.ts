@@ -1,1 +1,1 @@
-export { default } from "./responsive-button";
+export { default } from "@src/components/responsive-button/responsive-button";

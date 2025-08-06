@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from "react";
 import { Button } from "@mui/material";
 import { Clear as ClearIcon } from "@mui/icons-material";
-import { useSaveCampaignMutation } from "../../graphql/client-types";
-import EncounterSubList from "./encounter-sublist";
 
-import type { CampaignFragment } from "../../graphql/client-types";
-import type { EncounterRowProps } from "./encounter-row";
+import type { CampaignFragment } from "@graphql/client-types";
+import type { EncounterRowProps } from "@src/components/encounter-list/encounter-row";
+import EncounterSubList from "@src/components/encounter-list/encounter-sublist";
+import { useSaveCampaignMutation } from "@graphql/client-types";
 
 interface EncounterListProps {
 	campaign: CampaignFragment;

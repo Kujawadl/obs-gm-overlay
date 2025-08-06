@@ -1,1 +1,1 @@
-export { default } from "./encounter-list";
+export { default } from "@src/components/encounter-list/encounter-list";

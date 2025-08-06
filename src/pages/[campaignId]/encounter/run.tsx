@@ -5,20 +5,18 @@ import {
 	ArrowForwardIos as ArrowForwardIcon,
 	History as HistoryIcon,
 } from "@mui/icons-material";
-import Head from "next/head";
-import { useRouter } from "next/router";
 import omit from "lodash/omit";
-import InitiativeList from "../../../components/initiative-list/initiative-list";
+import { useParams } from "react-router-dom";
+import InitiativeList from "@src/components/initiative-list/initiative-list";
 import {
 	EncounterDetailDocument,
 	useAdvanceInitiativeMutation,
 	useCampaignSubscription,
 	useSaveEncounterMutation,
-} from "../../../graphql/client-types";
+} from "@graphql/client-types";
 
 export default function RunInitiative() {
-	const router = useRouter();
-	const { campaignId } = router.query;
+	const { campaignId } = useParams();
 	const { data } = useCampaignSubscription({
 		variables: {
 			id: campaignId as string,
@@ -69,11 +67,6 @@ export default function RunInitiative() {
 		campaign &&
 		campaign.activeEncounter && (
 			<>
-				<Head>
-					<title>{`${
-						data?.campaign?.name ?? "Campaign"
-					} Initiative | OBS GM Overlay`}</title>
-				</Head>
 				<Container fixed>
 					<Typography variant="h3" mb={2}>
 						{campaign.activeEncounter.name}

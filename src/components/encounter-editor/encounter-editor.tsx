@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import * as Yup from "yup";
+import CombatantList from "@src/components/encounter-editor/combatant-list";
 import {
 	CampaignFragment,
 	EncounterFragment,
 	HideMonsterNames,
 	useSaveEncounterMutation,
-} from "../../graphql/client-types";
-import CombatantList from "./combatant-list";
+} from "@graphql/client-types";
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().required("Campaign Name is required"),

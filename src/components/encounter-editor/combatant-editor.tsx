@@ -33,7 +33,7 @@ import {
 	EncounterDetailDocument,
 	PlayerFragment,
 	useDeleteCombatantMutation,
-} from "../../graphql/client-types";
+} from "@graphql/client-types";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
 	"& input.Mui-disabled": {

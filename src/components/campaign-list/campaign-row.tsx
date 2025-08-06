@@ -22,12 +22,12 @@ import {
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import {
 	CampaignFragment,
 	useDeleteCampaignMutation,
-} from "../../graphql/client-types";
+} from "@graphql/client-types";
 
 export interface CampaignRowProps {
 	campaign: CampaignFragment;
@@ -82,7 +82,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<Link href={`/${campaign.id}/edit`}>
+						<Link to={`/${campaign.id}/edit`}>
 							<Button component="span">
 								<EditIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Edit
@@ -95,7 +95,7 @@ export default function CampaignRow({ campaign, refetch }: CampaignRowProps) {
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<Link href={`/${campaign.id}/encounter`}>
+						<Link to={`/${campaign.id}/encounter`}>
 							<Button component="span">
 								<ListIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Encounters

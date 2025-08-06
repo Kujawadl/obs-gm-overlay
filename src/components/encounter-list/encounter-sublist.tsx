@@ -1,8 +1,8 @@
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
-import EncounterRow from "./encounter-row";
-
-import type { CampaignFragment } from "../../graphql/client-types";
-import type { EncounterRowProps } from "./encounter-row";
+import type { CampaignFragment } from "@graphql/client-types";
+import EncounterRow, {
+	EncounterRowProps,
+} from "@src/components/encounter-list/encounter-row";
 
 interface EncounterSubListProps {
 	listName: string;

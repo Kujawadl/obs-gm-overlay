@@ -1,8 +1,8 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import { CampaignFragment, PlayerFragment } from "../../graphql/client-types";
-import PlayerEditor from "./player-editor";
+import PlayerEditor from "@src/components/campaign-editor/player-editor/player-editor";
+import { CampaignFragment, PlayerFragment } from "@graphql/client-types";
 
 interface PlayerListProps {
 	campaign: CampaignFragment;

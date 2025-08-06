@@ -4,6 +4,7 @@ const tsPlugin = require("@typescript-eslint/eslint-plugin");
 const tsParser = require("@typescript-eslint/parser");
 const importPlugin = require("eslint-plugin-import");
 const unusedImportsPlugin = require("eslint-plugin-unused-imports");
+const globals = require("globals");
 
 const compat = new FlatCompat({
 	baseDirectory: __dirname,
@@ -15,11 +16,12 @@ const config = [
 	{
 		ignores: [
 			"node_modules/**",
-			".next/**",
-			".server/**",
-			"server/graphql.ts",
-			"src/graphql/index.tsx",
-			"src/graphql/introspection.json",
+			"graphql/client-types.tsx",
+			"graphql/introspection.json",
+			"*.config.{js,ts,json}",
+			"*-loader.js",
+			".rollup.cache",
+			"dist",
 		],
 	},
 
@@ -28,7 +30,6 @@ const config = [
 
 	// Legacy configs using FlatCompat
 	...compat.extends(
-		"next/core-web-vitals",
 		"plugin:import/recommended",
 		"plugin:import/typescript",
 		"prettier",
@@ -87,6 +88,24 @@ const config = [
 				typescript: {
 					alwaysTryTypes: true,
 				},
+			},
+		},
+	},
+
+	{
+		files: ["{src,graphql,utils}/**/*.{js,jsx,ts,tsx}"],
+		languageOptions: {
+			globals: {
+				...globals.browser,
+			},
+		},
+	},
+
+	{
+		files: ["{server,graphql,utils}/**/*.{js,ts}"],
+		languageOptions: {
+			globals: {
+				...globals.node,
 			},
 		},
 	},

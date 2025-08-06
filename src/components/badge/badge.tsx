@@ -1,7 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
-import Image from "next/image";
-import { CampaignFragment, PlayerFragment } from "../../graphql/client-types";
-import { useCooldown } from "../../utils";
+import { CampaignFragment, PlayerFragment } from "@graphql/client-types";
+import { useCooldown } from "@utils/index";
 
 interface BadgeProps {
 	player: PlayerFragment;
@@ -43,7 +42,7 @@ export default function Badge({ player, campaign, scale = 0.8 }: BadgeProps) {
 					filter: cooldownTimeRemaining > 0 ? "grayscale(100%)" : undefined,
 				}}
 			>
-				<Image src="/badge.png" alt="background" layout="fill" />
+				<img src="/badge.png" alt="background" />
 			</Box>
 			<Box
 				component="div"

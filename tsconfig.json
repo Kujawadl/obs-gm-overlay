@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es5",
+		"target": "es2024",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -9,17 +9,28 @@
 		"noEmit": true,
 		"esModuleInterop": true,
 		"module": "esnext",
+		"moduleDetection": "auto",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "preserve",
-		"incremental": true
+		"incremental": true,
+		"baseUrl": ".",
+		"paths": {
+			"@src/*": ["src/*"],
+			"@graphql/*": ["graphql/*"],
+			"@server/*": ["server/*"],
+			"@utils/*": ["utils/*"]
+		},
+		"typeRoots": ["./_types"]
 	},
+
 	"ts-node": {
 		"compilerOptions": {
 			"module": "CommonJS"
-		}
+		},
+		"require": ["tsconfig-paths/register"]
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "./*-loader.js", "dist"]
 }

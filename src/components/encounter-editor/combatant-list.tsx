@@ -10,6 +10,7 @@ import { Reorder } from "framer-motion";
 import clone from "lodash/clone";
 import maxBy from "lodash/maxBy";
 import omit from "lodash/omit";
+import CombatantEditor from "@src/components/encounter-editor/combatant-editor";
 import {
 	CombatantFragment,
 	CombatantInput,
@@ -17,8 +18,7 @@ import {
 	useCampaignSubscription,
 	useSaveCombatantMutation,
 	useSaveCombatantsMutation,
-} from "../../graphql/client-types";
-import CombatantEditor from "./combatant-editor";
+} from "@graphql/client-types";
 
 interface CombatantListProps {
 	campaignId: string;

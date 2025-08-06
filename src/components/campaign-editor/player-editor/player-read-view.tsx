@@ -34,8 +34,8 @@ import {
 	useDeletePlayerMutation,
 	useResetPlayerCooldownMutation,
 	useSetPlayerInspirationMutation,
-} from "../../../graphql/client-types";
-import { useCooldown } from "../../../utils";
+} from "@graphql/client-types";
+import { useCooldown } from "@utils/index";
 
 interface PlayerReadViewProps {
 	player: PlayerFragment;

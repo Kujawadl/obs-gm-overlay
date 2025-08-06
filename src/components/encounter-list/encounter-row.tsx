@@ -17,8 +17,7 @@ import {
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
 import {
 	CampaignFragment,
@@ -26,7 +25,7 @@ import {
 	EncounterFragment,
 	useDeleteEncounterMutation,
 	useSetActiveEncounterMutation,
-} from "../../graphql/client-types";
+} from "@graphql/client-types";
 
 export interface EncounterRowProps {
 	campaign: CampaignFragment;
@@ -39,7 +38,7 @@ export default function EncounterRow({
 	encounter,
 	refetch,
 }: EncounterRowProps) {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const [deleteCampaign] = useDeleteEncounterMutation({
 		variables: { campaignId: campaign.id, encounterId: encounter?.id },
 	});
@@ -58,12 +57,12 @@ export default function EncounterRow({
 	const onSetActive = useCallback(() => {
 		setActive().then(({ data }) => {
 			if (data?.campaign?.encounter?.setActive) {
-				router.push(`/${campaign.id}/encounter/run`);
+				navigate(`/${campaign.id}/encounter/run`);
 			} else {
 				// TODO: Display an error here
 			}
 		});
-	}, [setActive, router, campaign.id]);
+	}, [setActive, navigate, campaign.id]);
 
 	return (
 		<>
@@ -103,7 +102,7 @@ export default function EncounterRow({
 							flexBasis: isMobileView ? "100%" : "auto",
 						}}
 					>
-						<Link href={`/${campaign.id}/encounter/${encounter.id}/edit`}>
+						<Link to={`/${campaign.id}/encounter/${encounter.id}/edit`}>
 							<Button component="span">
 								<EditIcon sx={{ paddingRight: 1, fontSize: "1.8rem" }} />
 								Edit
