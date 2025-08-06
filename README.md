@@ -130,11 +130,11 @@ erDiagram
     - [x] Change all IDs to no longer be incremental (e.g. GUIDs generated at resource creation)
     - [x] REVERTED: Switched back to sqlite to prepare the app to be run as a local application (no more server hosting fees or user auth!)
   - [ ] Single Executable Application
-    - [ ] Upgrade all package dependencies
-    - [ ] Update to Node 24+
-    - [ ] Gut postgres/migrations in favor of a single SQL database with a simpler schema
+    - [x] Upgrade all package dependencies
+    - [x] Update to Node 24+
+    - [x] Gut postgres/migrations in favor of a single SQL database with a simpler schema
     - [ ] Hardening pass on database clients (first pass was quick but shoddy)
     - [ ] Fix broken styles brought about by the MUI update
-    - [ ] Remove unused packages/general treeshaking to get overall bundle size down
-    - [ ] Figure out a way to bundle Next.js build output to a single .js file
-    - [ ] First .exe build
+    - [x] Remove unused packages/general treeshaking to get overall bundle size down
+    - [x] Figure out a way to bundle Next.js build output to a single .js file
+    - [x] First .exe build
