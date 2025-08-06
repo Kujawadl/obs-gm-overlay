@@ -22,7 +22,7 @@ function setupApolloServer(
 
 	return new ApolloServer({
 		schema,
-		csrfPrevention: true,
+		csrfPrevention: false,
 		cache: "bounded",
 		plugins: [
 			ApolloServerPluginDrainHttpServer({ httpServer }),

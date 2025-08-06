@@ -11,12 +11,8 @@ import { createClient } from "graphql-ws";
 
 export default function useApolloClient() {
 	const host = (protocol: "http" | "ws") =>
-		`${protocol}${import.meta.env.VITE_PUBLIC_HTTPS === "true" ? "s" : ""}://${
-			import.meta.env.VITE_PUBLIC_HOST
-		}${
-			import.meta.env.VITE_PUBLIC_PORT
-				? `:${import.meta.env.VITE_PUBLIC_PORT}`
-				: ""
+		`${protocol}${window.location.protocol.endsWith("s") ? "s" : ""}://${
+			window.location.host
 		}/api/${protocol === "http" ? "graphql" : "subscriptions"}`;
 	const httpLink = new HttpLink({
 		uri: host("http"),

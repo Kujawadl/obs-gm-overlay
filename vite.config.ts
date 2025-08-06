@@ -6,6 +6,8 @@ import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import { checker } from "vite-plugin-checker";
 
+const graphqlPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+
 export default defineConfig({
 	plugins: [
 		react(),
@@ -29,10 +31,25 @@ export default defineConfig({
 		outDir: "./dist/public",
 	},
 	server: {
+		host: "localhost",
 		port: process.env.VITE_PORT ? parseInt(process.env.VITE_PORT, 10) : 3000,
 		proxy: {
+			"/api/subscriptions": {
+				target: {
+					protocol: "ws",
+					host: "localhost",
+					port: graphqlPort,
+				},
+				ws: true,
+				changeOrigin: true,
+				rewriteWsOrigin: true,
+			},
 			"/api": {
-				target: `http://localhost:${process.env.PORT || 4000}/api`,
+				target: {
+					protocol: "http",
+					host: "localhost",
+					port: graphqlPort,
+				},
 				changeOrigin: true,
 			},
 		},
