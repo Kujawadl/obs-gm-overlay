@@ -22,6 +22,7 @@ const config = [
 			"*-loader.js",
 			".rollup.cache",
 			"dist",
+			"build-sea.js",
 		],
 	},
 

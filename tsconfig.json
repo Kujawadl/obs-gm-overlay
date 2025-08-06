@@ -32,5 +32,5 @@
 		"require": ["tsconfig-paths/register"]
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-	"exclude": ["node_modules", "./*-loader.js", "dist"]
+	"exclude": ["node_modules", "./*-loader.js", "dist", "build-sea.js"]
 }

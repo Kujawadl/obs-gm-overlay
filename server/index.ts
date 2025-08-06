@@ -1,13 +1,17 @@
 import { parse } from "node:url";
-import path from "node:path";
+import { basename, resolve } from "node:path";
+import { getAsset, isSea } from "node:sea";
+
 import express from "express";
 import { expressMiddleware } from "@as-integrations/express5";
 
 import { WebSocketServer } from "ws";
+import { config } from "dotenv";
+
 import { setupContext } from "@graphql/context";
 import setupApolloServer from "@graphql/setup-apollo-server";
 
-require("dotenv").config();
+config();
 
 const app = express();
 const httpServer = app.listen(3000);
@@ -35,9 +39,31 @@ apollo.start().then(() => {
 	);
 
 	if (process.env.NODE_ENV === "production") {
-		app.use(express.static(path.join(__dirname, "public")));
-		app.use("/{*splat}", (req, res) => {
-			res.sendFile(path.join(__dirname, "public", "index.html"));
+		app.use<{ splat?: string[] }>("/{*splat}", (req, res) => {
+			const splatArray = Array.isArray(req.params.splat)
+				? req.params.splat
+				: ["index.html"];
+			const splat = splatArray.join("/");
+
+			// Validate splat to prevent directory traversal
+			if (
+				splat.includes("..") ||
+				splat.startsWith("/") ||
+				splat.startsWith("\\")
+			) {
+				return res.status(400).send("Invalid file path");
+			}
+
+			if (isSea()) {
+				try {
+					const asset = getAsset(splat);
+					res.contentType(basename(splat)).send(Buffer.from(asset));
+				} catch {
+					res.status(404).send("Not found");
+				}
+			} else {
+				res.sendFile(resolve(__dirname, "public", splat));
+			}
 		});
 	}
 
