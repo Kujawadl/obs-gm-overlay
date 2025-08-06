@@ -71,7 +71,7 @@ export default function PlayerEditView({
 			validationSchema={validationSchema}
 		>
 			{({ values, isValid }) => (
-				<Form style={{ flexBasis: "100%" }}>
+				<Form style={{ flexGrow: 1 }}>
 					<Grid container spacing={2} alignItems="center" mr={-2}>
 						<Grid size={{ xs: 8, md: 3 }}>
 							<Field name="playerName">

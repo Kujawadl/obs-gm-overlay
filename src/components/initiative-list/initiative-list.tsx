@@ -146,16 +146,13 @@ export default function InitiativeList({
 							: (function () {
 									switch (hideMonsterNames) {
 										case HideMonsterNames.Always:
-											if (!combatant.public) return "???";
-											break;
+											return combatant.public ? combatant.name : "???";
 										case HideMonsterNames.UntilTurn:
-											if (
-												!combatant.public &&
+											return !combatant.public &&
 												turn < combatant.turnOrder &&
 												round <= 1
-											)
-												return "???";
-											break;
+												? "???"
+												: combatant.name;
 										default:
 											return combatant.name;
 									}

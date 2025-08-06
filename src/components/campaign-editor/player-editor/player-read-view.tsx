@@ -96,7 +96,7 @@ export default function PlayerReadView({
 
 	return (
 		<>
-			<Grid container alignItems="center">
+			<Grid container alignItems="center" sx={{ flexGrow: 1 }}>
 				<Grid size={{ xs: 8 }}>
 					<Box component="span" sx={{ fontWeight: "bold", paddingRight: 1 }}>
 						{player.playerName}

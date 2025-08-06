@@ -21,10 +21,15 @@ export function formatTimeDuration(
 			) ?? "",
 	};
 
-	const duration = intervalToDuration({
-		start,
-		end,
-	});
+	const duration = {
+		hours: 0,
+		minutes: 0,
+		seconds: 0,
+		...intervalToDuration({
+			start,
+			end,
+		}),
+	};
 	return format(duration, {
 		format: units,
 		locale: shortEnLocale,
