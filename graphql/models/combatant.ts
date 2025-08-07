@@ -1,10 +1,20 @@
 import { createId } from "@paralleldrive/cuid2";
 import Model from "./_model";
 import type { DatabaseSync } from "node:sqlite";
-import { CombatantModel as Combatant } from "@graphql/resolvers/initiative";
 import { CombatantInput } from "@graphql/server-types";
 
-export default class CombatantModel extends Model<Combatant, CombatantInput> {
+export interface Combatant {
+	id: string;
+	campaignId: string;
+	encounterId: string;
+	playerId?: string;
+	name: string;
+	public: boolean;
+	turnOrder: number;
+	dateCreated: string;
+}
+
+export class CombatantModel extends Model<Combatant, CombatantInput> {
 	constructor(private sql: DatabaseSync) {
 		super();
 	}

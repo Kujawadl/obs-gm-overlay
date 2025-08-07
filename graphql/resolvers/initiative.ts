@@ -6,31 +6,14 @@ import type {
 	CombatantResolvers,
 	EncounterMutationResolvers,
 	EncounterResolvers,
-	HideMonsterNames,
 	CampaignInput,
 } from "@graphql/server-types";
-import type { CampaignModel } from "./campaign";
+import type {
+	Campaign as CampaignModel,
+	Combatant as CombatantModel,
+	Encounter as EncounterModel,
+} from "@graphql/models";
 import { formatDate } from "@utils/index";
-
-export interface CombatantModel {
-	id: string;
-	campaignId: string;
-	encounterId: string;
-	playerId?: string;
-	name: string;
-	public: boolean;
-	turnOrder: number;
-}
-
-export interface EncounterModel {
-	id: string;
-	campaignId: string;
-	name: string;
-	hideMonsterNames: HideMonsterNames;
-	round: number;
-	turn: number;
-	turnStart: string;
-}
 
 interface Resolvers {
 	Campaign: CampaignResolvers;
@@ -90,7 +73,7 @@ const resolvers: Resolvers = {
 		async delete(parent, _args, ctx) {
 			if (!parent.id) return false;
 			const campaign = await ctx.Campaign.get(parent.campaignId);
-			if (campaign?.activeEncounter === parent.id) {
+			if (campaign && campaign.activeEncounter === parent.id) {
 				await ctx.Campaign.update(campaign, {
 					activeEncounter: null,
 				} as CampaignInput);
@@ -131,7 +114,7 @@ const resolvers: Resolvers = {
 				turnStart: formatDate(new Date()),
 			});
 			const campaign = await ctx.Campaign.get(parent.campaignId);
-			if (campaign?.activeEncounter === parent.id) {
+			if (campaign && campaign.activeEncounter === parent.id) {
 				await ctx.Campaign.publishSubscription(campaign.id);
 			}
 			return true;
@@ -149,7 +132,7 @@ const resolvers: Resolvers = {
 				turnStart: formatDate(new Date()),
 			});
 			const campaign = await ctx.Campaign.get(parent.campaignId);
-			if (campaign?.activeEncounter === parent.id) {
+			if (campaign && campaign.activeEncounter === parent.id) {
 				await ctx.Campaign.publishSubscription(campaign.id);
 			}
 			return true;
@@ -198,7 +181,7 @@ const resolvers: Resolvers = {
 			if (!parent.id) return false;
 			const result = await ctx.Combatant.delete(parent.id);
 			const campaign = await ctx.Campaign.get(parent.campaignId);
-			if (campaign?.activeEncounter === parent.encounterId) {
+			if (campaign && campaign.activeEncounter === parent.encounterId) {
 				await ctx.Campaign.publishSubscription(campaign.id);
 			}
 			return result;

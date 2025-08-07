@@ -4,16 +4,7 @@ import type {
 	PlayerResolvers,
 	QueryResolvers,
 } from "@graphql/server-types";
-
-export interface PlayerModel {
-	id: string;
-	campaignId: string;
-	playerName: string;
-	characterName?: string;
-	isGM: boolean;
-	inspiration: number;
-	lastInspirationUsed?: string;
-}
+import type { Player as PlayerModel } from "@graphql/models/player";
 
 interface Resolvers {
 	Query: QueryResolvers;

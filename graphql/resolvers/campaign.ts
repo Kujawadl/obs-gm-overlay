@@ -1,24 +1,15 @@
 import { withFilter } from "graphql-subscriptions";
-import type { Context } from "../context";
+import type { Context } from "@graphql/context";
 import type {
 	Campaign,
 	CampaignMutationResolvers,
 	CampaignResolvers,
-	CooldownType,
 	MutationResolvers,
 	QueryResolvers,
 	SubscriptionResolvers,
-} from "../server-types";
+} from "@graphql/server-types";
+import type { Campaign as CampaignModel } from "@graphql/models/campaign";
 import { formatDate, parseDate } from "@utils/index";
-
-export interface CampaignModel {
-	id: string;
-	name: string;
-	gmInspiration: boolean;
-	cooldownType: CooldownType;
-	cooldownTime: number;
-	activeEncounter?: string;
-}
 
 interface Resolvers {
 	Query: QueryResolvers;

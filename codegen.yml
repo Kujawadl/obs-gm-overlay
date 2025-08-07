@@ -1,11 +1,11 @@
 overwrite: true
 schema:
-  - "./src/graphql/types/index.ts":
+  - "./graphql/types/index.ts":
       loader: "./schema-loader.js"
 generates:
-  ./src/graphql/client-types.tsx:
+  ./graphql/client-types.tsx:
     documents:
-      - "./src/graphql/**/*.gql":
+      - "./graphql/**/*.gql":
           loader: "./document-loader.js"
     plugins:
       - "add":
@@ -18,7 +18,7 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  ./src/graphql/server-types.ts:
+  ./graphql/server-types.ts:
     plugins:
       - "add":
           content: |-
@@ -32,18 +32,18 @@ generates:
     config:
       contextType: "./context#Context"
       mappers:
-        Player: "./resolvers/player#PlayerModel"
-        PlayerMutation: "./resolvers/player#PlayerModel"
-        Campaign: "./resolvers/campaign#CampaignModel"
-        CampaignMutation: "./resolvers/campaign#CampaignModel"
-        Combatant: "./resolvers/initiative#CombatantModel"
-        CombatantMutation: "./resolvers/initiative#CombatantModel"
-        Encounter: "./resolvers/initiative#EncounterModel"
-        EncounterMutation: "./resolvers/initiative#EncounterModel"
+        Player: "@graphql/models#Player as PlayerModel"
+        PlayerMutation: "@graphql/models#Player as PlayerModel"
+        Campaign: "@graphql/models#Campaign as CampaignModel"
+        CampaignMutation: "@graphql/models#Campaign as CampaignModel"
+        Combatant: "@graphql/models#Combatant as CombatantModel"
+        CombatantMutation: "@graphql/models#Combatant as CombatantModel"
+        Encounter: "@graphql/models#Encounter as EncounterModel"
+        EncounterMutation: "@graphql/models#Encounter as EncounterModel"
       resolverTypeWrapperSignature: Promise<T> | T | Promise<undefined> | undefined
       maybeValue: T | undefined
       inputMaybeValue: T | undefined | null
-  ./src/graphql/introspection.json:
+  ./graphql/introspection.json:
     plugins:
       - "introspection"
 config:

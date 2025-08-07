@@ -1,11 +1,21 @@
 import { DatabaseSync } from "node:sqlite";
 import { createId } from "@paralleldrive/cuid2";
 import Model from "./_model";
-import type { PlayerModel as Player } from "@graphql/resolvers/player";
 import type { PlayerInput } from "@graphql/server-types";
 import { formatDate } from "@utils/index";
 
-export default class PlayerModel extends Model<Player, PlayerInput> {
+export interface Player {
+	id: string;
+	campaignId: string;
+	playerName: string;
+	characterName?: string;
+	isGM: boolean;
+	inspiration: number;
+	lastInspirationUsed?: string;
+	dateCreated: string;
+}
+
+export class PlayerModel extends Model<Player, PlayerInput> {
 	constructor(private sql: DatabaseSync) {
 		super();
 	}
@@ -31,7 +41,7 @@ export default class PlayerModel extends Model<Player, PlayerInput> {
 					SELECT *
 					FROM "Player"
 					WHERE "campaignId" = ?
-					ORDER BY "isGM" DESC, "playerName", "characterName"
+					ORDER BY "isGM" DESC, "dateCreated"
 				`,
 			)
 			.all(campaignId) as unknown as Player[];

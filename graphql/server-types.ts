@@ -8,9 +8,12 @@ import {
 	GraphQLScalarType,
 	GraphQLScalarTypeConfig,
 } from "graphql";
-import { PlayerModel } from "./resolvers/player";
-import { CampaignModel } from "./resolvers/campaign";
-import { CombatantModel, EncounterModel } from "./resolvers/initiative";
+import {
+	Player as PlayerModel,
+	Campaign as CampaignModel,
+	Combatant as CombatantModel,
+	Encounter as EncounterModel,
+} from "@graphql/models";
 import { Context } from "./context";
 export type Maybe<T> = T | undefined;
 export type InputMaybe<T> = T | undefined | null;

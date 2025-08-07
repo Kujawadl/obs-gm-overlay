@@ -2,10 +2,19 @@ import { createId } from "@paralleldrive/cuid2";
 import { PubSub } from "graphql-subscriptions";
 import Model from "./_model";
 import type { DatabaseSync } from "node:sqlite";
-import { CampaignModel as Campaign } from "@graphql/resolvers/campaign";
-import { CampaignInput } from "@graphql/server-types";
+import { CampaignInput, CooldownType } from "@graphql/server-types";
 
-export default class CampaignModel extends Model<Campaign, CampaignInput> {
+export interface Campaign {
+	id: string;
+	name: string;
+	gmInspiration: boolean;
+	cooldownType: CooldownType;
+	cooldownTime: number;
+	activeEncounter?: string;
+	dateCreated: string;
+}
+
+export class CampaignModel extends Model<Campaign, CampaignInput> {
 	constructor(
 		private sql: DatabaseSync,
 		private pubsub: PubSub,
@@ -27,7 +36,7 @@ export default class CampaignModel extends Model<Campaign, CampaignInput> {
 				`
 					SELECT *
 					FROM "Campaign"
-					ORDER BY "name"
+					ORDER BY "dateCreated"
 				`,
 			)
 			.all() as unknown as Campaign[];

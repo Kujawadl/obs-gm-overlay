@@ -1,15 +1,25 @@
 import { createId } from "@paralleldrive/cuid2";
 import Model from "./_model";
 import type { DatabaseSync } from "node:sqlite";
-import type { EncounterModel as Encounter } from "@graphql/resolvers/initiative";
-import type { EncounterInput } from "@graphql/server-types";
+import type { EncounterInput, HideMonsterNames } from "@graphql/server-types";
+
+export interface Encounter {
+	id: string;
+	campaignId: string;
+	name: string;
+	hideMonsterNames: HideMonsterNames;
+	round: number;
+	turn: number;
+	turnStart: string;
+	dateCreated: string;
+}
 
 interface TurnQuery {
 	encounterId: string;
 	turn: number;
 }
 
-export default class EncounterModel extends Model<Encounter, EncounterInput> {
+export class EncounterModel extends Model<Encounter, EncounterInput> {
 	constructor(private sql: DatabaseSync) {
 		super();
 	}
