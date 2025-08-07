@@ -1,22 +1,24 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useMemo, useState } from "react";
-import PlayerEditor from "@src/components/campaign-editor/player-editor/player-editor";
-import { CampaignFragment, PlayerFragment } from "@graphql/client-types";
+import PlayerEditor from "@src/components/campaign-editor/player-editor";
+import { CampaignFragment, useSavePlayerMutation } from "@graphql/client-types";
 
 interface PlayerListProps {
 	campaign: CampaignFragment;
 }
 
 export default function PlayerList({ campaign }: PlayerListProps) {
-	const [addingPlayer, setAddingPlayer] = useState(false);
-	const allPlayers = useMemo(
-		() =>
-			addingPlayer
-				? (campaign.players as (PlayerFragment | undefined)[]).concat(undefined)
-				: campaign.players,
-		[addingPlayer, campaign.players],
-	);
+	const [addPlayer] = useSavePlayerMutation({
+		variables: {
+			input: {
+				campaignId: campaign.id,
+				isGM: false,
+				playerName: "New Player",
+				inspiration: 0,
+			},
+		},
+	});
+	const allPlayers = campaign.players;
 
 	return (
 		<>
@@ -44,7 +46,7 @@ export default function PlayerList({ campaign }: PlayerListProps) {
 			>
 				{allPlayers.map((player) => (
 					<ListItem
-						key={player?.id || "new-player"}
+						key={player.id}
 						sx={{
 							border: 0,
 							borderBottom: 1,
@@ -54,25 +56,15 @@ export default function PlayerList({ campaign }: PlayerListProps) {
 							marginBottom: 1,
 						}}
 					>
-						<PlayerEditor
-							player={player}
-							campaign={campaign}
-							onCancelAdd={() => setAddingPlayer(false)}
-						/>
+						<PlayerEditor player={player} campaign={campaign} />
 					</ListItem>
 				))}
 			</List>
-			{!addingPlayer && (
-				<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-					<Button
-						variant="contained"
-						color="success"
-						onClick={() => setAddingPlayer(true)}
-					>
-						<AddIcon /> New Player
-					</Button>
-				</Box>
-			)}
+			<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+				<Button variant="contained" color="success" onClick={() => addPlayer()}>
+					<AddIcon /> New Player
+				</Button>
+			</Box>
 		</>
 	);
 }

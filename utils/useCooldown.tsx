@@ -13,6 +13,7 @@ interface UseCooldownResult {
 	cooldownTimeRemaining: number;
 	percentComplete: number;
 	formattedDuration: string;
+	playerCausingCampaignCooldown: boolean;
 }
 
 function calculateCooldown({ player, campaign }: UseCooldownProps): number {
@@ -72,5 +73,8 @@ export function useCooldown({
 			},
 			{ format: ["hours", "minutes", "seconds"] },
 		),
+		playerCausingCampaignCooldown:
+			player?.lastInspirationUsed &&
+			player.lastInspirationUsed === campaign?.lastInspirationUsed,
 	};
 }
