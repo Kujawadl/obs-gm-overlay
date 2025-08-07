@@ -38,12 +38,14 @@ function createSeaConfig() {
 					file.parentPath.includes("binaries")
 				)
 			) {
-				const relativePath = path.join(
-					file.parentPath
-						.replace(__dirname, "")
-						.replace(/^\/?dist\/public\/?/i, ""),
-					file.name,
-				);
+				const relativePath = path
+					.join(
+						file.parentPath
+							.replace(__dirname, "")
+							.replace(/^(\/|\\+)?dist(\/|\\+)public(\/|\\+)?/i, ""),
+						file.name,
+					)
+					.replace(/\\/g, "/");
 				const absolutePath = path.join(file.parentPath, file.name);
 				acc[relativePath] = absolutePath;
 			}
