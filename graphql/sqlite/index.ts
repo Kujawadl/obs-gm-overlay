@@ -87,6 +87,7 @@ function runMigrations(dbPath: string, backupPath: string) {
 				console.debug(`Skipping migration: ${migration.name}`);
 			}
 		}
+		fs.rmSync(backupPath); // Remove backup after successful migration
 		return sql;
 	} catch (error) {
 		console.error("Error running migrations:", error);
