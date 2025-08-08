@@ -1,4 +1,6 @@
--- Backup original tables
+export const dateCreated = {
+	name: "2-date-created",
+	sql: `-- Backup original tables
 CREATE TABLE "Campaign_backup" AS SELECT * FROM "Campaign";
 CREATE TABLE "Player_backup" AS SELECT * FROM "Player";
 CREATE TABLE "Encounter_backup" AS SELECT * FROM "Encounter";
@@ -147,4 +149,5 @@ FROM
 DROP TABLE "Campaign_backup";
 DROP TABLE "Player_backup";
 DROP TABLE "Encounter_backup";
-DROP TABLE "Combatant_backup";
+DROP TABLE "Combatant_backup";`,
+};

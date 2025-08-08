@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { migrations } from "./migrations";
 
 const userDataPath =
 	process.env.APPDATA ||
@@ -55,16 +56,6 @@ function runMigrations(dbPath: string, backupPath: string) {
 		const sql = new DatabaseSync(dbPath, {
 			open: true,
 		});
-		const migrations = fs
-			.readdirSync(path.join(__dirname, "migrations"), { withFileTypes: true })
-			.filter((file) => file.name.endsWith(".sql"))
-			.map((file) => ({
-				name: file.name.replace(/\.sql$/, ""),
-				sql: fs.readFileSync(
-					path.join(__dirname, "migrations", file.name),
-					"utf-8",
-				),
-			}));
 		sql.exec(`
 			CREATE TABLE IF NOT EXISTS "Migration" (
 				"id" SERIAL PRIMARY KEY,

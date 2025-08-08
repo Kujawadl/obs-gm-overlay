@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS "Campaign" (
+export const initial = {
+	name: "1-initial",
+	sql: `CREATE TABLE IF NOT EXISTS "Campaign" (
 	"id" TEXT PRIMARY KEY,
 	"name" TEXT NOT NULL,
 	"gmInspiration" BOOLEAN NOT NULL,
@@ -41,4 +43,5 @@ CREATE TABLE IF NOT EXISTS "Combatant" (
 	CONSTRAINT Combatant_fk_campaignId FOREIGN KEY ("campaignId") REFERENCES "Campaign" ("id") ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT Combatant_fk_encounterId FOREIGN KEY ("encounterId") REFERENCES "Encounter" ("id") ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT Combatant_fk_playerId FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON UPDATE CASCADE ON DELETE CASCADE
-);
+);`,
+};
