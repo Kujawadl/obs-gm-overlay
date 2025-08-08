@@ -111,6 +111,8 @@ erDiagram
   - [x] Create initiative overlay that tracks whose turn it is/how many rounds have passed
   - [ ] Allow GM to specify cooldown duration in rounds
   - [ ] Add optional alternative (MCDM) inspiration mode (teams go together and decide order on each turn)
+  - [ ] Add option to disable a combatant temporarily (e.g. the player is downed or incapacitated, the monster is dead); shows the combatant name with strikethrough effect
+  - [ ] Add initiative bonus to campaign editor + initiative editor, auto-roll initiative
 - [x] Production
   - [x] Host DB on AWS RDS (free tier)
   - [x] Host app on AWS EC2 (free tier)
